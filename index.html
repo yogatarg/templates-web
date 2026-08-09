@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katalog Template UMKM</title>
+<meta name="description" content="Daftar template website statis untuk UMKM.">
+<style>
+  :root{
+    --bg:#FAF3EC;
+    --ink:#3A241C;
+    --primary:#6B3F2E;
+    --card-bg:#FFFFFF;
+    --border:#E7DACB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', system-ui, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:2rem 1rem;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+  }
+  h1{
+    font-size:1.5rem;
+    margin-bottom:0.25rem;
+  }
+  p.sub{
+    color:#6b5a4f;
+    margin-top:0;
+    margin-bottom:2rem;
+  }
+  ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:grid;
+    gap:0.75rem;
+  }
+  li a{
+    display:block;
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:1rem 1.25rem;
+    text-decoration:none;
+    color:var(--ink);
+    font-weight:600;
+    transition:border-color .15s ease;
+  }
+  li a:hover{
+    border-color:var(--primary);
+  }
+  li a span{
+    display:block;
+    font-weight:400;
+    font-size:0.875rem;
+    color:#6b5a4f;
+    margin-top:0.25rem;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Katalog Template UMKM</h1>
+    <p class="sub">Daftar template website statis yang tersedia.</p>
+    <ul>
+      <li>
+        <a href="/template-roti/">
+          Roti Hangat
+          <span>Demo template pemesanan roti online</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
