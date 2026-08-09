@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yogata — Label Fashion Harian (Demo Template)</title>
+<meta name="description" content="Demo template toko fashion online untuk UMKM. Varian warna & ukuran, keranjang drawer, dan checkout langsung ke WhatsApp.">
+<meta property="og:title" content="Yogata — Demo Template Toko Fashion dengan Varian">
+<meta property="og:description" content="Contoh alur belanja online untuk UMKM fashion: pilih varian warna/ukuran, keranjang drawer, checkout via WhatsApp. Bagian dari katalog template UMKM.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%97%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#FFFFFF;
+    --ink:#14161A;
+    --ink-muted:#6B6E76;
+    --hairline:#E3E3E0;
+    --band:#F4F4F1;
+    --accent:#2440C7;
+    --accent-hover:#1B33A0;
+    --whatsapp:#25D366;
+    --whatsapp-hover:#1DA851;
+    --disabled:#B9BBC0;
+    --danger:#C0392B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:'DM Sans',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;letter-spacing:-0.01em;}
+  button{font-family:inherit;cursor:pointer;}
+  input,textarea,select{font-family:inherit;}
+  a{color:inherit;}
+  img,svg{display:block;}
+  .label{
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:var(--ink-muted);
+  }
+
+  /* ---------- Demo bar ---------- */
+  .demo-bar{
+    background:var(--ink);
+    color:#F4F4F1;
+    font-size:.78rem;
+    text-align:center;
+    padding:.55rem 1rem;
+  }
+  .demo-bar a{
+    color:#fff;
+    font-weight:700;
+    text-decoration:underline;
+    margin-left:.4rem;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--hairline);
+  }
+  .header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:1rem 1.25rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+  }
+  .brand-mark{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800;
+    font-size:1.4rem;
+    letter-spacing:-0.02em;
+  }
+  .nav-links{
+    display:flex;
+    gap:1.5rem;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .nav-links button{
+    background:none;
+    border:none;
+    font-size:.85rem;
+    font-weight:600;
+    color:var(--ink);
+    padding:.25rem 0;
+  }
+  .nav-links{display:none;}
+  @media(min-width:760px){ .nav-links{display:flex;} }
+  .cart-btn{
+    position:relative;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .cart-badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    background:var(--accent);
+    color:#fff;
+    font-size:.68rem;
+    font-weight:700;
+    min-width:18px;
+    height:18px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 4px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:var(--band);
+    padding:3.5rem 1.25rem;
+  }
+  .hero-inner{
+    max-width:1200px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:clamp(2.2rem,6vw,3.6rem);
+    line-height:1.05;
+  }
+  .hero p{
+    color:var(--ink-muted);
+    font-size:1rem;
+    margin-top:.85rem;
+    max-width:480px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  /* ---------- Search bar ---------- */
+  .search-bar{
+    max-width:1200px;
+    margin:0 auto;
+    padding:1.5rem 1.25rem 0;
+  }
+  .search-input-wrap{
+    position:relative;
+    max-width:420px;
+  }
+  .search-icon{
+    position:absolute;
+    top:50%;
+    left:.9rem;
+    transform:translateY(-50%);
+    color:var(--ink-muted);
+    pointer-events:none;
+  }
+  .search-input-wrap input{
+    width:100%;
+    border:1px solid var(--hairline);
+    border-radius:999px;
+    padding:.6rem 2.25rem .6rem 2.4rem;
+    font-size:.85rem;
+    color:var(--ink);
+  }
+  .search-input-wrap input:focus{outline:none;border-color:var(--ink);}
+  .search-clear{
+    position:absolute;
+    top:50%;
+    right:.6rem;
+    transform:translateY(-50%);
+    background:var(--band);
+    border:none;
+    border-radius:999px;
+    width:22px;
+    height:22px;
+    font-size:.9rem;
+    line-height:1;
+    color:var(--ink-muted);
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar{
+    max-width:1200px;
+    margin:0 auto;
+    padding:1.75rem 1.25rem 0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem;
+  }
+  .chip{
+    border:1px solid var(--hairline);
+    background:#fff;
+    border-radius:999px;
+    padding:.45rem 1rem;
+    font-size:.82rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .chip.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .chip.small{padding:.35rem .75rem;font-size:.76rem;}
+  .chip.disabled{color:var(--disabled);border-color:var(--hairline);}
+  select.sort-select{
+    border:1px solid var(--hairline);
+    border-radius:999px;
+    padding:.45rem 1rem;
+    font-size:.82rem;
+    font-weight:600;
+    background:#fff;
+    color:var(--ink);
+  }
+
+  /* ---------- Grid ---------- */
+  .grid-section{
+    max-width:1200px;
+    margin:0 auto;
+    padding:1.5rem 1.25rem 3rem;
+  }
+  .product-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.25rem 1rem;
+  }
+  @media(min-width:640px){ .product-grid{grid-template-columns:repeat(3,1fr);} }
+  @media(min-width:960px){ .product-grid{grid-template-columns:repeat(4,1fr);} }
+
+  .card{
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .preview-block{
+    position:relative;
+    aspect-ratio:3/4;
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    transition:background-color .2s ease;
+  }
+  .preview-silhouette{
+    width:60%;
+    height:60%;
+  }
+  .status-tag{
+    position:absolute;
+    top:.6rem;
+    right:.6rem;
+    background:#fff;
+    color:var(--ink);
+    font-size:.65rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    padding:.25rem .55rem;
+    border-radius:999px;
+  }
+  .status-tag.habis{background:var(--ink);color:#fff;}
+  .card-body{padding:.75rem .1rem 0;}
+  .card-name{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+  .card-price{font-size:.88rem;color:var(--ink-muted);margin-bottom:.5rem;}
+  .swatch-row{display:flex;align-items:center;gap:.35rem;}
+  .swatch{
+    width:18px;height:18px;border-radius:999px;border:1px solid var(--hairline);
+    box-shadow:0 0 0 1px transparent;
+  }
+  .swatch.active{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink);}
+  .swatch-more{font-size:.72rem;color:var(--ink-muted);font-weight:600;}
+
+  /* ---------- Empty state ---------- */
+  .empty-state{
+    grid-column:1/-1;
+    text-align:center;
+    padding:4rem 1rem;
+    color:var(--ink-muted);
+  }
+  .empty-state button{
+    margin-top:1rem;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:.6rem 1.4rem;
+    font-weight:600;
+    font-size:.85rem;
+  }
+
+  /* ---------- Size guide section ---------- */
+  .size-section{
+    background:var(--band);
+    padding:2.5rem 1.25rem;
+    text-align:center;
+  }
+  .size-section h2{font-size:1.4rem;margin-bottom:.5rem;}
+  .size-section p{color:var(--ink-muted);font-size:.9rem;margin-bottom:1.25rem;}
+  .btn-outline{
+    background:transparent;
+    border:1px solid var(--ink);
+    border-radius:999px;
+    padding:.6rem 1.4rem;
+    font-weight:600;
+    font-size:.85rem;
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:2rem 1.25rem;
+    text-align:center;
+    font-size:.8rem;
+    color:var(--ink-muted);
+    border-top:1px solid var(--hairline);
+  }
+  footer a{color:var(--accent);font-weight:700;text-decoration:underline;}
+
+  /* ---------- Overlay base ---------- */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,22,26,.5);
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:1rem;
+  }
+  .overlay.open{display:flex;}
+  .overlay.drawer-overlay{justify-content:flex-end;padding:0;align-items:stretch;}
+
+  .modal{
+    background:#fff;
+    border-radius:6px;
+    max-width:620px;
+    width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+    padding:1.5rem;
+    position:relative;
+  }
+  .modal-close{
+    position:absolute;
+    top:1rem;right:1rem;
+    background:var(--band);
+    border:none;
+    border-radius:999px;
+    width:32px;height:32px;
+    font-size:1rem;
+    line-height:1;
+  }
+
+  .drawer{
+    background:#fff;
+    width:100%;
+    max-width:420px;
+    height:100%;
+    padding:1.5rem;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    animation:slideIn .25s ease;
+  }
+  @keyframes slideIn{ from{transform:translateX(100%);} to{transform:translateX(0);} }
+
+  /* ---------- Product modal ---------- */
+  .pm-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media(min-width:520px){ .pm-grid{grid-template-columns:1fr 1fr;} }
+  .pm-preview .preview-block{aspect-ratio:3/4;}
+  .pm-name{font-size:1.3rem;margin-bottom:.25rem;}
+  .pm-price{font-size:1.1rem;font-weight:700;margin-bottom:.75rem;}
+  .pm-desc{font-size:.85rem;color:var(--ink-muted);margin-bottom:.25rem;}
+  .pm-bahan{font-size:.78rem;color:var(--ink-muted);margin-bottom:1rem;}
+  .pm-section-label{margin-bottom:.4rem;margin-top:1rem;display:block;}
+  .swatch-lg{
+    width:30px;height:30px;border-radius:999px;border:1px solid var(--hairline);
+  }
+  .swatch-lg.active{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink);}
+  .size-chip-row{display:flex;gap:.5rem;flex-wrap:wrap;}
+  .size-chip{
+    border:1px solid var(--hairline);
+    background:#fff;
+    border-radius:4px;
+    width:44px;height:38px;
+    font-size:.82rem;
+    font-weight:600;
+    position:relative;
+  }
+  .size-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .size-chip.out{
+    color:var(--disabled);
+    background:var(--band);
+    text-decoration:line-through;
+    cursor:not-allowed;
+  }
+  .stock-note{font-size:.78rem;color:var(--ink-muted);margin-top:.6rem;}
+  .qty-row{display:flex;align-items:center;gap:.75rem;margin-top:.9rem;}
+  .qty-btn{
+    width:32px;height:32px;border:1px solid var(--hairline);background:#fff;border-radius:4px;font-size:1rem;
+  }
+  .qty-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .size-guide-link{
+    display:inline-block;
+    margin-top:.75rem;
+    font-size:.78rem;
+    text-decoration:underline;
+    color:var(--accent);
+    background:none;border:none;padding:0;
+  }
+  .btn-add{
+    width:100%;
+    margin-top:1.25rem;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    padding:.85rem;
+    font-weight:700;
+    font-size:.9rem;
+  }
+  .btn-add:disabled{background:var(--disabled);cursor:not-allowed;}
+
+  /* ---------- Cart drawer ---------- */
+  .drawer h2{font-size:1.2rem;margin-bottom:1rem;}
+  .cart-item{
+    display:flex;
+    gap:.75rem;
+    padding:.85rem 0;
+    border-bottom:1px solid var(--hairline);
+  }
+  .cart-item .preview-block{width:64px;height:84px;flex-shrink:0;aspect-ratio:auto;}
+  .cart-item-info{flex:1;}
+  .cart-item-name{font-size:.85rem;font-weight:600;}
+  .cart-item-variant{font-size:.76rem;color:var(--ink-muted);margin:.15rem 0;}
+  .cart-item-price{font-size:.8rem;font-weight:600;}
+  .cart-item-controls{display:flex;align-items:center;gap:.5rem;margin-top:.4rem;}
+  .cart-item-controls .qty-btn{width:24px;height:24px;font-size:.85rem;}
+  .cart-remove{background:none;border:none;color:var(--ink-muted);font-size:.75rem;text-decoration:underline;margin-left:auto;}
+  .cart-empty{text-align:center;padding:3rem 1rem;color:var(--ink-muted);font-size:.85rem;}
+  .cart-empty button{
+    margin-top:1rem;background:var(--ink);color:#fff;border:none;border-radius:999px;padding:.55rem 1.2rem;font-weight:600;font-size:.82rem;
+  }
+
+  .ongkir-progress{
+    background:var(--band);
+    border-radius:999px;
+    height:8px;
+    overflow:hidden;
+    margin:.4rem 0 .5rem;
+  }
+  .ongkir-progress-fill{
+    background:var(--accent);
+    height:100%;
+    transition:width .3s ease;
+  }
+  .ongkir-note{font-size:.78rem;color:var(--ink-muted);margin-bottom:1rem;}
+
+  .wilayah-row{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+  .wilayah-option{
+    display:flex;align-items:center;gap:.5rem;
+    border:1px solid var(--hairline);
+    border-radius:4px;
+    padding:.55rem .75rem;
+    font-size:.82rem;
+    cursor:pointer;
+  }
+  .wilayah-option.active{border-color:var(--ink);background:var(--band);}
+
+  .summary-row{display:flex;justify-content:space-between;font-size:.85rem;padding:.25rem 0;}
+  .summary-row.total{font-weight:700;font-size:1rem;border-top:1px solid var(--hairline);margin-top:.4rem;padding-top:.6rem;}
+  .strike{text-decoration:line-through;color:var(--ink-muted);margin-right:.35rem;}
+
+  .btn-primary{
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    padding:.9rem;
+    font-weight:700;
+    font-size:.9rem;
+    margin-top:1rem;
+  }
+  .btn-primary:disabled{background:var(--disabled);cursor:not-allowed;}
+
+  /* ---------- Checkout modal ---------- */
+  .form-group{margin-bottom:.9rem;}
+  .form-group label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.3rem;}
+  .form-group input,.form-group textarea{
+    width:100%;
+    border:1px solid var(--hairline);
+    border-radius:4px;
+    padding:.6rem .7rem;
+    font-size:.85rem;
+  }
+  .form-group input.error,.form-group textarea.error{border-color:var(--danger);}
+  .field-error{color:var(--danger);font-size:.72rem;margin-top:.25rem;display:none;}
+  .field-error.show{display:block;}
+
+  .order-summary{
+    background:var(--band);
+    border-radius:4px;
+    padding:.85rem;
+    font-size:.8rem;
+    margin-bottom:1rem;
+  }
+  .order-summary div{display:flex;justify-content:space-between;margin-bottom:.2rem;}
+
+  .chat-preview{
+    background:#e9edf5;
+    border-radius:8px;
+    padding:.9rem;
+    margin-bottom:1rem;
+  }
+  .chat-bubble{
+    background:#fff;
+    border-radius:8px;
+    padding:.75rem .85rem;
+    font-size:.78rem;
+    white-space:pre-wrap;
+    line-height:1.55;
+    max-height:220px;
+    overflow-y:auto;
+  }
+
+  .btn-whatsapp{
+    width:100%;
+    background:var(--whatsapp);
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    padding:.9rem;
+    font-weight:700;
+    font-size:.9rem;
+  }
+  .btn-whatsapp:hover{background:var(--whatsapp-hover);}
+
+  /* ---------- Size guide modal ---------- */
+  table.size-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.75rem;}
+  table.size-table th,table.size-table td{border:1px solid var(--hairline);padding:.5rem;text-align:center;}
+  table.size-table th{background:var(--band);}
+  .size-table-note{font-size:.76rem;color:var(--ink-muted);margin-top:.75rem;}
+</style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    Ini adalah demo template — bukan toko sungguhan.
+    <a href="https://templates-web-nu.vercel.app/" id="link-katalog-top" target="_blank" rel="noopener">Lihat template lain</a>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-mark" id="brand-mark"></div>
+      <ul class="nav-links">
+        <li><button data-kategori="semua">Semua</button></li>
+        <li><button data-kategori="atasan">Atasan</button></li>
+        <li><button data-kategori="bawahan">Bawahan</button></li>
+        <li><button data-kategori="dress">Dress</button></li>
+        <li><button data-kategori="outer">Outer</button></li>
+      </ul>
+      <button class="cart-btn" id="btn-open-cart" aria-label="Buka keranjang">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h2l2.4 12.2a2 2 0 0 0 2 1.8h8.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" id="cart-badge" style="display:none;">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="label" id="hero-tagline-label">label fashion harian</p>
+      <h1 id="hero-heading">Pakaian sehari-hari, dibuat untuk dipakai lama</h1>
+      <p id="hero-sub">Koleksi atasan, bawahan, dress, dan outer dengan varian warna &amp; ukuran. Pilih, lihat stok, pesan langsung lewat WhatsApp.</p>
+    </div>
+  </section>
+
+  <div class="search-bar">
+    <div class="search-input-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="input-search" placeholder="Cari produk, mis. blus, dress, celana...">
+      <button class="search-clear" id="btn-clear-search" style="display:none;" aria-label="Hapus pencarian">&times;</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="chip-row" id="chip-kategori"></div>
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+      <div class="chip-row" id="chip-ukuran"></div>
+      <select class="sort-select" id="select-sort">
+        <option value="terbaru">Terbaru</option>
+        <option value="harga-rendah">Harga terendah</option>
+        <option value="harga-tinggi">Harga tertinggi</option>
+      </select>
+    </div>
+  </div>
+
+  <section class="grid-section">
+    <div class="product-grid" id="product-grid"></div>
+  </section>
+
+  <section class="size-section">
+    <h2>Panduan ukuran</h2>
+    <p>Bingung pilih ukuran? Cek tabel ukuran lengkap sebelum memesan.</p>
+    <button class="btn-outline" id="btn-open-size-guide">Lihat panduan ukuran</button>
+  </section>
+
+  <footer>
+    Dibuat oleh <strong id="footer-brand"></strong> · Template demo dari
+    <a href="#" id="link-katalog-bottom" target="_blank" rel="noopener">katalog template UMKM</a>
+  </footer>
+
+  <!-- ================= Product Detail Modal ================= -->
+  <div class="overlay" id="overlay-product">
+    <div class="modal">
+      <button class="modal-close" id="close-product">&times;</button>
+      <div class="pm-grid" id="pm-content"></div>
+    </div>
+  </div>
+
+  <!-- ================= Cart Drawer ================= -->
+  <div class="overlay drawer-overlay" id="overlay-cart">
+    <div class="drawer">
+      <button class="modal-close" id="close-cart" style="position:static;align-self:flex-end;margin-bottom:.5rem;">&times;</button>
+      <h2>Keranjang Belanja</h2>
+      <div id="cart-body"></div>
+    </div>
+  </div>
+
+  <!-- ================= Checkout Modal ================= -->
+  <div class="overlay" id="overlay-checkout">
+    <div class="modal">
+      <button class="modal-close" id="close-checkout">&times;</button>
+      <h2 style="font-size:1.2rem;margin-bottom:1rem;">Selesaikan Pesanan</h2>
+
+      <div class="form-group">
+        <label for="input-nama">Nama<span style="color:var(--danger)">*</span></label>
+        <input type="text" id="input-nama" placeholder="Nama lengkap">
+        <div class="field-error" id="err-nama">Nama wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-wa">Nomor WhatsApp<span style="color:var(--danger)">*</span></label>
+        <input type="text" id="input-wa" placeholder="08xxxxxxxxxx">
+        <div class="field-error" id="err-wa">Nomor WhatsApp wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-alamat">Alamat lengkap<span style="color:var(--danger)">*</span></label>
+        <textarea id="input-alamat" rows="3" placeholder="Alamat pengiriman lengkap"></textarea>
+        <div class="field-error" id="err-alamat">Alamat wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-catatan">Catatan (opsional)</label>
+        <textarea id="input-catatan" rows="2" placeholder="Catatan tambahan untuk pesanan"></textarea>
+      </div>
+
+      <div class="order-summary" id="checkout-summary"></div>
+
+      <p class="label" style="margin-bottom:.5rem;">Preview pesan WhatsApp</p>
+      <div class="chat-preview">
+        <div class="chat-bubble" id="chat-bubble-text"></div>
+      </div>
+
+      <button class="btn-whatsapp" id="btn-send-whatsapp">Kirim pesanan via WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ================= Size Guide Modal ================= -->
+  <div class="overlay" id="overlay-size-guide">
+    <div class="modal" style="max-width:480px;">
+      <button class="modal-close" id="close-size-guide">&times;</button>
+      <h2 style="font-size:1.2rem;">Panduan Ukuran</h2>
+      <table class="size-table">
+        <thead>
+          <tr><th>Ukuran</th><th>Lingkar Dada (cm)</th><th>Lingkar Pinggang (cm)</th><th>Panjang (cm)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>S</td><td>86–90</td><td>66–70</td><td>60</td></tr>
+          <tr><td>M</td><td>91–95</td><td>71–75</td><td>62</td></tr>
+          <tr><td>L</td><td>96–101</td><td>76–81</td><td>64</td></tr>
+          <tr><td>XL</td><td>102–108</td><td>82–88</td><td>66</td></tr>
+        </tbody>
+      </table>
+      <p class="size-table-note">Catatan: ukuran bisa berbeda 1–2 cm antar produk tergantung bahan dan model.</p>
+    </div>
+  </div>
+
+<script>
+// ============================================================
+// KONFIGURASI TOKO — ubah bagian ini saja saat memakai template
+// untuk client baru. Sisa kode di bawah tidak perlu disentuh.
+// ============================================================
+const CONFIG = {
+  namaToko: "Yogata",
+  tagline: "Label fashion harian",
+  nomorWhatsApp: "628895021024",   // nomor dummy, TIDAK aktif
+  instagram: "@yogata_rg",       // dummy
+  urlKatalog: "https://katalog-template-umkm.example.com",
+
+  gratisOngkirMin: 300000,
+  ongkir: {
+    "jogja-kota":  { label: "Yogyakarta & sekitarnya", biaya: 10000 },
+    "jawa":        { label: "Luar Jogja, dalam Jawa",  biaya: 22000 },
+    "luar-jawa":   { label: "Luar Pulau Jawa",         biaya: 45000 }
+  },
+
+  warna: [
+    { kode: "krem",       nama: "Krem",       hex: "#E4DCCB" },
+    { kode: "hitam",      nama: "Hitam",      hex: "#1C1C1C" },
+    { kode: "sage",       nama: "Sage",       hex: "#93A18A" },
+    { kode: "navy",       nama: "Navy",       hex: "#2A3550" },
+    { kode: "terracotta", nama: "Terracotta", hex: "#B4664A" },
+    { kode: "putih",      nama: "Putih",      hex: "#F5F5F2" }
+  ],
+
+  produk: buildProduk()
+};
+
+// ------------------------------------------------------------
+// Helper untuk menyusun objek stok per warna-ukuran secara ringkas.
+// Urutan angka dalam array sesuai urutan ukuran: S, M, L, XL.
+// ------------------------------------------------------------
+function buildStok(perWarna) {
+  const ukuranList = ["S", "M", "L", "XL"];
+  const out = {};
+  Object.keys(perWarna).forEach(kode => {
+    perWarna[kode].forEach((qty, i) => {
+      out[kode + "-" + ukuranList[i]] = qty;
+    });
+  });
+  return out;
+}
+
+function buildProduk() {
+  return [
+    {
+      id: "ats-01",
+      nama: "Blus Katun Lengan Panjang",
+      kategori: "atasan",
+      harga: 165000,
+      deskripsi: "Blus katun dengan potongan longgar dan lengan panjang, nyaman dipakai untuk aktivitas harian maupun ke kantor.",
+      bahan: "Katun rayon, adem dan jatuh",
+      siluet: "kemeja",
+      warna: ["krem", "hitam", "sage"],
+      stok: buildStok({ krem: [4,2,0,3], hitam: [0,5,6,1], sage: [2,0,0,1] })
+    },
+    {
+      id: "ats-02",
+      nama: "Kaos Rib Crop",
+      kategori: "atasan",
+      harga: 98000,
+      deskripsi: "Kaos rib crop dengan bahan yang mengikuti bentuk tubuh, cocok dipadukan dengan celana tinggi pinggang.",
+      bahan: "Rib cotton stretch",
+      siluet: "kaos",
+      warna: ["hitam", "putih", "terracotta", "krem", "sage"],
+      stok: buildStok({ hitam: [6,8,5,3], putih: [4,6,3,2], terracotta: [0,0,0,0], krem: [3,2,0,1], sage: [1,0,0,0] })
+    },
+    {
+      id: "ats-03",
+      nama: "Kemeja Linen Oversize",
+      kategori: "atasan",
+      harga: 179000,
+      deskripsi: "Kemeja linen potongan oversize, ringan dan sejuk untuk cuaca panas, tetap terlihat rapi.",
+      bahan: "Linen premium",
+      siluet: "kemeja",
+      warna: ["putih", "navy"],
+      stok: buildStok({ putih: [1,1,0,0], navy: [0,0,1,0] })
+    },
+    {
+      id: "baw-01",
+      nama: "Celana Kulot Katun",
+      kategori: "bawahan",
+      harga: 145000,
+      deskripsi: "Celana kulot dengan potongan lebar dan nyaman, cocok untuk gaya kasual maupun semi-formal.",
+      bahan: "Katun twill",
+      siluet: "celana",
+      warna: ["krem", "hitam"],
+      stok: buildStok({ krem: [3,4,2,0], hitam: [0,3,4,2] })
+    },
+    {
+      id: "baw-02",
+      nama: "Celana Cargo Straight",
+      kategori: "bawahan",
+      harga: 189000,
+      deskripsi: "Celana cargo potongan straight dengan saku fungsional, tetap terlihat effortless.",
+      bahan: "Cotton twill tebal",
+      siluet: "celana",
+      warna: ["navy", "hitam", "sage"],
+      stok: buildStok({ navy: [2,3,0,1], hitam: [0,0,2,3], sage: [1,0,0,0] })
+    },
+    {
+      id: "baw-03",
+      nama: "Celana Palazzo Linen",
+      kategori: "bawahan",
+      harga: 210000,
+      deskripsi: "Celana palazzo linen dengan siluet lebar mengalir, nyaman untuk cuaca tropis.",
+      bahan: "Linen",
+      siluet: "celana",
+      warna: ["krem", "putih"],
+      stok: buildStok({ krem: [0,0,0,0], putih: [0,0,0,0] })
+    },
+    {
+      id: "drs-01",
+      nama: "Dress Wrap Midi",
+      kategori: "dress",
+      harga: 275000,
+      deskripsi: "Dress wrap midi dengan ikatan pinggang, membentuk siluet feminin untuk berbagai acara.",
+      bahan: "Crepe",
+      siluet: "dress",
+      warna: ["terracotta", "navy", "krem"],
+      stok: buildStok({ terracotta: [2,3,1,0], navy: [0,2,3,1], krem: [1,0,0,0] })
+    },
+    {
+      id: "drs-02",
+      nama: "Dress Tenun A-Line",
+      kategori: "dress",
+      harga: 320000,
+      deskripsi: "Dress A-line dengan aksen kain tenun lokal, perpaduan modern dan budaya.",
+      bahan: "Tenun katun",
+      siluet: "dress",
+      warna: ["sage", "hitam"],
+      stok: buildStok({ sage: [1,0,0,0], hitam: [0,0,1,0] })
+    },
+    {
+      id: "drs-03",
+      nama: "Dress Slip Satin",
+      kategori: "dress",
+      harga: 195000,
+      deskripsi: "Dress slip berbahan satin dengan potongan simpel, mudah dipadukan dengan outer apapun.",
+      bahan: "Satin premium",
+      siluet: "dress",
+      warna: ["hitam", "putih", "terracotta"],
+      stok: buildStok({ hitam: [3,4,2,1], putih: [2,2,1,0], terracotta: [0,1,0,0] })
+    },
+    {
+      id: "out-01",
+      nama: "Outer Kimono Linen",
+      kategori: "outer",
+      harga: 225000,
+      deskripsi: "Outer bergaya kimono berbahan linen, ringan untuk dipakai menutupi tanpa membuat gerah.",
+      bahan: "Linen",
+      siluet: "outer",
+      warna: ["krem", "sage"],
+      stok: buildStok({ krem: [2,3,1,0], sage: [0,1,2,1] })
+    },
+    {
+      id: "out-02",
+      nama: "Cardigan Rib Knit",
+      kategori: "outer",
+      harga: 265000,
+      deskripsi: "Cardigan rajut rib dengan kancing depan, jadi lapisan hangat yang tetap stylish.",
+      bahan: "Rib knit",
+      siluet: "outer",
+      warna: ["navy", "hitam", "putih"],
+      stok: buildStok({ navy: [3,2,1,0], hitam: [0,3,2,1], putih: [1,0,0,0] })
+    },
+    {
+      id: "out-03",
+      nama: "Jaket Denim Oversize",
+      kategori: "outer",
+      harga: 380000,
+      deskripsi: "Jaket denim potongan oversize, item statement yang tahan lama dan mudah dipadukan.",
+      bahan: "Denim 12oz",
+      siluet: "outer",
+      warna: ["hitam", "navy"],
+      stok: buildStok({ hitam: [1,1,0,0], navy: [0,0,1,1] })
+    }
+  ];
+}
+
+const SIZES = ["S", "M", "L", "XL"];
+
+// ============================================================
+// STATE (di memori saja, reset saat reload — tidak ada localStorage)
+// ============================================================
+const state = {
+  filterKategori: "semua",
+  filterUkuran: null,
+  search: "",
+  sort: "terbaru",
+  cardWarna: {},        // { productId: warnaKode } warna aktif per kartu di grid
+  cart: [],              // { productId, warna, ukuran, qty }
+  wilayah: "jogja-kota"
+};
+
+const modalState = {
+  product: null,
+  warna: null,
+  ukuran: null,
+  qty: 1
+};
+
+// ============================================================
+// UTIL
+// ============================================================
+function formatRupiah(n) {
+  return "Rp " + n.toLocaleString("id-ID");
+}
+
+function getWarna(kode) {
+  return CONFIG.warna.find(w => w.kode === kode);
+}
+
+function getProduct(id) {
+  return CONFIG.produk.find(p => p.id === id);
+}
+
+function stokFor(product, warna, ukuran) {
+  return product.stok[warna + "-" + ukuran] || 0;
+}
+
+function totalStok(product) {
+  return Object.values(product.stok).reduce((a, b) => a + b, 0);
+}
+
+function statusLabel(product) {
+  const total = totalStok(product);
+  if (total === 0) return "Habis";
+  if (total < 5) return "Stok tipis";
+  return null;
+}
+
+function ukuranTersediaUntukWarna(product, warna) {
+  return SIZES.filter(u => stokFor(product, warna, u) > 0);
+}
+
+function contrastColor(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.6 ? "#14161A" : "#FFFFFF";
+}
+
+// ============================================================
+// SILUET SVG (line art, tanpa foto produk)
+// ============================================================
+function silhouettePaths(type) {
+  const common = 'fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+  switch (type) {
+    case "kaos":
+      return `<path ${common} d="M55 20 C55 20 42 18 32 22 L12 45 C9 48 9 52 12 55 L29 66 C32 68 36 67 38 64 L45 56 L45 155
+        C45 158 48 160 51 160 L109 160 C112 160 115 158 115 155 L115 56 L122 64 C124 67 128 68 131 66 L148 55
+        C151 52 151 48 148 45 L128 22 C118 18 105 20 105 20 C104 34 93 44 80 44 C67 44 56 34 55 20 Z"/>`;
+    case "kemeja":
+      return `<path ${common} d="M50 18 L34 18 L15 27 L5 46 C3 50 4 54 7 56 L24 66 C27 68 31 67 33 64 L40 56 L40 160 L120 160
+        L120 56 L127 64 C129 67 133 68 136 66 L153 56 C156 54 157 50 155 46 L145 27 L126 18 L110 18 L94 32 L80 23 L66 32 Z"/>
+        <path ${common} d="M80 40 L80 156"/>
+        <circle cx="80" cy="65" r="2.6" fill="currentColor" stroke="none"/>
+        <circle cx="80" cy="90" r="2.6" fill="currentColor" stroke="none"/>
+        <circle cx="80" cy="115" r="2.6" fill="currentColor" stroke="none"/>
+        <circle cx="80" cy="140" r="2.6" fill="currentColor" stroke="none"/>`;
+    case "dress":
+      return `<path ${common} d="M66 14 C66 14 72 10 80 10 C88 10 94 14 94 14 L90 36 C90 36 102 48 110 58
+        C113 62 113 68 111 73 L140 188 L20 188 L49 73 C47 68 47 62 50 58 C58 48 70 36 70 36 Z"/>
+        <path ${common} d="M66 14 C66 24 94 24 94 14"/>`;
+    case "outer":
+      return `<path ${common} d="M32 22 C22 22 16 27 12 33 L4 47 C2 50 3 54 6 56 L23 67 C26 69 30 68 32 65 L39 57 L39 158
+        L73 158 L73 30 L59 20 C55 18 43 18 32 22 Z"/>
+        <path ${common} d="M128 22 C138 22 144 27 148 33 L156 47 C158 50 157 54 154 56 L137 67 C134 69 130 68 128 65
+        L121 57 L121 158 L87 158 L87 30 L101 20 C105 18 117 18 128 22 Z"/>
+        <path ${common} d="M32 22 C42 30 52 34 62 30"/>
+        <path ${common} d="M128 22 C118 30 108 34 98 30"/>`;
+    case "celana":
+      return `<path ${common} d="M44 14 L116 14 L122 188 L96 188 L80 92 L64 188 L38 188 Z"/>`;
+    default:
+      return "";
+  }
+}
+
+function previewBlockHTML(product, warnaKode, extraClass, statusText) {
+  const warna = getWarna(warnaKode) || getWarna(product.warna[0]);
+  const contrast = contrastColor(warna.hex);
+  const statusHTML = statusText
+    ? `<span class="status-tag ${statusText === "Habis" ? "habis" : ""}">${statusText}</span>`
+    : "";
+  return `<div class="preview-block ${extraClass || ""}" style="background:${warna.hex}">
+    <svg class="preview-silhouette" viewBox="0 0 160 200" style="color:${contrast}">
+      ${silhouettePaths(product.siluet)}
+    </svg>
+    ${statusHTML}
+  </div>`;
+}
+
+// ============================================================
+// RENDER: header, hero, footer, static text
+// ============================================================
+function renderStatic() {
+  document.getElementById("brand-mark").textContent = CONFIG.namaToko;
+  document.getElementById("hero-tagline-label").textContent = CONFIG.tagline;
+  document.getElementById("footer-brand").textContent = CONFIG.namaToko;
+  const katalogLinks = [
+    document.getElementById("link-katalog-top"),
+    document.getElementById("link-katalog-bottom")
+  ];
+  katalogLinks.forEach(a => a.href = CONFIG.urlKatalog);
+}
+
+// ============================================================
+// FILTER BAR
+// ============================================================
+const KATEGORI_LABEL = { semua: "Semua", atasan: "Atasan", bawahan: "Bawahan", dress: "Dress", outer: "Outer" };
+
+function renderChipKategori() {
+  const wrap = document.getElementById("chip-kategori");
+  wrap.innerHTML = Object.keys(KATEGORI_LABEL).map(k => `
+    <button class="chip ${state.filterKategori === k ? "active" : ""}" data-kategori="${k}">${KATEGORI_LABEL[k]}</button>
+  `).join("");
+  wrap.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.filterKategori = btn.dataset.kategori;
+      renderChipKategori();
+      renderGrid();
+    });
+  });
+}
+
+function renderChipUkuran() {
+  const wrap = document.getElementById("chip-ukuran");
+  wrap.innerHTML = SIZES.map(u => `
+    <button class="chip small ${state.filterUkuran === u ? "active" : ""}" data-ukuran="${u}">${u}</button>
+  `).join("");
+  wrap.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.filterUkuran = state.filterUkuran === btn.dataset.ukuran ? null : btn.dataset.ukuran;
+      renderChipUkuran();
+      renderGrid();
+    });
+  });
+}
+
+document.getElementById("select-sort").addEventListener("change", (e) => {
+  state.sort = e.target.value;
+  renderGrid();
+});
+
+const inputSearch = document.getElementById("input-search");
+const btnClearSearch = document.getElementById("btn-clear-search");
+
+inputSearch.addEventListener("input", (e) => {
+  state.search = e.target.value.trim().toLowerCase();
+  btnClearSearch.style.display = state.search ? "flex" : "none";
+  renderGrid();
+});
+
+btnClearSearch.addEventListener("click", () => {
+  state.search = "";
+  inputSearch.value = "";
+  btnClearSearch.style.display = "none";
+  renderGrid();
+  inputSearch.focus();
+});
+
+function getFilteredProducts() {
+  let list = CONFIG.produk.slice();
+  if (state.filterKategori !== "semua") {
+    list = list.filter(p => p.kategori === state.filterKategori);
+  }
+  if (state.filterUkuran) {
+    list = list.filter(p => SIZES.includes(state.filterUkuran) &&
+      Object.keys(p.stok).some(key => key.endsWith("-" + state.filterUkuran) && p.stok[key] > 0));
+  }
+  if (state.search) {
+    list = list.filter(p =>
+      p.nama.toLowerCase().includes(state.search) ||
+      p.deskripsi.toLowerCase().includes(state.search) ||
+      KATEGORI_LABEL[p.kategori].toLowerCase().includes(state.search)
+    );
+  }
+  if (state.sort === "harga-rendah") list.sort((a, b) => a.harga - b.harga);
+  else if (state.sort === "harga-tinggi") list.sort((a, b) => b.harga - a.harga);
+  return list;
+}
+
+function resetFilters() {
+  state.filterKategori = "semua";
+  state.filterUkuran = null;
+  state.search = "";
+  state.sort = "terbaru";
+  inputSearch.value = "";
+  btnClearSearch.style.display = "none";
+  document.getElementById("select-sort").value = "terbaru";
+  renderChipKategori();
+  renderChipUkuran();
+  renderGrid();
+}
+
+// ============================================================
+// GRID PRODUK
+// ============================================================
+function renderGrid() {
+  const grid = document.getElementById("product-grid");
+  const list = getFilteredProducts();
+
+  if (list.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <p>Tidak ada produk yang cocok dengan filter ini.</p>
+        <button id="btn-reset-filter">Reset filter</button>
+      </div>`;
+    document.getElementById("btn-reset-filter").addEventListener("click", resetFilters);
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    if (!state.cardWarna[p.id]) state.cardWarna[p.id] = p.warna[0];
+    const activeWarna = state.cardWarna[p.id];
+    const status = statusLabel(p);
+    const visibleWarna = p.warna.slice(0, 4);
+    const extraCount = p.warna.length - visibleWarna.length;
+
+    return `
+      <div class="card" data-id="${p.id}">
+        ${previewBlockHTML(p, activeWarna, "card-preview", status)}
+        <div class="card-body">
+          <div class="card-name">${p.nama}</div>
+          <div class="card-price">${formatRupiah(p.harga)}</div>
+          <div class="swatch-row">
+            ${visibleWarna.map(wk => {
+              const w = getWarna(wk);
+              return `<span class="swatch ${wk === activeWarna ? "active" : ""}" style="background:${w.hex}" data-warna="${wk}" data-product="${p.id}" title="${w.nama}"></span>`;
+            }).join("")}
+            ${extraCount > 0 ? `<span class="swatch-more">+${extraCount}</span>` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // Klik kartu -> buka modal, kecuali klik swatch
+  grid.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.classList.contains("swatch")) return;
+      openProductModal(card.dataset.id);
+    });
+  });
+
+  // Klik swatch -> ganti warna preview di kartu itu saja
+  grid.querySelectorAll(".swatch").forEach(sw => {
+    sw.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = sw.dataset.product;
+      state.cardWarna[id] = sw.dataset.warna;
+      renderGrid();
+    });
+  });
+}
+
+// ============================================================
+// MODAL DETAIL PRODUK
+// ============================================================
+const overlayProduct = document.getElementById("overlay-product");
+
+function openProductModal(id) {
+  const product = getProduct(id);
+  modalState.product = product;
+  modalState.warna = product.warna[0];
+  modalState.ukuran = null;
+  modalState.qty = 1;
+  renderProductModal();
+  overlayProduct.classList.add("open");
+}
+
+function closeProductModal() {
+  overlayProduct.classList.remove("open");
+}
+
+document.getElementById("close-product").addEventListener("click", closeProductModal);
+overlayProduct.addEventListener("click", (e) => { if (e.target === overlayProduct) closeProductModal(); });
+
+function renderProductModal() {
+  const p = modalState.product;
+  if (!p) return;
+  const stokAktif = modalState.ukuran ? stokFor(p, modalState.warna, modalState.ukuran) : 0;
+  const bisaTambah = modalState.warna && modalState.ukuran && stokAktif > 0;
+
+  document.getElementById("pm-content").innerHTML = `
+    <div class="pm-preview">${previewBlockHTML(p, modalState.warna)}</div>
+    <div class="pm-info">
+      <h3 class="pm-name">${p.nama}</h3>
+      <div class="pm-price">${formatRupiah(p.harga)}</div>
+      <p class="pm-desc">${p.deskripsi}</p>
+      <p class="pm-bahan">Bahan: ${p.bahan}</p>
+
+      <span class="label pm-section-label">Warna: ${getWarna(modalState.warna).nama}</span>
+      <div class="swatch-row" id="pm-warna-row">
+        ${p.warna.map(wk => {
+          const w = getWarna(wk);
+          return `<span class="swatch-lg ${wk === modalState.warna ? "active" : ""}" style="background:${w.hex};display:inline-block;cursor:pointer;" data-warna="${wk}" title="${w.nama}"></span>`;
+        }).join("")}
+      </div>
+
+      <span class="label pm-section-label">Ukuran</span>
+      <div class="size-chip-row" id="pm-ukuran-row">
+        ${SIZES.map(u => {
+          const tersedia = stokFor(p, modalState.warna, u) > 0;
+          const active = modalState.ukuran === u;
+          return `<button class="size-chip ${active ? "active" : ""} ${!tersedia ? "out" : ""}" data-ukuran="${u}" ${!tersedia ? "disabled" : ""}>${u}</button>`;
+        }).join("")}
+      </div>
+
+      <div class="stock-note" id="pm-stock-note">
+        ${modalState.ukuran ? `Sisa ${stokAktif} potong untuk kombinasi ini.` : "Pilih warna dan ukuran untuk melihat stok."}
+      </div>
+
+      <div class="qty-row">
+        <button class="qty-btn" id="pm-qty-minus" ${!bisaTambah ? "disabled" : ""}>−</button>
+        <span id="pm-qty-value">${modalState.qty}</span>
+        <button class="qty-btn" id="pm-qty-plus" ${!bisaTambah || modalState.qty >= stokAktif ? "disabled" : ""}>+</button>
+      </div>
+
+      <button class="size-guide-link" id="pm-open-size-guide">Panduan ukuran</button>
+
+      <button class="btn-add" id="pm-add-cart" ${!bisaTambah ? "disabled" : ""}>
+        ${bisaTambah ? "Tambah ke keranjang" : (modalState.warna && !modalState.ukuran ? "Pilih ukuran dulu" : "Stok tidak tersedia")}
+      </button>
+    </div>
+  `;
+
+  document.querySelectorAll("#pm-warna-row .swatch-lg").forEach(el => {
+    el.addEventListener("click", () => {
+      modalState.warna = el.dataset.warna;
+      // Edge case: kalau ukuran yang sudah dipilih habis di warna baru, reset pilihan ukuran
+      if (modalState.ukuran && stokFor(p, modalState.warna, modalState.ukuran) === 0) {
+        modalState.ukuran = null;
+      }
+      modalState.qty = 1;
+      renderProductModal();
+    });
+  });
+
+  document.querySelectorAll("#pm-ukuran-row .size-chip:not(.out)").forEach(el => {
+    el.addEventListener("click", () => {
+      modalState.ukuran = el.dataset.ukuran;
+      modalState.qty = 1;
+      renderProductModal();
+    });
+  });
+
+  const minus = document.getElementById("pm-qty-minus");
+  const plus = document.getElementById("pm-qty-plus");
+  if (minus) minus.addEventListener("click", () => { modalState.qty = Math.max(1, modalState.qty - 1); renderProductModal(); });
+  if (plus) plus.addEventListener("click", () => {
+    const max = stokFor(p, modalState.warna, modalState.ukuran);
+    modalState.qty = Math.min(max, modalState.qty + 1);
+    renderProductModal();
+  });
+
+  document.getElementById("pm-open-size-guide").addEventListener("click", openSizeGuide);
+
+  const addBtn = document.getElementById("pm-add-cart");
+  if (addBtn && bisaTambah) {
+    addBtn.addEventListener("click", addToCartFromModal);
+  }
+}
+
+function addToCartFromModal() {
+  const p = modalState.product;
+  const max = stokFor(p, modalState.warna, modalState.ukuran);
+  const existing = state.cart.find(i => i.productId === p.id && i.warna === modalState.warna && i.ukuran === modalState.ukuran);
+  if (existing) {
+    existing.qty = Math.min(max, existing.qty + modalState.qty);
+  } else {
+    state.cart.push({ productId: p.id, warna: modalState.warna, ukuran: modalState.ukuran, qty: modalState.qty });
+  }
+  updateCartBadge();
+  closeProductModal();
+  openCart();
+}
+
+// ============================================================
+// CART DRAWER
+// ============================================================
+const overlayCart = document.getElementById("overlay-cart");
+
+function updateCartBadge() {
+  const badge = document.getElementById("cart-badge");
+  const totalQty = state.cart.reduce((a, i) => a + i.qty, 0);
+  if (totalQty > 0) {
+    badge.style.display = "flex";
+    badge.textContent = totalQty;
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+function openCart() {
+  renderCart();
+  overlayCart.classList.add("open");
+}
+function closeCart() { overlayCart.classList.remove("open"); }
+
+document.getElementById("btn-open-cart").addEventListener("click", openCart);
+document.getElementById("close-cart").addEventListener("click", closeCart);
+overlayCart.addEventListener("click", (e) => { if (e.target === overlayCart) closeCart(); });
+
+function calcSubtotal() {
+  return state.cart.reduce((sum, item) => {
+    const p = getProduct(item.productId);
+    return sum + p.harga * item.qty;
+  }, 0);
+}
+
+function calcOngkirBiaya(subtotal) {
+  const raw = CONFIG.ongkir[state.wilayah].biaya;
+  return subtotal >= CONFIG.gratisOngkirMin ? 0 : raw;
+}
+
+function renderCart() {
+  const body = document.getElementById("cart-body");
+
+  if (state.cart.length === 0) {
+    body.innerHTML = `
+      <div class="cart-empty">
+        <p>Keranjang kamu masih kosong.</p>
+        <button id="cart-empty-shop">Mulai belanja</button>
+      </div>`;
+    document.getElementById("cart-empty-shop").addEventListener("click", closeCart);
+    return;
+  }
+
+  const subtotal = calcSubtotal();
+  const ongkirRaw = CONFIG.ongkir[state.wilayah].biaya;
+  const ongkir = calcOngkirBiaya(subtotal);
+  const gratis = subtotal >= CONFIG.gratisOngkirMin;
+  const percent = Math.min(100, Math.round((subtotal / CONFIG.gratisOngkirMin) * 100));
+  const total = subtotal + ongkir;
+
+  const itemsHTML = state.cart.map((item, idx) => {
+    const p = getProduct(item.productId);
+    const w = getWarna(item.warna);
+    const maxStok = stokFor(p, item.warna, item.ukuran);
+    return `
+      <div class="cart-item">
+        ${previewBlockHTML(p, item.warna)}
+        <div class="cart-item-info">
+          <div class="cart-item-name">${p.nama}</div>
+          <div class="cart-item-variant">${w.nama} / ${item.ukuran}</div>
+          <div class="cart-item-price">${formatRupiah(p.harga)}</div>
+          <div class="cart-item-controls">
+            <button class="qty-btn" data-action="minus" data-idx="${idx}">−</button>
+            <span>${item.qty}</span>
+            <button class="qty-btn" data-action="plus" data-idx="${idx}" ${item.qty >= maxStok ? "disabled" : ""}>+</button>
+            <button class="cart-remove" data-action="remove" data-idx="${idx}">Hapus</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const wilayahHTML = Object.keys(CONFIG.ongkir).map(key => {
+    const w = CONFIG.ongkir[key];
+    return `
+      <div class="wilayah-option ${state.wilayah === key ? "active" : ""}" data-wilayah="${key}">
+        <input type="radio" name="wilayah" ${state.wilayah === key ? "checked" : ""} style="pointer-events:none;">
+        <span>${w.label} — ${formatRupiah(w.biaya)}</span>
+      </div>
+    `;
+  }).join("");
+
+  body.innerHTML = `
+    <div>${itemsHTML}</div>
+
+    <div style="margin-top:1rem;">
+      <div class="ongkir-progress"><div class="ongkir-progress-fill" style="width:${percent}%"></div></div>
+      <div class="ongkir-note">
+        ${gratis ? "Ongkir gratis untuk pesananmu! 🎉" : `Belanja ${formatRupiah(CONFIG.gratisOngkirMin - subtotal)} lagi untuk gratis ongkir.`}
+      </div>
+    </div>
+
+    <span class="label" style="margin-bottom:.4rem;display:block;">Wilayah pengiriman</span>
+    <div class="wilayah-row" id="wilayah-row">${wilayahHTML}</div>
+
+    <div class="summary-row"><span>Subtotal</span><span>${formatRupiah(subtotal)}</span></div>
+    <div class="summary-row">
+      <span>Ongkir</span>
+      <span>${gratis ? `<span class="strike">${formatRupiah(ongkirRaw)}</span>Gratis` : formatRupiah(ongkir)}</span>
+    </div>
+    <div class="summary-row total"><span>Total</span><span>${formatRupiah(total)}</span></div>
+
+    <button class="btn-primary" id="btn-lanjut-pesan">Lanjut ke pemesanan</button>
+  `;
+
+  body.querySelectorAll('[data-action="minus"]').forEach(btn => {
+    btn.addEventListener("click", () => { changeCartQty(Number(btn.dataset.idx), -1); });
+  });
+  body.querySelectorAll('[data-action="plus"]').forEach(btn => {
+    btn.addEventListener("click", () => { changeCartQty(Number(btn.dataset.idx), 1); });
+  });
+  body.querySelectorAll('[data-action="remove"]').forEach(btn => {
+    btn.addEventListener("click", () => { state.cart.splice(Number(btn.dataset.idx), 1); updateCartBadge(); renderCart(); });
+  });
+  body.querySelectorAll(".wilayah-option").forEach(el => {
+    el.addEventListener("click", () => { state.wilayah = el.dataset.wilayah; renderCart(); });
+  });
+  document.getElementById("btn-lanjut-pesan").addEventListener("click", openCheckout);
+}
+
+function changeCartQty(idx, delta) {
+  const item = state.cart[idx];
+  const p = getProduct(item.productId);
+  const max = stokFor(p, item.warna, item.ukuran);
+  const next = item.qty + delta;
+  if (next < 1) { state.cart.splice(idx, 1); }
+  else if (next <= max) { item.qty = next; }
+  updateCartBadge();
+  renderCart();
+}
+
+// ============================================================
+// CHECKOUT MODAL
+// ============================================================
+const overlayCheckout = document.getElementById("overlay-checkout");
+
+function openCheckout() {
+  if (state.cart.length === 0) return;
+  closeCart();
+  renderCheckoutSummary();
+  updateChatPreview();
+  overlayCheckout.classList.add("open");
+}
+function closeCheckout() { overlayCheckout.classList.remove("open"); }
+
+document.getElementById("close-checkout").addEventListener("click", closeCheckout);
+overlayCheckout.addEventListener("click", (e) => { if (e.target === overlayCheckout) closeCheckout(); });
+
+function renderCheckoutSummary() {
+  const subtotal = calcSubtotal();
+  const ongkir = calcOngkirBiaya(subtotal);
+  const total = subtotal + ongkir;
+  document.getElementById("checkout-summary").innerHTML = `
+    <div><span>${state.cart.reduce((a, i) => a + i.qty, 0)} item</span><span>${formatRupiah(subtotal)}</span></div>
+    <div><span>Ongkir (${CONFIG.ongkir[state.wilayah].label})</span><span>${ongkir === 0 ? "Gratis" : formatRupiah(ongkir)}</span></div>
+    <div style="font-weight:700;"><span>Total</span><span>${formatRupiah(total)}</span></div>
+  `;
+}
+
+function buildWhatsAppMessage() {
+  const nama = document.getElementById("input-nama").value.trim();
+  const wa = document.getElementById("input-wa").value.trim();
+  const alamat = document.getElementById("input-alamat").value.trim();
+  const catatan = document.getElementById("input-catatan").value.trim();
+
+  const subtotal = calcSubtotal();
+  const ongkirRaw = CONFIG.ongkir[state.wilayah].biaya;
+  const ongkir = calcOngkirBiaya(subtotal);
+  const gratis = subtotal >= CONFIG.gratisOngkirMin;
+  const total = subtotal + ongkir;
+
+  const lines = state.cart.map(item => {
+    const p = getProduct(item.productId);
+    const w = getWarna(item.warna);
+    const sub = p.harga * item.qty;
+    return `- ${p.nama} (${w.nama}/${item.ukuran}) x${item.qty} = ${formatRupiah(sub)}`;
+  });
+
+  let msg = `Halo ${CONFIG.namaToko}, saya ingin pesan:\n\n`;
+  msg += lines.join("\n") + "\n\n";
+  msg += `Subtotal: ${formatRupiah(subtotal)}\n`;
+  msg += `Ongkir (${CONFIG.ongkir[state.wilayah].label}): ${gratis ? "Gratis" : formatRupiah(ongkirRaw)}\n`;
+  msg += `Total: ${formatRupiah(total)}\n\n`;
+  msg += `Data Pemesan:\n`;
+  msg += `Nama: ${nama || "-"}\n`;
+  msg += `No. WhatsApp: ${wa || "-"}\n`;
+  msg += `Alamat: ${alamat || "-"}\n`;
+  if (catatan) msg += `Catatan: ${catatan}\n`;
+
+  return msg;
+}
+
+function updateChatPreview() {
+  document.getElementById("chat-bubble-text").textContent = buildWhatsAppMessage();
+}
+
+["input-nama", "input-wa", "input-alamat", "input-catatan"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updateChatPreview);
+});
+
+function validateCheckoutForm() {
+  let valid = true;
+  const fields = [
+    { input: "input-nama", error: "err-nama" },
+    { input: "input-wa", error: "err-wa" },
+    { input: "input-alamat", error: "err-alamat" }
+  ];
+  fields.forEach(f => {
+    const input = document.getElementById(f.input);
+    const error = document.getElementById(f.error);
+    if (input.value.trim() === "") {
+      input.classList.add("error");
+      error.classList.add("show");
+      valid = false;
+    } else {
+      input.classList.remove("error");
+      error.classList.remove("show");
+    }
+  });
+  return valid;
+}
+
+document.getElementById("btn-send-whatsapp").addEventListener("click", () => {
+  if (!validateCheckoutForm()) return;
+  const msg = buildWhatsAppMessage();
+  const url = `https://wa.me/${CONFIG.nomorWhatsApp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank");
+});
+
+// ============================================================
+// SIZE GUIDE MODAL
+// ============================================================
+const overlaySizeGuide = document.getElementById("overlay-size-guide");
+function openSizeGuide() { overlaySizeGuide.classList.add("open"); }
+function closeSizeGuide() { overlaySizeGuide.classList.remove("open"); }
+document.getElementById("btn-open-size-guide").addEventListener("click", openSizeGuide);
+document.getElementById("close-size-guide").addEventListener("click", closeSizeGuide);
+overlaySizeGuide.addEventListener("click", (e) => { if (e.target === overlaySizeGuide) closeSizeGuide(); });
+
+// ============================================================
+// NAV LINKS (filter kategori dari header)
+// ============================================================
+document.querySelectorAll(".nav-links button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    state.filterKategori = btn.dataset.kategori;
+    renderChipKategori();
+    renderGrid();
+    window.scrollTo({ top: document.querySelector(".filter-bar").offsetTop - 80, behavior: "smooth" });
+  });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderStatic();
+renderChipKategori();
+renderChipUkuran();
+renderGrid();
+updateCartBadge();
+</script>
+</body>
+</html>
