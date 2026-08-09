@@ -4,84 +4,320 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Katalog Template UMKM</title>
-<meta name="description" content="Daftar template website statis untuk UMKM.">
+<meta name="description" content="Kumpulan desain website UMKM — katalog produk, keranjang, checkout tanpa akun — yang bisa dilihat langsung demonya.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%90%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500;1,600&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#FAF3EC;
-    --ink:#3A241C;
-    --primary:#6B3F2E;
+    --bg:#F5F3EC;
+    --ink:#16324F;
+    --ink-hover:#0F2338;
+    --accent:#E8622C;
+    --accent-hover:#C74E1D;
+    --secondary:#2F7A6D;
+    --text:#1D1B18;
     --card-bg:#FFFFFF;
-    --border:#E7DACB;
   }
   *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
   body{
-    margin:0;
-    font-family:'Segoe UI', system-ui, sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    padding:2rem 1rem;
+    background-color:var(--bg);
+    background-image:
+      linear-gradient(to right, rgba(22,50,79,.14) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(22,50,79,.14) 1px, transparent 1px);
+    background-size:36px 36px;
+    color:var(--text);
+    font-family:'Work Sans',ui-sans-serif,system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
   }
-  .wrap{
-    max-width:640px;
+  h1,h2{font-family:'Fraunces',ui-serif,Georgia,serif;margin:0;}
+  h1 em,h2 em{font-style:italic;color:var(--accent);}
+  a{color:inherit;}
+  .mono{
+    font-family:'Space Mono',ui-monospace,SFMono-Regular,monospace;
+  }
+  .eyebrow{
+    font-family:'Space Mono',ui-monospace,monospace;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.2em;
+    color:var(--secondary);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    border-bottom:1px solid rgba(22,50,79,.1);
+  }
+  .header-inner{
+    max-width:1080px;
     margin:0 auto;
+    padding:3rem 1.25rem;
   }
-  h1{
-    font-size:1.5rem;
-    margin-bottom:0.25rem;
-  }
-  p.sub{
-    color:#6b5a4f;
-    margin-top:0;
-    margin-bottom:2rem;
-  }
-  ul{
-    list-style:none;
-    padding:0;
-    margin:0;
-    display:grid;
-    gap:0.75rem;
-  }
-  li a{
-    display:block;
-    background:var(--card-bg);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:1rem 1.25rem;
-    text-decoration:none;
+  header h1{
+    margin-top:.75rem;
+    font-size:clamp(2rem,5vw,3rem);
+    line-height:1.1;
     color:var(--ink);
-    font-weight:600;
-    transition:border-color .15s ease;
   }
-  li a:hover{
-    border-color:var(--primary);
+  header p.sub{
+    margin-top:.75rem;
+    max-width:38rem;
+    color:rgba(29,27,24,.7);
   }
-  li a span{
+
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:2.5rem 1.25rem 3rem;
+  }
+
+  /* ---------- Filter chips ---------- */
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem;
+    margin-bottom:2.5rem;
+  }
+  .chip{
+    font-family:'Space Mono',ui-monospace,monospace;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    padding:.4rem 1rem;
+    border-radius:999px;
+    border:1px solid rgba(47,122,109,.4);
+    background:transparent;
+    color:var(--secondary);
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .chip:hover{border-color:var(--secondary);background:rgba(47,122,109,.05);}
+  .chip.active{
+    border-color:var(--secondary);
+    background:var(--secondary);
+    color:#fff;
+  }
+
+  /* ---------- Grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1.5rem;
+  }
+  @media(min-width:640px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  @media(min-width:960px){ .grid{grid-template-columns:repeat(3,1fr);} }
+
+  .card{
     display:block;
-    font-weight:400;
-    font-size:0.875rem;
-    color:#6b5a4f;
-    margin-top:0.25rem;
+    overflow:hidden;
+    border-radius:10px;
+    border:1px solid rgba(22,50,79,.15);
+    background:var(--card-bg);
+    text-decoration:none;
+    box-shadow:0 1px 2px rgba(22,50,79,.06);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
+  .card:hover{
+    transform:translateY(-2px);
+    border-color:rgba(22,50,79,.3);
+    box-shadow:0 8px 20px rgba(22,50,79,.12);
+  }
+  .card-mockup-bar{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    border-bottom:1px solid rgba(22,50,79,.1);
+    background:var(--bg);
+    padding:.5rem .75rem;
+  }
+  .card-mockup-bar span{
+    width:8px;height:8px;border-radius:999px;background:rgba(22,50,79,.25);
+  }
+  .card-preview{
+    position:relative;
+    aspect-ratio:16/9;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .card-preview h3{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:#fff;
+    font-size:1.5rem;
+    text-align:center;
+    padding:0 1rem;
+    text-shadow:0 1px 3px rgba(0,0,0,.15);
+  }
+  .card-tag-contoh{
+    position:absolute;
+    top:.5rem;right:.5rem;
+    background:rgba(22,50,79,.8);
+    color:#fff;
+    font-family:'Space Mono',monospace;
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    padding:.15rem .4rem;
+    border-radius:4px;
+  }
+  .card-body{padding:1rem 1.25rem 1.25rem;}
+  .card-kategori{
+    display:inline-block;
+    font-family:'Space Mono',monospace;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--secondary);
+    background:rgba(47,122,109,.1);
+    padding:.15rem .6rem;
+    border-radius:999px;
+  }
+  .card-body h2{
+    margin-top:.5rem;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  .card-body p{
+    margin-top:.35rem;
+    font-size:.88rem;
+    color:rgba(29,27,24,.7);
+  }
+
+  .empty-state{
+    grid-column:1/-1;
+    text-align:center;
+    padding:3rem 1rem;
+    color:rgba(29,27,24,.5);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    margin-top:3.5rem;
+    border-radius:10px;
+    background:var(--ink);
+    color:#fff;
+    text-align:center;
+    padding:2.75rem 1.5rem;
+  }
+  .cta .eyebrow{color:rgba(255,255,255,.6);}
+  .cta h2{
+    margin-top:.5rem;
+    font-size:1.6rem;
+    color:#fff;
+  }
+  .cta p{
+    margin:.6rem auto 0;
+    max-width:28rem;
+    color:rgba(255,255,255,.7);
+    font-size:.92rem;
+  }
+  .cta a.btn{
+    display:inline-flex;
+    align-items:center;
+    margin-top:1.5rem;
+    background:var(--accent);
+    color:#fff;
+    text-decoration:none;
+    font-size:.88rem;
+    font-weight:500;
+    padding:.65rem 1.5rem;
+    border-radius:6px;
+    transition:background .15s ease;
+  }
+  .cta a.btn:hover{background:var(--accent-hover);}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Katalog Template UMKM</h1>
-    <p class="sub">Daftar template website statis yang tersedia.</p>
-    <ul>
-      <li>
-        <a href="/template-roti/">
-          Roti Hangat
-          <span>Demo template pemesanan roti online</span>
-        </a>
-      </li>
-      <li>
-        <a href="/template-fashion/">
-          Yogata
-          <span>Demo template toko fashion dengan varian warna & ukuran</span>
-        </a>
-      </li>
-    </ul>
-  </div>
+
+  <header>
+    <div class="header-inner">
+      <p class="eyebrow">Katalog &mdash; Contoh Website UMKM</p>
+      <h1>Kumpulan <em>desain website</em><br>untuk usaha Anda</h1>
+      <p class="sub">Kumpulan desain website UMKM untuk katalog produk, keranjang, dan checkout tanpa akun yang bisa Anda lihat langsung demonya sebelum memesan.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="chip-row" id="chip-kategori">
+      <button class="chip active" data-kategori="semua">Semua</button>
+      <button class="chip" data-kategori="kuliner">Kuliner</button>
+      <button class="chip" data-kategori="fashion">Fashion</button>
+    </div>
+
+    <div class="grid" id="template-grid">
+      <a class="card" data-kategori="kuliner" href="/template-roti/">
+        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+        <div class="card-preview" style="background:linear-gradient(135deg,#6B3F2E,#C98A3B);">
+          <h3>Roti Hangat</h3>
+          <span class="card-tag-contoh">contoh</span>
+        </div>
+        <div class="card-body">
+          <span class="card-kategori">Kuliner</span>
+          <h2>Roti Hangat</h2>
+          <p>Demo template pemesanan roti online untuk UMKM, lengkap dengan alur checkout sederhana.</p>
+        </div>
+      </a>
+
+      <a class="card" data-kategori="fashion" href="/template-fashion/">
+        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+        <div class="card-preview" style="background:linear-gradient(135deg,#14161A,#2440C7);">
+          <h3>Yogata</h3>
+          <span class="card-tag-contoh">contoh</span>
+        </div>
+        <div class="card-body">
+          <span class="card-kategori">Fashion</span>
+          <h2>Yogata</h2>
+          <p>Demo template toko fashion dengan varian warna dan ukuran, checkout langsung ke WhatsApp.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="cta">
+      <p class="eyebrow">Tertarik memesan?</p>
+      <h2>Mari diskusikan <em>website UMKM</em> Anda</h2>
+      <p>Konsultasikan kebutuhan usaha Anda, kami bantu buatkan website serupa contoh di atas.</p>
+      <a class="btn" href="https://wa.me/628895021024?text=Halo%2C%20saya%20tertarik%20konsultasi%20pembuatan%20website%20UMKM" target="_blank" rel="noopener">Konsultasi Sekarang</a>
+    </div>
+  </main>
+
+<script>
+  const chips = document.querySelectorAll("#chip-kategori .chip");
+  const cards = document.querySelectorAll("#template-grid .card");
+  const grid = document.getElementById("template-grid");
+
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      chips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      const kategori = chip.dataset.kategori;
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const match = kategori === "semua" || card.dataset.kategori === kategori;
+        card.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+
+      let empty = grid.querySelector(".empty-state");
+      if (visibleCount === 0) {
+        if (!empty) {
+          empty = document.createElement("p");
+          empty.className = "empty-state";
+          empty.textContent = "Belum ada template untuk kategori ini.";
+          grid.appendChild(empty);
+        }
+      } else if (empty) {
+        empty.remove();
+      }
+    });
+  });
+</script>
 </body>
 </html>
