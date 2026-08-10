@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAMA — Rental Kamera & Peralatan Video (Demo Template)</title>
+<meta name="description" content="Demo template rental kamera dan peralatan video untuk UMKM. Cek ketersediaan berbasis rentang tanggal, tarif bertingkat, dan pengajuan booking.">
+<meta property="og:title" content="RAMA — Demo Template Rental Kamera & Peralatan Video">
+<meta property="og:description" content="Contoh alur sewa peralatan video untuk UMKM: pilih rentang tanggal, cek ketersediaan unit, ajukan booking. Bagian dari katalog template UMKM.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%B7%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#131512;
+    --surface:#1D1F1B;
+    --surface-raised:#262922;
+    --hairline:#333629;
+    --text:#EDEEE9;
+    --text-muted:#9A9D95;
+    --accent:#F2B01E;
+    --accent-hover:#D2960E;
+    --tersedia:#4FB477;
+    --tidak-tersedia:#E05B4B;
+    --disabled:#4A4D45;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--canvas);
+    color:var(--text);
+    font-family:'Figtree',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Archivo',sans-serif;font-weight:800;margin:0;letter-spacing:-0.01em;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;color-scheme:dark;}
+  a{color:inherit;}
+  img,svg{display:block;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--text-muted);
+  }
+
+  /* ---------- Demo bar ---------- */
+  .demo-bar{
+    background:var(--surface-raised);
+    color:var(--text-muted);
+    font-size:.78rem;
+    text-align:center;
+    padding:.55rem 1rem;
+    border-bottom:1px solid var(--hairline);
+  }
+  .demo-bar a{color:var(--accent);font-weight:700;text-decoration:underline;margin-left:.4rem;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(19,21,18,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--hairline);
+  }
+  .header-inner{
+    max-width:1200px;margin:0 auto;padding:.9rem 1.25rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  }
+  .brand-mark{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-0.01em;text-transform:uppercase;}
+  .jam-ops{display:none;color:var(--text-muted);font-size:.8rem;}
+  @media(min-width:640px){ .jam-ops{display:block;} }
+  .cart-btn{
+    position:relative;background:var(--surface-raised);color:var(--text);border:1px solid var(--hairline);
+    border-radius:8px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  }
+  .cart-badge{
+    position:absolute;top:-6px;right:-6px;background:var(--accent);color:#131512;
+    font-size:.68rem;font-weight:700;min-width:18px;height:18px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;padding:0 4px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--surface);border-bottom:1px solid var(--hairline);padding:2.75rem 1.25rem;}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .hero h1{font-size:clamp(1.8rem,4.5vw,2.8rem);text-transform:uppercase;line-height:1.05;}
+  .hero p.tagline{color:var(--text-muted);margin-top:.6rem;font-size:1rem;max-width:32rem;}
+
+  .date-picker{
+    margin-top:1.5rem;background:var(--surface-raised);border:1px solid var(--hairline);
+    border-radius:10px;padding:1rem;display:flex;flex-wrap:wrap;gap:.85rem;align-items:end;
+  }
+  .date-field{display:flex;flex-direction:column;gap:.35rem;}
+  .date-field label{font-size:.72rem;color:var(--text-muted);}
+  .date-field input{
+    background:var(--canvas);border:1px solid var(--hairline);color:var(--text);
+    border-radius:6px;padding:.55rem .7rem;font-size:.88rem;
+  }
+  .date-field input:focus{outline:none;border-color:var(--accent);}
+  .btn-cek{
+    background:var(--accent);color:#131512;border:none;border-radius:6px;
+    padding:.65rem 1.4rem;font-weight:700;font-size:.88rem;
+  }
+  .btn-cek:hover{background:var(--accent-hover);}
+  .date-error{width:100%;color:var(--tidak-tersedia);font-size:.8rem;display:none;}
+  .date-error.show{display:block;}
+  .date-note{width:100%;color:var(--text-muted);font-size:.76rem;}
+
+  /* ---------- Sticky range bar ---------- */
+  .range-bar{
+    display:none;position:sticky;top:61px;z-index:35;background:var(--surface-raised);
+    border-bottom:1px solid var(--hairline);
+  }
+  .range-bar.show{display:block;}
+  .range-bar-inner{
+    max-width:1200px;margin:0 auto;padding:.6rem 1.25rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  }
+  .range-bar-inner .mono{font-size:.85rem;}
+  .range-bar-inner button{
+    background:none;border:1px solid var(--hairline);color:var(--accent);border-radius:6px;
+    padding:.35rem .8rem;font-size:.78rem;font-weight:600;
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;
+    border:1px solid var(--hairline);background:var(--surface);color:var(--text-muted);
+    border-radius:999px;padding:.4rem 1rem;
+  }
+  .chip.active{background:var(--accent);border-color:var(--accent);color:#131512;font-weight:700;}
+
+  /* ---------- Grid ---------- */
+  .grid-section{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 3rem;}
+  .product-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media(min-width:640px){ .product-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(min-width:960px){ .product-grid{grid-template-columns:repeat(3,1fr);} }
+
+  .card{
+    background:var(--surface);border:1px solid var(--hairline);border-radius:10px;overflow:hidden;cursor:pointer;
+    transition:border-color .15s ease;
+  }
+  .card:hover{border-color:var(--accent);}
+
+  .viewfinder{position:relative;aspect-ratio:4/3;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .viewfinder svg{width:42%;height:42%;color:var(--text-muted);}
+  .vf-corner{position:absolute;width:16px;height:16px;border:2px solid var(--accent);transition:transform .2s ease;opacity:.85;}
+  .vf-corner.tl{top:8px;left:8px;border-right:none;border-bottom:none;}
+  .vf-corner.tr{top:8px;right:8px;border-left:none;border-bottom:none;}
+  .vf-corner.bl{bottom:8px;left:8px;border-right:none;border-top:none;}
+  .vf-corner.br{bottom:8px;right:8px;border-left:none;border-top:none;}
+  .card:hover .vf-corner.tl,.modal-viewfinder:hover .vf-corner.tl{transform:translate(4px,4px);}
+  .card:hover .vf-corner.tr,.modal-viewfinder:hover .vf-corner.tr{transform:translate(-4px,4px);}
+  .card:hover .vf-corner.bl,.modal-viewfinder:hover .vf-corner.bl{transform:translate(4px,-4px);}
+  .card:hover .vf-corner.br,.modal-viewfinder:hover .vf-corner.br{transform:translate(-4px,-4px);}
+
+  .status-tag{
+    position:absolute;top:.5rem;right:.5rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;
+    text-transform:uppercase;letter-spacing:.05em;padding:.2rem .55rem;border-radius:999px;font-weight:600;
+  }
+  .status-tag.tersedia{background:rgba(79,180,119,.15);color:var(--tersedia);border:1px solid rgba(79,180,119,.4);}
+  .status-tag.habis{background:rgba(224,91,75,.15);color:var(--tidak-tersedia);border:1px solid rgba(224,91,75,.4);}
+
+  .card-body{padding:.9rem 1rem 1.1rem;}
+  .card-kategori{font-family:'IBM Plex Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+  .card-nama{font-size:1rem;font-weight:700;margin-top:.3rem;}
+  .card-tarif{font-size:.85rem;color:var(--text-muted);margin-top:.3rem;}
+  .card-total{font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--accent);margin-top:.5rem;font-weight:600;}
+
+  .empty-state{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text-muted);}
+  .empty-state button{margin-top:1rem;background:var(--accent);color:#131512;border:none;border-radius:999px;padding:.6rem 1.4rem;font-weight:700;font-size:.85rem;}
+
+  /* ---------- Info section ---------- */
+  .info-section{background:var(--surface);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:2.5rem 1.25rem;}
+  .info-inner{max-width:1200px;margin:0 auto;}
+  .info-inner h2{font-size:1.3rem;text-transform:uppercase;margin-bottom:1.25rem;}
+  .info-grid{display:grid;grid-template-columns:1fr;gap:1rem;}
+  @media(min-width:760px){ .info-grid{grid-template-columns:repeat(3,1fr);} }
+  .info-card{background:var(--surface-raised);border:1px solid var(--hairline);border-radius:10px;padding:1.1rem;}
+  .info-card h3{font-size:.9rem;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;}
+  .info-card ul{margin:0;padding-left:1.1rem;color:var(--text-muted);font-size:.85rem;line-height:1.7;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:2rem 1.25rem;text-align:center;font-size:.8rem;color:var(--text-muted);}
+  footer a{color:var(--accent);font-weight:700;text-decoration:underline;}
+
+  /* ---------- Overlay base ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem;}
+  .overlay.open{display:flex;}
+  .overlay.drawer-overlay{justify-content:flex-end;padding:0;align-items:stretch;}
+  .modal{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:1.5rem;position:relative;}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:var(--surface-raised);border:1px solid var(--hairline);color:var(--text);border-radius:999px;width:32px;height:32px;font-size:1rem;line-height:1;}
+  .drawer{background:var(--surface);width:100%;max-width:440px;height:100%;padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column;animation:slideIn .25s ease;border-left:1px solid var(--hairline);}
+  @keyframes slideIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
+
+  /* ---------- Product modal ---------- */
+  .pm-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media(min-width:520px){ .pm-grid{grid-template-columns:1fr 1fr;} }
+  .modal-viewfinder{position:relative;aspect-ratio:4/3;background:var(--surface-raised);border:1px solid var(--hairline);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .modal-viewfinder svg{width:44%;height:44%;color:var(--text-muted);}
+  .pm-nama{font-size:1.2rem;margin-bottom:.2rem;}
+  .pm-kategori{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;}
+  .pm-tarif{font-size:1rem;font-weight:700;color:var(--accent);margin-top:.4rem;}
+
+  .spec-panel{margin-top:1rem;background:var(--surface-raised);border:1px solid var(--hairline);border-radius:8px;padding:.85rem 1rem;}
+  .spec-row{display:flex;align-items:baseline;gap:.4rem;font-family:'IBM Plex Mono',monospace;font-size:.78rem;padding:.25rem 0;}
+  .spec-label{color:var(--text-muted);white-space:nowrap;}
+  .spec-fill{flex:1;border-bottom:1px dotted var(--hairline);height:1px;position:relative;top:-4px;}
+  .spec-value{white-space:nowrap;font-weight:600;}
+
+  .kelengkapan-list{margin-top:.9rem;font-size:.82rem;color:var(--text-muted);}
+  .kelengkapan-list b{color:var(--text);}
+
+  .tambahan-list{margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;}
+  .tambahan-item{display:flex;align-items:center;gap:.6rem;font-size:.85rem;background:var(--surface-raised);border:1px solid var(--hairline);border-radius:6px;padding:.55rem .7rem;}
+  .tambahan-item input{width:16px;height:16px;accent-color:var(--accent);}
+  .tambahan-item .tambahan-harga{margin-left:auto;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;font-size:.78rem;}
+
+  .rincian-box{margin-top:1rem;background:var(--surface-raised);border:1px solid var(--hairline);border-radius:8px;padding:.85rem 1rem;}
+  .rincian-row{display:flex;justify-content:space-between;font-size:.82rem;padding:.2rem 0;}
+  .rincian-row.total{font-weight:700;border-top:1px solid var(--hairline);margin-top:.4rem;padding-top:.5rem;}
+  .strike{text-decoration:line-through;color:var(--text-muted);margin-right:.35rem;}
+  .jaminan-note{margin-top:.8rem;padding-top:.6rem;border-top:1px dashed var(--hairline);font-size:.78rem;color:var(--text-muted);}
+  .jaminan-note b{color:var(--text);}
+
+  .avail-note{margin-top:.9rem;font-size:.82rem;padding:.6rem .75rem;border-radius:6px;}
+  .avail-note.ok{background:rgba(79,180,119,.12);color:var(--tersedia);}
+  .avail-note.no{background:rgba(224,91,75,.12);color:var(--tidak-tersedia);}
+  .avail-note.neutral{background:var(--surface-raised);color:var(--text-muted);}
+
+  .btn-add{width:100%;margin-top:1.1rem;background:var(--accent);color:#131512;border:none;border-radius:6px;padding:.85rem;font-weight:700;font-size:.9rem;}
+  .btn-add:disabled{background:var(--disabled);color:var(--text-muted);cursor:not-allowed;}
+
+  /* ---------- Cart drawer ---------- */
+  .drawer h2{font-size:1.1rem;text-transform:uppercase;margin-bottom:.25rem;}
+  .drawer-range{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:.9rem;border-bottom:1px solid var(--hairline);}
+  .drawer-range button{background:none;border:1px solid var(--hairline);color:var(--accent);border-radius:6px;padding:.3rem .7rem;font-size:.75rem;}
+
+  .sewa-item{display:flex;gap:.7rem;padding:.8rem 0;border-bottom:1px solid var(--hairline);}
+  .sewa-item .viewfinder{width:64px;height:64px;aspect-ratio:auto;flex-shrink:0;border-radius:6px;}
+  .sewa-item .viewfinder svg{width:55%;height:55%;}
+  .sewa-item-info{flex:1;}
+  .sewa-item-nama{font-size:.85rem;font-weight:700;}
+  .sewa-item-detail{font-size:.75rem;color:var(--text-muted);margin-top:.2rem;}
+  .sewa-item-harga{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--accent);margin-top:.35rem;}
+  .sewa-remove{background:none;border:none;color:var(--text-muted);font-size:.72rem;text-decoration:underline;margin-top:.35rem;}
+  .cart-empty{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:.85rem;}
+
+  .pengambilan-row{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0;}
+  .pengambilan-option{display:flex;align-items:center;gap:.5rem;border:1px solid var(--hairline);border-radius:6px;padding:.55rem .75rem;font-size:.82rem;cursor:pointer;}
+  .pengambilan-option.active{border-color:var(--accent);background:var(--surface-raised);}
+  .jarak-field{margin-top:.5rem;display:none;}
+  .jarak-field.show{display:block;}
+  .jarak-field input{width:100%;background:var(--canvas);border:1px solid var(--hairline);color:var(--text);border-radius:6px;padding:.5rem .7rem;font-size:.85rem;}
+  .jarak-note{font-size:.72rem;color:var(--text-muted);margin-top:.3rem;}
+
+  .btn-primary{width:100%;background:var(--accent);color:#131512;border:none;border-radius:6px;padding:.9rem;font-weight:700;font-size:.9rem;margin-top:1rem;}
+  .btn-primary:disabled{background:var(--disabled);color:var(--text-muted);cursor:not-allowed;}
+
+  /* ---------- Booking form ---------- */
+  .form-group{margin-bottom:.9rem;}
+  .form-group label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.35rem;}
+  .form-group input,.form-group textarea{width:100%;background:var(--surface-raised);border:1px solid var(--hairline);color:var(--text);border-radius:6px;padding:.6rem .7rem;font-size:.85rem;}
+  .form-group input.error,.form-group textarea.error{border-color:var(--tidak-tersedia);}
+  .field-error{color:var(--tidak-tersedia);font-size:.72rem;margin-top:.25rem;display:none;}
+  .field-error.show{display:block;}
+  .radio-row{display:flex;gap:.75rem;flex-wrap:wrap;}
+  .radio-chip{display:flex;align-items:center;gap:.4rem;border:1px solid var(--hairline);border-radius:6px;padding:.5rem .8rem;font-size:.82rem;cursor:pointer;}
+  .radio-chip.error{border-color:var(--tidak-tersedia);}
+  .booking-summary{background:var(--surface-raised);border:1px solid var(--hairline);border-radius:8px;padding:.85rem;font-size:.82rem;margin-bottom:1rem;}
+  .booking-summary div{display:flex;justify-content:space-between;margin-bottom:.25rem;}
+
+  /* ---------- Confirmation modal ---------- */
+  .confirm-icon{width:56px;height:56px;border-radius:999px;background:rgba(79,180,119,.15);color:var(--tersedia);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+  .confirm-title{text-align:center;font-size:1.15rem;text-transform:uppercase;}
+  .booking-code{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--accent);letter-spacing:.05em;margin:1rem 0;}
+  .confirm-note{font-size:.8rem;color:var(--text-muted);text-align:center;margin-top:.75rem;}
+  .demo-note{margin-top:1rem;padding:.6rem .75rem;background:var(--surface-raised);border-radius:6px;font-size:.74rem;color:var(--text-muted);text-align:center;}
+
+  /* ---------- Range warning modal ---------- */
+  .warning-list{margin:.75rem 0;padding-left:1.1rem;font-size:.85rem;color:var(--tidak-tersedia);}
+  .warning-actions{display:flex;gap:.6rem;margin-top:1rem;}
+  .warning-actions button{flex:1;border-radius:6px;padding:.7rem;font-size:.82rem;font-weight:600;border:1px solid var(--hairline);}
+  .warning-actions .btn-hapus{background:var(--tidak-tersedia);border-color:var(--tidak-tersedia);color:#fff;}
+  .warning-actions .btn-batal{background:none;color:var(--text);}
+</style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    Ini adalah demo template — bukan usaha rental sungguhan.
+    <a href="#" id="link-katalog-top" target="_blank" rel="noopener">Lihat template lain</a>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-mark" id="brand-mark"></div>
+      <div class="jam-ops" id="jam-ops"></div>
+      <button class="cart-btn" id="btn-open-cart" aria-label="Buka daftar sewa">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+        <span class="cart-badge" id="cart-badge" style="display:none;">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="label" id="hero-eyebrow">rental kamera & peralatan video</p>
+      <h1 id="hero-heading" style="margin-top:.5rem;">Sewa Alat <br> Bukan Beli Alat</h1>
+      <p class="tagline" id="hero-tagline">Kamera, lensa, lighting, dan audio siap pakai untuk produksi kontenmu.</p>
+
+      <div class="date-picker">
+        <div class="date-field">
+          <label for="input-mulai">Tanggal mulai</label>
+          <input type="date" id="input-mulai">
+        </div>
+        <div class="date-field">
+          <label for="input-selesai">Tanggal selesai</label>
+          <input type="date" id="input-selesai">
+        </div>
+        <button class="btn-cek" id="btn-cek-ketersediaan">Cek ketersediaan</button>
+        <div class="date-error" id="date-error"></div>
+        <p class="date-note">Satu hari sewa dihitung 24 jam sejak waktu pengambilan.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="range-bar" id="range-bar">
+    <div class="range-bar-inner">
+      <span class="mono" id="range-bar-text"></span>
+      <button id="btn-ubah-tanggal">Ubah tanggal</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="chip-row" id="chip-kategori"></div>
+  </div>
+
+  <section class="grid-section">
+    <div class="product-grid" id="product-grid"></div>
+  </section>
+
+  <section class="info-section">
+    <div class="info-inner">
+      <h2>Syarat & Ketentuan Sewa</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Jaminan</h3>
+          <ul>
+            <li>Identitas asli (KTP/SIM/KTM) ditahan selama masa sewa</li>
+            <li>Tidak ada jaminan uang — cukup satu identitas asli yang masih aktif</li>
+            <li>Identitas dikembalikan penuh saat alat kembali dalam kondisi baik</li>
+            <li>Pengecekan kondisi dilakukan bersama saat pengambilan</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Keterlambatan</h3>
+          <ul>
+            <li>Denda keterlambatan dihitung per jam</li>
+            <li id="denda-text"></li>
+            <li>Konfirmasi perpanjangan sebelum waktu pengembalian bila diperlukan</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Tanggung Jawab</h3>
+          <ul>
+            <li>Kerusakan atau kehilangan menjadi tanggung jawab penyewa</li>
+            <li>Pengambilan dan pengembalian sesuai jam operasional</li>
+            <li>Sewa jangka panjang di luar batas maksimum bisa didiskusikan langsung</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Dibuat oleh <strong id="footer-brand"></strong> · Template demo dari
+    <a href="#" id="link-katalog-bottom" target="_blank" rel="noopener">katalog template UMKM</a>
+  </footer>
+
+  <!-- ================= Product Detail Modal ================= -->
+  <div class="overlay" id="overlay-product">
+    <div class="modal">
+      <button class="modal-close" id="close-product">&times;</button>
+      <div class="pm-grid" id="pm-content"></div>
+    </div>
+  </div>
+
+  <!-- ================= Cart Drawer ================= -->
+  <div class="overlay drawer-overlay" id="overlay-cart">
+    <div class="drawer">
+      <button class="modal-close" id="close-cart" style="position:static;align-self:flex-end;margin-bottom:.5rem;">&times;</button>
+      <h2>Daftar Sewa</h2>
+      <div id="cart-body"></div>
+    </div>
+  </div>
+
+  <!-- ================= Booking Form Modal ================= -->
+  <div class="overlay" id="overlay-booking">
+    <div class="modal">
+      <button class="modal-close" id="close-booking">&times;</button>
+      <h2 style="font-size:1.1rem;text-transform:uppercase;margin-bottom:1rem;">Ajukan Booking</h2>
+
+      <div class="form-group">
+        <label for="input-nama">Nama lengkap<span style="color:var(--tidak-tersedia)">*</span></label>
+        <input type="text" id="input-nama" placeholder="Nama lengkap">
+        <div class="field-error" id="err-nama">Nama wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-wa">Nomor WhatsApp<span style="color:var(--tidak-tersedia)">*</span></label>
+        <input type="text" id="input-wa" placeholder="08xxxxxxxxxx">
+        <div class="field-error" id="err-wa">Nomor WhatsApp wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label>Identitas jaminan<span style="color:var(--tidak-tersedia)">*</span></label>
+        <div class="radio-row" id="identitas-row">
+          <label class="radio-chip"><input type="radio" name="identitas" value="KTP"> KTP</label>
+          <label class="radio-chip"><input type="radio" name="identitas" value="SIM"> SIM</label>
+          <label class="radio-chip"><input type="radio" name="identitas" value="KTM"> KTM</label>
+        </div>
+        <div class="field-error" id="err-identitas">Pilih salah satu jenis identitas.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-jam">Jam pengambilan<span style="color:var(--tidak-tersedia)">*</span></label>
+        <input type="time" id="input-jam">
+        <div class="field-error" id="err-jam">Jam pengambilan wajib diisi.</div>
+      </div>
+      <div class="form-group">
+        <label for="input-catatan">Catatan (opsional)</label>
+        <textarea id="input-catatan" rows="2" placeholder="Catatan tambahan"></textarea>
+      </div>
+
+      <div class="booking-summary" id="booking-summary"></div>
+
+      <button class="btn-primary" id="btn-kirim-pengajuan">Kirim pengajuan</button>
+    </div>
+  </div>
+
+  <!-- ================= Booking Confirmation Modal ================= -->
+  <div class="overlay" id="overlay-confirm">
+    <div class="modal" style="max-width:440px;text-align:left;">
+      <button class="modal-close" id="close-confirm">&times;</button>
+      <div class="confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h2 class="confirm-title">Pengajuan Terkirim</h2>
+      <p class="mono booking-code" id="booking-code"></p>
+      <div class="booking-summary" id="confirm-summary"></div>
+      <p class="confirm-note">Pengajuan akan dikonfirmasi lewat WhatsApp. Peralatan baru dipastikan setelah konfirmasi dari kami.</p>
+      <div class="demo-note">Ini demo template — tidak ada pengajuan yang benar-benar terkirim ke mana pun.</div>
+      <button class="btn-primary" id="btn-tutup-confirm">Tutup</button>
+    </div>
+  </div>
+
+  <!-- ================= Range Change Warning Modal ================= -->
+  <div class="overlay" id="overlay-warning">
+    <div class="modal" style="max-width:440px;">
+      <h2 style="font-size:1.05rem;">Perubahan Tanggal Mempengaruhi Daftar Sewa</h2>
+      <p style="font-size:.85rem;color:var(--text-muted);margin-top:.5rem;">Peralatan berikut tidak tersedia untuk rentang tanggal baru:</p>
+      <ul class="warning-list" id="warning-list"></ul>
+      <div class="warning-actions">
+        <button class="btn-hapus" id="btn-warning-hapus">Hapus item & lanjut</button>
+        <button class="btn-batal" id="btn-warning-batal">Batalkan perubahan</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ============================================================
+// KONFIGURASI USAHA — ubah bagian ini saja saat memakai template
+// untuk client baru. Sisa kode di bawah tidak perlu disentuh.
+// ============================================================
+const CONFIG = {
+  namaUsaha: "RAMA",
+  tagline: "Kamera, lensa, lighting, dan audio siap pakai untuk produksi kontenmu.",
+  nomorWhatsApp: "628895021024",
+  alamat: "Jl. Pangeran Diponegoro, Kwarasan, Nogotirto, Gamping, Sleman, Yogyakarta",
+  jamOperasional: "09.00 - 21.00",
+  urlKatalog: "https://templates-web-nu.vercel.app/",
+
+  maksHariSewa: 30,
+  minHariSewa: 1,
+
+  tarifBertingkat: [
+    { minHari: 1, diskon: 0 },
+    { minHari: 3, diskon: 0.10 },
+    { minHari: 7, diskon: 0.20 }
+  ],
+
+  antarJemput: {
+    tersedia: true,
+    gratisRadiusKm: 5,
+    biayaLuarRadius: 25000
+  },
+
+  dendaTelatPerJam: 25000,
+  produk: buildProduk()
+};
+
+// ------------------------------------------------------------
+// Helper tanggal relatif terhadap hari ini, supaya data mock
+// booking tetap terasa hidup kapan pun demo ini dibuka.
+// ------------------------------------------------------------
+function daysFromNowISO(n) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + n);
+  return toISO(d);
+}
+function toISO(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + d;
+}
+function terbooking(list) {
+  return list.map(b => ({ mulai: daysFromNowISO(b[0]), selesai: daysFromNowISO(b[1]), jumlah: b[2] }));
+}
+
+function buildProduk() {
+  return [
+    {
+      id: "cam-01", nama: "Sony A7 III", kategori: "kamera", siluet: "kamera-body",
+      tarifHarian: 175000, jumlahUnit: 2,
+      spesifikasi: [["Sensor", "Full frame 24.2 MP"], ["ISO", "100 - 51200"], ["Video", "4K 30fps"], ["Mount", "Sony E"]],
+      kelengkapan: ["Body", "2 baterai", "Charger", "Tas"],
+      tambahan: [{ id: "bat", nama: "Baterai cadangan", hargaHarian: 25000 }, { id: "sd", nama: "Memori 128GB", hargaHarian: 15000 }],
+      terbooking: terbooking([[3, 5, 1], [10, 12, 2]])
+    },
+    {
+      id: "cam-02", nama: "Canon EOS R6", kategori: "kamera", siluet: "kamera-body",
+      tarifHarian: 195000, jumlahUnit: 2,
+      spesifikasi: [["Sensor", "Full frame 20.1 MP"], ["ISO", "100 - 102400"], ["Video", "4K 60fps"], ["Mount", "Canon RF"]],
+      kelengkapan: ["Body", "2 baterai", "Charger", "Tas"],
+      tambahan: [{ id: "bat", nama: "Baterai cadangan", hargaHarian: 28000 }, { id: "sd", nama: "Memori 128GB", hargaHarian: 15000 }],
+      terbooking: terbooking([[1, 2, 2]])
+    },
+    {
+      id: "cam-03", nama: "Fujifilm X-T4", kategori: "kamera", siluet: "kamera-body",
+      tarifHarian: 150000, jumlahUnit: 1,
+      spesifikasi: [["Sensor", "APS-C 26.1 MP"], ["ISO", "160 - 12800"], ["Video", "4K 30fps"], ["Mount", "Fujifilm X"]],
+      kelengkapan: ["Body", "2 baterai", "Charger", "Tas"],
+      tambahan: [{ id: "sd", nama: "Memori 128GB", hargaHarian: 15000 }],
+      terbooking: terbooking([[2, 6, 1]])
+    },
+    {
+      id: "lens-01", nama: "Sony FE 24-70mm f/2.8 GM", kategori: "lensa", siluet: "lensa",
+      tarifHarian: 120000, jumlahUnit: 2,
+      spesifikasi: [["Focal length", "24-70mm"], ["Aperture", "f/2.8"], ["Mount", "Sony E"], ["Stabilisasi", "Tidak"]],
+      kelengkapan: ["Lensa", "Tutup depan/belakang", "Hood", "Tas"],
+      tambahan: [{ id: "filter", nama: "Filter UV/CPL", hargaHarian: 10000 }],
+      terbooking: terbooking([[5, 9, 1]])
+    },
+    {
+      id: "lens-02", nama: "Canon RF 50mm f/1.8", kategori: "lensa", siluet: "lensa",
+      tarifHarian: 60000, jumlahUnit: 3,
+      spesifikasi: [["Focal length", "50mm"], ["Aperture", "f/1.8"], ["Mount", "Canon RF"], ["Stabilisasi", "Tidak"]],
+      kelengkapan: ["Lensa", "Tutup depan/belakang", "Tas"],
+      tambahan: [{ id: "filter", nama: "Filter UV/CPL", hargaHarian: 8000 }],
+      terbooking: []
+    },
+    {
+      id: "lens-03", nama: "Sigma 18-35mm f/1.8", kategori: "lensa", siluet: "lensa",
+      tarifHarian: 95000, jumlahUnit: 1,
+      spesifikasi: [["Focal length", "18-35mm"], ["Aperture", "f/1.8"], ["Mount", "Canon EF"], ["Stabilisasi", "Tidak"]],
+      kelengkapan: ["Lensa", "Tutup depan/belakang", "Hood", "Tas"],
+      tambahan: [{ id: "filter", nama: "Filter UV/CPL", hargaHarian: 10000 }],
+      terbooking: terbooking([[1, 3, 1]])
+    },
+    {
+      id: "light-01", nama: "Godox SL60W", kategori: "lighting", siluet: "lampu",
+      tarifHarian: 75000, jumlahUnit: 3,
+      spesifikasi: [["Daya", "60W LED"], ["Color temp", "5600K"], ["Mount", "Bowens"], ["Remote", "2.4G wireless"]],
+      kelengkapan: ["Lampu", "Softbox", "Stand", "Kabel power"],
+      tambahan: [{ id: "softbox", nama: "Softbox tambahan", hargaHarian: 20000 }],
+      terbooking: terbooking([[4, 4, 2]])
+    },
+    {
+      id: "light-02", nama: "Aputure Amaran 200x", kategori: "lighting", siluet: "lampu",
+      tarifHarian: 110000, jumlahUnit: 2,
+      spesifikasi: [["Daya", "200W Bi-Color"], ["Color temp", "2700K-6500K"], ["Mount", "Bowens"], ["Remote", "App + 2.4G"]],
+      kelengkapan: ["Lampu", "Reflektor", "Stand", "Kabel power"],
+      tambahan: [{ id: "softbox", nama: "Softbox tambahan", hargaHarian: 25000 }],
+      terbooking: terbooking([[7, 9, 2]])
+    },
+    {
+      id: "audio-01", nama: "Rode VideoMic Pro Plus", kategori: "audio", siluet: "mikrofon",
+      tarifHarian: 45000, jumlahUnit: 3,
+      spesifikasi: [["Tipe", "Shotgun on-camera"], ["Baterai", "Rechargeable"], ["Konektor", "3.5mm TRS"], ["Windshield", "Termasuk"]],
+      kelengkapan: ["Mic", "Windshield", "Shockmount", "Kabel"],
+      tambahan: [],
+      terbooking: []
+    },
+    {
+      id: "audio-02", nama: "Zoom H6 Recorder", kategori: "audio", siluet: "mikrofon",
+      tarifHarian: 65000, jumlahUnit: 2,
+      spesifikasi: [["Channel", "6 track"], ["Format", "WAV/MP3"], ["Baterai", "2x AA"], ["Kapsul", "XY interchangeable"]],
+      kelengkapan: ["Recorder", "Kapsul mic", "Windshield", "Tas"],
+      tambahan: [{ id: "sd", nama: "Memori 32GB", hargaHarian: 10000 }],
+      terbooking: terbooking([[2, 2, 1]])
+    },
+    {
+      id: "stab-01", nama: "DJI RS3 Gimbal", kategori: "stabilizer", siluet: "gimbal",
+      tarifHarian: 130000, jumlahUnit: 2,
+      spesifikasi: [["Beban maks", "3kg"], ["Baterai", "12 jam"], ["Axis", "3-axis"], ["Kompatibel", "Mirrorless/DSLR"]],
+      kelengkapan: ["Gimbal", "Baterai", "Charger", "Tas"],
+      tambahan: [{ id: "focus", nama: "Focus wheel", hargaHarian: 20000 }],
+      terbooking: terbooking([[3, 8, 2]])
+    },
+    {
+      id: "stab-02", nama: "Tripod Manfrotto 190", kategori: "stabilizer", siluet: "tripod",
+      tarifHarian: 40000, jumlahUnit: 4,
+      spesifikasi: [["Tinggi maks", "160cm"], ["Beban maks", "5kg"], ["Head", "Ball head"], ["Bahan", "Aluminium"]],
+      kelengkapan: ["Tripod", "Ball head", "Tas"],
+      tambahan: [],
+      terbooking: []
+    },
+    {
+      id: "aks-01", nama: "Baterai NP-FZ100", kategori: "aksesori", siluet: "baterai",
+      tarifHarian: 20000, jumlahUnit: 5,
+      spesifikasi: [["Kompatibel", "Sony Alpha series"], ["Kapasitas", "2280mAh"], ["Tipe", "Li-ion"], ["Kondisi", "Original"]],
+      kelengkapan: ["Baterai"],
+      tambahan: [],
+      terbooking: []
+    },
+    {
+      id: "aks-02", nama: "SanDisk Extreme 128GB", kategori: "aksesori", siluet: "kartu-memori",
+      tarifHarian: 25000, jumlahUnit: 6,
+      spesifikasi: [["Kapasitas", "128GB"], ["Kecepatan baca", "190MB/s"], ["Tipe", "SDXC UHS-I"], ["Kelas", "V30/U3"]],
+      kelengkapan: ["Memory card"],
+      tambahan: [],
+      terbooking: []
+    },
+    {
+      id: "aks-03", nama: "DJI Mini 3 Drone", kategori: "aksesori", siluet: "drone",
+      tarifHarian: 160000, jumlahUnit: 1,
+      spesifikasi: [["Kamera", "4K/30fps"], ["Berat", "248g"], ["Baterai", "38 menit"], ["Remote", "DJI RC"]],
+      kelengkapan: ["Drone", "2 baterai", "Remote", "Charger", "Tas"],
+      tambahan: [{ id: "bat", nama: "Baterai cadangan", hargaHarian: 30000 }],
+      terbooking: terbooking([[1, 30, 1]])
+    }
+  ];
+}
+
+const KATEGORI_LABEL = { semua: "Semua", kamera: "Kamera", lensa: "Lensa", lighting: "Lighting", audio: "Audio", stabilizer: "Stabilizer", aksesori: "Aksesori" };
+
+// ============================================================
+// STATE (di memori saja, reset saat reload — tidak ada localStorage)
+// ============================================================
+const state = {
+  rentang: null,          // { mulai: "YYYY-MM-DD", selesai: "YYYY-MM-DD" }
+  filterKategori: "semua",
+  daftarSewa: [],          // { rowId, productId, tambahan: [id,...] }
+  pengambilan: "tempat",   // "tempat" | "antar"
+  jarakKm: 0,
+  nextRowId: 1
+};
+
+const modalState = { product: null, tambahan: [] };
+let pendingRentangBaru = null;
+
+// ============================================================
+// UTIL
+// ============================================================
+function formatRupiah(n) { return "Rp " + n.toLocaleString("id-ID"); }
+function getProduct(id) { return CONFIG.produk.find(p => p.id === id); }
+function parseDateOnly(iso) { return new Date(iso + "T00:00:00"); }
+function addDaysISO(iso, n) { const d = parseDateOnly(iso); d.setDate(d.getDate() + n); return toISO(d); }
+const NAMA_HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+function formatTanggalPendek(iso) {
+  const d = parseDateOnly(iso);
+  return d.getDate() + " " + NAMA_BULAN[d.getMonth()];
+}
+function waLink(pesan) { return "https://wa.me/" + CONFIG.nomorWhatsApp + "?text=" + encodeURIComponent(pesan); }
+
+function hitungHari(mulaiISO, selesaiISO) {
+  const mulai = parseDateOnly(mulaiISO), selesai = parseDateOnly(selesaiISO);
+  return Math.round((selesai - mulai) / 86400000) + 1;
+}
+
+function cariTingkatTarif(hari) {
+  let tingkat = CONFIG.tarifBertingkat[0];
+  CONFIG.tarifBertingkat.forEach(t => { if (hari >= t.minHari) tingkat = t; });
+  return tingkat;
+}
+
+function hitungRincianHarga(product, hari) {
+  const tingkat = cariTingkatTarif(hari);
+  const hargaNormalPerHari = product.tarifHarian;
+  const hargaSetelahDiskonPerHari = Math.round(hargaNormalPerHari * (1 - tingkat.diskon));
+  const subtotalNormal = hargaNormalPerHari * hari;
+  const subtotalSetelahDiskon = hargaSetelahDiskonPerHari * hari;
+  return { tingkat, hargaNormalPerHari, hargaSetelahDiskonPerHari, subtotalNormal, subtotalSetelahDiskon, hemat: subtotalNormal - subtotalSetelahDiskon };
+}
+
+// Jumlah unit terpakai maksimum pada hari mana pun dalam rentang (dari data mock terbooking)
+function unitTerpakaiPadaRentang(product, mulaiISO, selesaiISO) {
+  const mulai = parseDateOnly(mulaiISO), selesai = parseDateOnly(selesaiISO);
+  let maxTerpakai = 0;
+  for (let d = new Date(mulai); d <= selesai; d.setDate(d.getDate() + 1)) {
+    let terpakaiHariIni = 0;
+    product.terbooking.forEach(b => {
+      const bMulai = parseDateOnly(b.mulai), bSelesai = parseDateOnly(b.selesai);
+      if (d >= bMulai && d <= bSelesai) terpakaiHariIni += b.jumlah;
+    });
+    if (terpakaiHariIni > maxTerpakai) maxTerpakai = terpakaiHariIni;
+  }
+  return maxTerpakai;
+}
+
+function jumlahDiKeranjang(productId, kecualiRowId) {
+  return state.daftarSewa.filter(i => i.productId === productId && i.rowId !== kecualiRowId).length;
+}
+
+function unitTersediaEfektif(product, mulaiISO, selesaiISO, kecualiRowId) {
+  const terpakai = unitTerpakaiPadaRentang(product, mulaiISO, selesaiISO);
+  const diKeranjang = jumlahDiKeranjang(product.id, kecualiRowId);
+  return product.jumlahUnit - terpakai - diKeranjang;
+}
+
+function cariTanggalTersediaBerikutnya(product, hariDurasi, mulaiAwalISO) {
+  let cursor = mulaiAwalISO;
+  for (let i = 0; i < 60; i++) {
+    cursor = addDaysISO(cursor, 1);
+    const selesai = addDaysISO(cursor, hariDurasi - 1);
+    if (unitTersediaEfektif(product, cursor, selesai) > 0) {
+      return { mulai: cursor, selesai: selesai };
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// SILUET SVG (line art peralatan, tanpa foto)
+// ============================================================
+function silhouettePaths(type) {
+  const c = 'fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+  switch (type) {
+    case "kamera-body":
+      return `<rect ${c} x="15" y="35" width="70" height="45" rx="6"/><rect ${c} x="35" y="20" width="25" height="18" rx="3"/><circle ${c} cx="50" cy="58" r="16"/><circle ${c} cx="50" cy="58" r="8"/><rect ${c} x="72" y="42" width="7" height="6" rx="1"/>`;
+    case "lensa":
+      return `<rect ${c} x="18" y="35" width="66" height="30" rx="4"/><line ${c} x1="34" y1="35" x2="34" y2="65"/><line ${c} x1="48" y1="35" x2="48" y2="65"/><line ${c} x1="62" y1="35" x2="62" y2="65"/><rect ${c} x="84" y="40" width="8" height="20" rx="2"/>`;
+    case "lampu":
+      return `<rect ${c} x="25" y="12" width="50" height="34" rx="3"/><line ${c} x1="31" y1="20" x2="69" y2="20"/><line ${c} x1="31" y1="28" x2="69" y2="28"/><line ${c} x1="31" y1="36" x2="69" y2="36"/><line ${c} x1="50" y1="46" x2="50" y2="78"/><line ${c} x1="34" y1="90" x2="66" y2="90"/><line ${c} x1="50" y1="78" x2="34" y2="90"/><line ${c} x1="50" y1="78" x2="66" y2="90"/>`;
+    case "mikrofon":
+      return `<rect ${c} x="41" y="8" width="18" height="36" rx="9"/><path ${c} d="M28 36a22 22 0 0 0 44 0"/><line ${c} x1="50" y1="58" x2="50" y2="80"/><line ${c} x1="34" y1="90" x2="66" y2="90"/><line ${c} x1="50" y1="80" x2="34" y2="90"/><line ${c} x1="50" y1="80" x2="66" y2="90"/>`;
+    case "gimbal":
+      return `<rect ${c} x="44" y="70" width="12" height="22" rx="3"/><line ${c} x1="50" y1="70" x2="50" y2="50"/><path ${c} d="M30 50h40"/><line ${c} x1="50" y1="50" x2="50" y2="34"/><rect ${c} x="30" y="20" width="40" height="14" rx="3"/>`;
+    case "tripod":
+      return `<rect ${c} x="34" y="6" width="32" height="10" rx="2"/><line ${c} x1="50" y1="16" x2="50" y2="38"/><line ${c} x1="50" y1="38" x2="20" y2="92"/><line ${c} x1="50" y1="38" x2="50" y2="92"/><line ${c} x1="50" y1="38" x2="80" y2="92"/><line ${c} x1="35" y1="65" x2="65" y2="65"/>`;
+    case "baterai":
+      return `<rect ${c} x="24" y="30" width="52" height="36" rx="4"/><rect ${c} x="76" y="42" width="7" height="12" rx="1"/><line ${c} x1="36" y1="30" x2="36" y2="66"/><line ${c} x1="48" y1="30" x2="48" y2="66"/>`;
+    case "kartu-memori":
+      return `<path ${c} d="M28 18h34l12 12v48a3 3 0 0 1-3 3H28a3 3 0 0 1-3-3V21a3 3 0 0 1 3-3Z"/><line ${c} x1="37" y1="18" x2="37" y2="34"/><line ${c} x1="46" y1="18" x2="46" y2="34"/><line ${c} x1="55" y1="18" x2="55" y2="34"/>`;
+    case "drone":
+      return `<ellipse ${c} cx="50" cy="50" rx="14" ry="7"/>
+        <line ${c} x1="43" y1="43" x2="20" y2="20"/><line ${c} x1="57" y1="43" x2="80" y2="20"/><line ${c} x1="43" y1="57" x2="20" y2="80"/><line ${c} x1="57" y1="57" x2="80" y2="80"/>
+        <circle ${c} cx="20" cy="20" r="11"/><circle ${c} cx="80" cy="20" r="11"/><circle ${c} cx="20" cy="80" r="11"/><circle ${c} cx="80" cy="80" r="11"/>
+        <line ${c} x1="15" y1="20" x2="25" y2="20"/><line ${c} x1="75" y1="20" x2="85" y2="20"/><line ${c} x1="15" y1="80" x2="25" y2="80"/><line ${c} x1="75" y1="80" x2="85" y2="80"/>`;
+    default:
+      return "";
+  }
+}
+
+function viewfinderHTML(product, statusHTML) {
+  return `<div class="viewfinder">
+    <svg viewBox="0 0 100 100">${silhouettePaths(product.siluet)}</svg>
+    <span class="vf-corner tl"></span><span class="vf-corner tr"></span><span class="vf-corner bl"></span><span class="vf-corner br"></span>
+    ${statusHTML || ""}
+  </div>`;
+}
+
+// ============================================================
+// RENDER: static text
+// ============================================================
+function renderStatic() {
+  document.title = CONFIG.namaUsaha + " — Rental Kamera & Peralatan Video (Demo Template)";
+  document.getElementById("brand-mark").textContent = CONFIG.namaUsaha;
+  document.getElementById("jam-ops").textContent = "Buka " + CONFIG.jamOperasional;
+  document.getElementById("hero-eyebrow").textContent = "rental kamera & peralatan video — " + CONFIG.namaUsaha;
+  document.getElementById("hero-tagline").textContent = CONFIG.tagline;
+  document.getElementById("footer-brand").textContent = CONFIG.namaUsaha;
+  document.getElementById("denda-text").textContent = "Denda " + formatRupiah(CONFIG.dendaTelatPerJam) + " per jam keterlambatan";
+
+  const katalogLinks = [document.getElementById("link-katalog-top"), document.getElementById("link-katalog-bottom")];
+  katalogLinks.forEach(a => a.href = CONFIG.urlKatalog);
+
+  const today = toISO(new Date());
+  document.getElementById("input-mulai").min = today;
+  document.getElementById("input-selesai").min = today;
+}
+
+// ============================================================
+// FILTER CHIPS
+// ============================================================
+function renderChipKategori() {
+  const wrap = document.getElementById("chip-kategori");
+  wrap.innerHTML = Object.keys(KATEGORI_LABEL).map(k => `
+    <button class="chip ${state.filterKategori === k ? "active" : ""}" data-kategori="${k}">${KATEGORI_LABEL[k]}</button>
+  `).join("");
+  wrap.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.filterKategori = btn.dataset.kategori;
+      renderChipKategori();
+      renderGrid();
+    });
+  });
+}
+
+function getFilteredProducts() {
+  let list = CONFIG.produk.slice();
+  if (state.filterKategori !== "semua") list = list.filter(p => p.kategori === state.filterKategori);
+  return list;
+}
+
+function resetFilters() {
+  state.filterKategori = "semua";
+  renderChipKategori();
+  renderGrid();
+}
+
+// ============================================================
+// GRID PERALATAN
+// ============================================================
+function renderGrid() {
+  const grid = document.getElementById("product-grid");
+  const list = getFilteredProducts();
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><p>Tidak ada peralatan untuk kategori ini.</p><button id="btn-reset-filter">Reset filter</button></div>`;
+    document.getElementById("btn-reset-filter").addEventListener("click", resetFilters);
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    let statusHTML = "";
+    let totalHTML = "";
+    if (state.rentang) {
+      const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+      const tersedia = unitTersediaEfektif(p, state.rentang.mulai, state.rentang.selesai);
+      if (tersedia > 0) {
+        statusHTML = `<span class="status-tag tersedia">${tersedia === 1 ? "Tersisa 1 unit" : "Tersedia"}</span>`;
+        const rincian = hitungRincianHarga(p, hari);
+        totalHTML = `<div class="card-total">${formatRupiah(rincian.subtotalSetelahDiskon)} / ${hari} hari</div>`;
+      } else {
+        statusHTML = `<span class="status-tag habis">Tidak tersedia</span>`;
+      }
+    }
+    return `
+      <div class="card" data-id="${p.id}">
+        ${viewfinderHTML(p, statusHTML)}
+        <div class="card-body">
+          <div class="card-kategori">${KATEGORI_LABEL[p.kategori]}</div>
+          <div class="card-nama">${p.nama}</div>
+          <div class="card-tarif">${formatRupiah(p.tarifHarian)} / hari</div>
+          ${totalHTML}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  grid.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", () => openProductModal(card.dataset.id));
+  });
+}
+
+// ============================================================
+// PEMILIH RENTANG TANGGAL
+// ============================================================
+const dateError = document.getElementById("date-error");
+
+function showDateError(msg) { dateError.textContent = msg; dateError.classList.add("show"); }
+function hideDateError() { dateError.classList.remove("show"); dateError.textContent = ""; }
+
+document.getElementById("btn-cek-ketersediaan").addEventListener("click", () => {
+  hideDateError();
+  const mulai = document.getElementById("input-mulai").value;
+  const selesai = document.getElementById("input-selesai").value;
+  const today = toISO(new Date());
+
+  if (!mulai || !selesai) { showDateError("Pilih tanggal mulai dan selesai dulu."); return; }
+  if (mulai < today) { showDateError("Tanggal mulai tidak boleh sebelum hari ini."); return; }
+  if (selesai < mulai) { showDateError("Tanggal selesai tidak boleh sebelum tanggal mulai."); return; }
+
+  const hari = hitungHari(mulai, selesai);
+  if (hari > CONFIG.maksHariSewa) {
+    showDateError("Durasi lebih dari " + CONFIG.maksHariSewa + " hari perlu dibicarakan langsung.");
+    const wa = document.createElement("a");
+    wa.href = waLink("Halo, saya mau tanya soal sewa jangka panjang lebih dari " + CONFIG.maksHariSewa + " hari.");
+    wa.target = "_blank"; wa.rel = "noopener";
+    wa.textContent = " Chat WhatsApp";
+    wa.style.color = "var(--accent)"; wa.style.fontWeight = "700"; wa.style.marginLeft = ".3rem";
+    dateError.appendChild(wa);
+    return;
+  }
+  if (hari < CONFIG.minHariSewa) { showDateError("Minimum sewa " + CONFIG.minHariSewa + " hari."); return; }
+
+  terapkanRentangBaru({ mulai, selesai });
+});
+
+function terapkanRentangBaru(rentangBaru) {
+  if (state.daftarSewa.length === 0) {
+    state.rentang = rentangBaru;
+    setelahRentangBerubah();
+    return;
+  }
+  // Cek ulang ketersediaan seluruh item di daftar sewa terhadap rentang baru
+  const bermasalah = [];
+  state.daftarSewa.forEach(item => {
+    const product = getProduct(item.productId);
+    const tersedia = unitTersediaEfektif(product, rentangBaru.mulai, rentangBaru.selesai, item.rowId);
+    if (tersedia <= 0) bermasalah.push({ rowId: item.rowId, nama: product.nama });
+  });
+
+  if (bermasalah.length === 0) {
+    state.rentang = rentangBaru;
+    setelahRentangBerubah();
+    return;
+  }
+
+  pendingRentangBaru = { rentang: rentangBaru, bermasalah };
+  document.getElementById("warning-list").innerHTML = bermasalah.map(b => `<li>${b.nama}</li>`).join("");
+  document.getElementById("overlay-warning").classList.add("open");
+}
+
+document.getElementById("btn-warning-hapus").addEventListener("click", () => {
+  if (!pendingRentangBaru) return;
+  const idsHapus = pendingRentangBaru.bermasalah.map(b => b.rowId);
+  state.daftarSewa = state.daftarSewa.filter(i => !idsHapus.includes(i.rowId));
+  state.rentang = pendingRentangBaru.rentang;
+  pendingRentangBaru = null;
+  document.getElementById("overlay-warning").classList.remove("open");
+  setelahRentangBerubah();
+  updateCartBadge();
+});
+
+document.getElementById("btn-warning-batal").addEventListener("click", () => {
+  pendingRentangBaru = null;
+  document.getElementById("overlay-warning").classList.remove("open");
+});
+
+function setelahRentangBerubah() {
+  const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+  document.getElementById("range-bar").classList.add("show");
+  document.getElementById("range-bar-text").textContent =
+    formatTanggalPendek(state.rentang.mulai) + " — " + formatTanggalPendek(state.rentang.selesai) + " (" + hari + " hari)";
+  renderGrid();
+}
+
+document.getElementById("btn-ubah-tanggal").addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.getElementById("input-mulai").focus();
+});
+
+// ============================================================
+// MODAL DETAIL PERALATAN
+// ============================================================
+const overlayProduct = document.getElementById("overlay-product");
+
+function openProductModal(id) {
+  modalState.product = getProduct(id);
+  modalState.tambahan = [];
+  renderProductModal();
+  overlayProduct.classList.add("open");
+}
+function closeProductModal() { overlayProduct.classList.remove("open"); }
+document.getElementById("close-product").addEventListener("click", closeProductModal);
+overlayProduct.addEventListener("click", e => { if (e.target === overlayProduct) closeProductModal(); });
+
+function renderProductModal() {
+  const p = modalState.product;
+  if (!p) return;
+
+  let availHTML = `<div class="avail-note neutral">Pilih tanggal sewa di beranda untuk melihat ketersediaan dan total harga.</div>`;
+  let rincianHTML = "";
+  let bisaTambah = false;
+
+  if (state.rentang) {
+    const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+    const tersedia = unitTersediaEfektif(p, state.rentang.mulai, state.rentang.selesai);
+    const rincian = hitungRincianHarga(p, hari);
+    const tambahanTotal = modalState.tambahan.reduce((sum, tid) => {
+      const t = p.tambahan.find(x => x.id === tid);
+      return sum + (t ? t.hargaHarian * hari : 0);
+    }, 0);
+    const totalAkhir = rincian.subtotalSetelahDiskon + tambahanTotal;
+
+    if (tersedia > 0) {
+      bisaTambah = true;
+      availHTML = `<div class="avail-note ok">${tersedia === 1 ? "Tersisa 1 unit untuk rentang ini." : tersedia + " unit tersedia untuk rentang ini."}</div>`;
+    } else {
+      const next = cariTanggalTersediaBerikutnya(p, hari, state.rentang.selesai);
+      availHTML = `<div class="avail-note no">Tidak tersedia untuk rentang ini.${next ? " Tersedia lagi mulai " + formatTanggalPendek(next.mulai) + " — " + formatTanggalPendek(next.selesai) + "." : " Tidak ditemukan slot kosong dalam 60 hari ke depan."}</div>`;
+    }
+
+    rincianHTML = `
+      <div class="rincian-box">
+        <div class="rincian-row"><span>Tarif harian</span><span>${rincian.tingkat.diskon > 0 ? `<span class="strike">${formatRupiah(rincian.hargaNormalPerHari)}</span>` : ""}${formatRupiah(rincian.hargaSetelahDiskonPerHari)}</span></div>
+        <div class="rincian-row"><span>Durasi</span><span>${hari} hari${rincian.tingkat.diskon > 0 ? " (hemat " + Math.round(rincian.tingkat.diskon * 100) + "%)" : ""}</span></div>
+        <div class="rincian-row"><span>Subtotal sewa</span><span>${formatRupiah(rincian.subtotalSetelahDiskon)}</span></div>
+        ${tambahanTotal > 0 ? `<div class="rincian-row"><span>Tambahan</span><span>${formatRupiah(tambahanTotal)}</span></div>` : ""}
+        <div class="rincian-row total"><span>Total</span><span>${formatRupiah(totalAkhir)}</span></div>
+        <div class="jaminan-note">Jaminan: <b>Identitas asli (KTP/SIM/KTM)</b> — ditahan selama masa sewa, dikembalikan saat alat kembali dalam kondisi baik.</div>
+      </div>
+    `;
+  }
+
+  document.getElementById("pm-content").innerHTML = `
+    <div>${viewfinderHTML(p).replace('class="viewfinder"', 'class="modal-viewfinder"')}</div>
+    <div>
+      <div class="pm-kategori">${KATEGORI_LABEL[p.kategori]}</div>
+      <h3 class="pm-nama">${p.nama}</h3>
+      <div class="pm-tarif">${formatRupiah(p.tarifHarian)} / hari</div>
+
+      <div class="spec-panel">
+        ${p.spesifikasi.map(s => `<div class="spec-row"><span class="spec-label">${s[0]}</span><span class="spec-fill"></span><span class="spec-value">${s[1]}</span></div>`).join("")}
+      </div>
+
+      <div class="kelengkapan-list"><b>Kelengkapan:</b> ${p.kelengkapan.join(", ")}</div>
+
+      ${p.tambahan.length > 0 ? `
+        <p class="label" style="margin-top:1rem;display:block;">Tambahan opsional</p>
+        <div class="tambahan-list" id="tambahan-list">
+          ${p.tambahan.map(t => `
+            <label class="tambahan-item">
+              <input type="checkbox" data-tambahan="${t.id}" ${modalState.tambahan.includes(t.id) ? "checked" : ""}>
+              <span>${t.nama}</span>
+              <span class="tambahan-harga">${formatRupiah(t.hargaHarian)}/hari</span>
+            </label>
+          `).join("")}
+        </div>
+      ` : ""}
+
+      ${rincianHTML}
+      ${availHTML}
+
+      <button class="btn-add" id="pm-add-cart" ${!bisaTambah ? "disabled" : ""}>
+        ${state.rentang ? (bisaTambah ? "Tambah ke daftar sewa" : "Tidak tersedia") : "Pilih tanggal dulu"}
+      </button>
+    </div>
+  `;
+
+  document.querySelectorAll('#tambahan-list input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener("change", () => {
+      const tid = cb.dataset.tambahan;
+      if (cb.checked) modalState.tambahan.push(tid);
+      else modalState.tambahan = modalState.tambahan.filter(x => x !== tid);
+      renderProductModal();
+    });
+  });
+
+  const addBtn = document.getElementById("pm-add-cart");
+  if (addBtn && bisaTambah) addBtn.addEventListener("click", addToCartFromModal);
+}
+
+function addToCartFromModal() {
+  const p = modalState.product;
+  const tersedia = unitTersediaEfektif(p, state.rentang.mulai, state.rentang.selesai);
+  if (tersedia <= 0) { alert("Maaf, unit " + p.nama + " sudah tidak tersedia untuk rentang ini."); return; }
+  state.daftarSewa.push({ rowId: state.nextRowId++, productId: p.id, tambahan: modalState.tambahan.slice() });
+  updateCartBadge();
+  closeProductModal();
+  openCart();
+}
+
+// ============================================================
+// CART DRAWER (daftar sewa)
+// ============================================================
+const overlayCart = document.getElementById("overlay-cart");
+
+function updateCartBadge() {
+  const badge = document.getElementById("cart-badge");
+  const count = state.daftarSewa.length;
+  if (count > 0) { badge.style.display = "flex"; badge.textContent = count; }
+  else { badge.style.display = "none"; }
+}
+
+function openCart() { renderCart(); overlayCart.classList.add("open"); }
+function closeCart() { overlayCart.classList.remove("open"); }
+document.getElementById("btn-open-cart").addEventListener("click", openCart);
+document.getElementById("close-cart").addEventListener("click", closeCart);
+overlayCart.addEventListener("click", e => { if (e.target === overlayCart) closeCart(); });
+
+function hitungItemDetail(item) {
+  const p = getProduct(item.productId);
+  const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+  const rincian = hitungRincianHarga(p, hari);
+  const tambahanDetail = item.tambahan.map(tid => p.tambahan.find(t => t.id === tid)).filter(Boolean);
+  const tambahanTotal = tambahanDetail.reduce((sum, t) => sum + t.hargaHarian * hari, 0);
+  return { p, hari, rincian, tambahanDetail, tambahanTotal, subtotalItem: rincian.subtotalSetelahDiskon + tambahanTotal };
+}
+
+function calcSubtotalSewa() {
+  return state.daftarSewa.reduce((sum, item) => sum + hitungItemDetail(item).subtotalItem, 0);
+}
+function calcBiayaAntarJemput() {
+  if (state.pengambilan !== "antar") return 0;
+  if (!CONFIG.antarJemput.tersedia) return 0;
+  return state.jarakKm <= CONFIG.antarJemput.gratisRadiusKm ? 0 : CONFIG.antarJemput.biayaLuarRadius;
+}
+
+function renderCart() {
+  const body = document.getElementById("cart-body");
+
+  if (!state.rentang || state.daftarSewa.length === 0) {
+    body.innerHTML = `<div class="cart-empty">${!state.rentang ? "Pilih rentang tanggal di beranda, lalu tambahkan peralatan yang ingin disewa." : "Daftar sewa masih kosong. Pilih peralatan dari grid untuk mulai."}</div>`;
+    return;
+  }
+
+  const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+  const itemsHTML = state.daftarSewa.map(item => {
+    const d = hitungItemDetail(item);
+    const tambahanText = d.tambahanDetail.length > 0 ? " + " + d.tambahanDetail.map(t => t.nama).join(", ") : "";
+    return `
+      <div class="sewa-item">
+        ${viewfinderHTML(d.p)}
+        <div class="sewa-item-info">
+          <div class="sewa-item-nama">${d.p.nama}</div>
+          <div class="sewa-item-detail">${hari} hari${tambahanText}</div>
+          <div class="sewa-item-harga">${formatRupiah(d.subtotalItem)}</div>
+          <button class="sewa-remove" data-rowid="${item.rowId}">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const subtotalSewa = calcSubtotalSewa();
+  const biayaAntar = calcBiayaAntarJemput();
+  const totalBayar = subtotalSewa + biayaAntar;
+
+  body.innerHTML = `
+    <div class="drawer-range">
+      <span>${formatTanggalPendek(state.rentang.mulai)} — ${formatTanggalPendek(state.rentang.selesai)} (${hari} hari)</span>
+      <button id="drawer-ubah-tanggal">Ubah</button>
+    </div>
+    <div>${itemsHTML}</div>
+
+    <p class="label" style="margin-top:1.1rem;display:block;">Pengambilan</p>
+    <div class="pengambilan-row">
+      <label class="pengambilan-option ${state.pengambilan === "tempat" ? "active" : ""}">
+        <input type="radio" name="pengambilan" value="tempat" ${state.pengambilan === "tempat" ? "checked" : ""} style="accent-color:var(--accent);">
+        Ambil di tempat (${CONFIG.alamat})
+      </label>
+      ${CONFIG.antarJemput.tersedia ? `
+        <label class="pengambilan-option ${state.pengambilan === "antar" ? "active" : ""}">
+          <input type="radio" name="pengambilan" value="antar" ${state.pengambilan === "antar" ? "checked" : ""} style="accent-color:var(--accent);">
+          Antar jemput
+        </label>
+      ` : ""}
+    </div>
+    <div class="jarak-field ${state.pengambilan === "antar" ? "show" : ""}" id="jarak-field">
+      <input type="number" min="0" step="0.5" id="input-jarak" placeholder="Perkiraan jarak (km)" value="${state.jarakKm || ""}">
+      <p class="jarak-note">Gratis dalam radius ${CONFIG.antarJemput.gratisRadiusKm} km. Di atas itu dikenai ${formatRupiah(CONFIG.antarJemput.biayaLuarRadius)} sekali jalan pulang-pergi. Jarak adalah perkiraan, bukan hasil perhitungan peta.</p>
+    </div>
+
+    <div class="rincian-box" style="margin-top:1rem;">
+      <div class="rincian-row"><span>Subtotal sewa</span><span>${formatRupiah(subtotalSewa)}</span></div>
+      <div class="rincian-row"><span>Antar jemput</span><span>${state.pengambilan === "antar" ? (biayaAntar === 0 ? "Gratis" : formatRupiah(biayaAntar)) : "-"}</span></div>
+      <div class="rincian-row total"><span>Total bayar</span><span>${formatRupiah(totalBayar)}</span></div>
+      <div class="jaminan-note">Jaminan: <b>Identitas asli (KTP/SIM/KTM)</b> — ditahan selama masa sewa, dikembalikan saat alat kembali dalam kondisi baik.</div>
+    </div>
+
+    <button class="btn-primary" id="btn-ajukan-booking">Ajukan booking</button>
+  `;
+
+  document.getElementById("drawer-ubah-tanggal").addEventListener("click", () => { closeCart(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+
+  body.querySelectorAll('.sewa-remove').forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.daftarSewa = state.daftarSewa.filter(i => i.rowId !== Number(btn.dataset.rowid));
+      updateCartBadge();
+      renderCart();
+    });
+  });
+
+  body.querySelectorAll('input[name="pengambilan"]').forEach(radio => {
+    radio.addEventListener("change", () => { state.pengambilan = radio.value; renderCart(); });
+  });
+
+  const jarakInput = document.getElementById("input-jarak");
+  if (jarakInput) jarakInput.addEventListener("input", () => { state.jarakKm = Number(jarakInput.value) || 0; renderCart(); });
+
+  document.getElementById("btn-ajukan-booking").addEventListener("click", openBooking);
+}
+
+// ============================================================
+// BOOKING FORM MODAL
+// ============================================================
+const overlayBooking = document.getElementById("overlay-booking");
+
+function openBooking() {
+  if (state.daftarSewa.length === 0) return;
+  closeCart();
+  renderBookingSummary();
+  overlayBooking.classList.add("open");
+}
+function closeBooking() { overlayBooking.classList.remove("open"); }
+document.getElementById("close-booking").addEventListener("click", closeBooking);
+overlayBooking.addEventListener("click", e => { if (e.target === overlayBooking) closeBooking(); });
+
+function renderBookingSummary() {
+  const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+  const totalBayar = calcSubtotalSewa() + calcBiayaAntarJemput();
+  document.getElementById("booking-summary").innerHTML = `
+    <div><span>Rentang</span><span>${formatTanggalPendek(state.rentang.mulai)} — ${formatTanggalPendek(state.rentang.selesai)} (${hari} hari)</span></div>
+    <div><span>Jumlah item</span><span>${state.daftarSewa.length}</span></div>
+    <div><span>Total bayar</span><span>${formatRupiah(totalBayar)}</span></div>
+  `;
+}
+
+function validateBookingForm() {
+  let valid = true;
+  const nama = document.getElementById("input-nama");
+  const wa = document.getElementById("input-wa");
+  const jam = document.getElementById("input-jam");
+  const identitas = document.querySelector('input[name="identitas"]:checked');
+
+  [["input-nama", "err-nama"], ["input-wa", "err-wa"], ["input-jam", "err-jam"]].forEach(([inputId, errId]) => {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (input.value.trim() === "") { input.classList.add("error"); err.classList.add("show"); valid = false; }
+    else { input.classList.remove("error"); err.classList.remove("show"); }
+  });
+
+  const errIdentitas = document.getElementById("err-identitas");
+  if (!identitas) { errIdentitas.classList.add("show"); valid = false; }
+  else { errIdentitas.classList.remove("show"); }
+
+  return valid;
+}
+
+function buatKodeBooking() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let kode = "";
+  for (let i = 0; i < 6; i++) kode += chars[Math.floor(Math.random() * chars.length)];
+  return CONFIG.namaUsaha + "-" + kode;
+}
+
+document.getElementById("btn-kirim-pengajuan").addEventListener("click", () => {
+  if (!validateBookingForm()) return;
+
+  const kode = buatKodeBooking();
+  const hari = hitungHari(state.rentang.mulai, state.rentang.selesai);
+  const totalBayar = calcSubtotalSewa() + calcBiayaAntarJemput();
+  const identitas = document.querySelector('input[name="identitas"]:checked').value;
+
+  document.getElementById("booking-code").textContent = kode;
+  document.getElementById("confirm-summary").innerHTML = `
+    <div><span>Rentang</span><span>${formatTanggalPendek(state.rentang.mulai)} — ${formatTanggalPendek(state.rentang.selesai)} (${hari} hari)</span></div>
+    <div><span>Jumlah item</span><span>${state.daftarSewa.length}</span></div>
+    <div><span>Total bayar</span><span>${formatRupiah(totalBayar)}</span></div>
+    <div><span>Jaminan</span><span>${identitas} asli</span></div>
+  `;
+
+  closeBooking();
+  document.getElementById("overlay-confirm").classList.add("open");
+});
+
+document.getElementById("close-confirm").addEventListener("click", tutupConfirm);
+document.getElementById("btn-tutup-confirm").addEventListener("click", tutupConfirm);
+function tutupConfirm() {
+  document.getElementById("overlay-confirm").classList.remove("open");
+  state.daftarSewa = [];
+  updateCartBadge();
+  renderGrid();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderStatic();
+renderChipKategori();
+renderGrid();
+updateCartBadge();
+</script>
+</body>
+</html>

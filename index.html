@@ -51,16 +51,22 @@
   /* ---------- Header ---------- */
   header{
     border-bottom:1px solid rgba(22,50,79,.1);
+    overflow:hidden;
   }
   .header-inner{
     max-width:1080px;
     margin:0 auto;
-    padding:3rem 1.25rem;
+    padding:3rem 1.25rem 1rem;
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:1.5rem;
+    align-items:center;
+    min-height:260px;
   }
   header h1{
     margin-top:.75rem;
-    font-size:clamp(2rem,5vw,3rem);
-    line-height:1.1;
+    font-size:clamp(1.5rem,3.4vw,2.7rem);
+    line-height:1.15;
     color:var(--ink);
   }
   header p.sub{
@@ -69,10 +75,51 @@
     color:rgba(29,27,24,.7);
   }
 
+  /* ---------- Header art (decorative floating icons) ---------- */
+  .header-art{
+    position:relative;
+    height:240px;
+  }
+  .art-icon{
+    position:absolute;
+    top:var(--top);
+    left:var(--left);
+    width:var(--size);
+    height:var(--size);
+    color:var(--icolor);
+    opacity:0;
+    transform:translateX(var(--fromx)) rotate(var(--r));
+    animation:artFly .85s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay:var(--delay);
+  }
+  .art-icon[data-dir="left"]{--fromx:-100px;}
+  .art-icon[data-dir="right"]{--fromx:100px;}
+  .art-icon svg{width:100%;height:100%;}
+  @keyframes artFly{
+    to{opacity:1;transform:translateX(0) rotate(var(--r));}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .art-icon{animation:none;opacity:1;transform:rotate(var(--r));}
+  }
+  @media (max-width:760px){
+    .header-inner{grid-template-columns:1fr;min-height:0;position:relative;}
+    .header-art{
+      position:absolute;
+      top:48%;
+      left:0;
+      right:0;
+      bottom:0;
+      height:auto;
+      opacity:.25;
+      pointer-events:none;
+    }
+    .header-text{position:relative;z-index:1;}
+  }
+
   main{
     max-width:1080px;
     margin:0 auto;
-    padding:2.5rem 1.25rem 3rem;
+    padding:1.5rem 1.25rem 3rem;
   }
 
   /* ---------- Filter chips ---------- */
@@ -146,14 +193,9 @@
     justify-content:center;
     overflow:hidden;
   }
-  .card-preview h3{
-    font-family:'Fraunces',serif;
-    font-style:italic;
-    color:#fff;
-    font-size:1.5rem;
-    text-align:center;
-    padding:0 1rem;
-    text-shadow:0 1px 3px rgba(0,0,0,.15);
+  .card-preview svg{
+    width:32%;
+    height:32%;
   }
   .card-tag-contoh{
     position:absolute;
@@ -238,9 +280,12 @@
 
   <header>
     <div class="header-inner">
-      <p class="eyebrow">Katalog &mdash; Contoh Website UMKM</p>
-      <h1>Kumpulan <em>desain website</em><br>untuk usaha Anda</h1>
-      <p class="sub">Kumpulan desain website UMKM untuk katalog produk, keranjang, dan checkout tanpa akun yang bisa Anda lihat langsung demonya sebelum memesan.</p>
+      <div class="header-text">
+        <p class="eyebrow">Katalog &mdash; Contoh Website UMKM</p>
+        <h1>Kumpulan <em>desain website</em><br>untuk usaha Anda</h1>
+        <p class="sub">Kumpulan desain website UMKM untuk katalog produk, keranjang, dan checkout tanpa akun yang bisa Anda lihat langsung demonya sebelum memesan.</p>
+      </div>
+      <div class="header-art" aria-hidden="true" id="header-art"></div>
     </div>
   </header>
 
@@ -249,14 +294,15 @@
       <button class="chip active" data-kategori="semua">Semua</button>
       <button class="chip" data-kategori="kuliner">Kuliner</button>
       <button class="chip" data-kategori="fashion">Fashion</button>
+      <button class="chip" data-kategori="rental">Rental</button>
     </div>
 
     <div class="grid" id="template-grid">
       <a class="card" data-kategori="kuliner" href="/template-roti/">
         <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:linear-gradient(135deg,#6B3F2E,#C98A3B);">
-          <h3>Roti Hangat</h3>
+        <div class="card-preview" style="background:#6B3F2E;color:#F3E7DC;">
           <span class="card-tag-contoh">contoh</span>
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26c0-9 7-16 16-16s16 7 16 16c0 6-4 10-16 10S8 32 8 26Z"/><path d="M16 22c2-2 5-3 8-3s6 1 8 3"/><circle cx="16" cy="30" r="1.4" fill="currentColor" stroke="none"/><circle cx="24" cy="32" r="1.4" fill="currentColor" stroke="none"/><circle cx="32" cy="30" r="1.4" fill="currentColor" stroke="none"/></svg>
         </div>
         <div class="card-body">
           <span class="card-kategori">Kuliner</span>
@@ -267,14 +313,27 @@
 
       <a class="card" data-kategori="fashion" href="/template-fashion/">
         <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:linear-gradient(135deg,#14161A,#2440C7);">
-          <h3>Yogata</h3>
+        <div class="card-preview" style="background:#14161A;color:#F5F5F2;">
           <span class="card-tag-contoh">contoh</span>
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6a3 3 0 1 1 3 3"/><path d="M24 9v5"/><path d="M24 14 8 27a4 4 0 0 0 2 7h28a4 4 0 0 0 2-7L24 14Z"/><path d="M14 34h20"/></svg>
         </div>
         <div class="card-body">
           <span class="card-kategori">Fashion</span>
           <h2>Yogata</h2>
           <p>Demo template toko fashion dengan varian warna dan ukuran, checkout langsung ke WhatsApp.</p>
+        </div>
+      </a>
+
+      <a class="card" data-kategori="rental" href="/template-rental/">
+        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+        <div class="card-preview" style="background:#131512;color:#F2B01E;">
+          <span class="card-tag-contoh">contoh</span>
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="17" width="34" height="22" rx="3"/><rect x="17" y="10" width="12" height="9" rx="2"/><circle cx="24" cy="28" r="8"/><circle cx="24" cy="28" r="4"/><rect x="34" y="21" width="4" height="3" rx="1"/></svg>
+        </div>
+        <div class="card-body">
+          <span class="card-kategori">Rental</span>
+          <h2>RAMA</h2>
+          <p>Demo template rental kamera dan peralatan video dengan cek ketersediaan berbasis rentang tanggal.</p>
         </div>
       </a>
     </div>
@@ -288,6 +347,38 @@
   </main>
 
 <script>
+  // ============================================================
+  // Ikon dekoratif melayang di header (bertema katalog/website UMKM)
+  // ============================================================
+  const HEADER_ICONS = {
+    browser: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="36" height="28" rx="3"/><path d="M6 18h36"/><circle cx="11" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="19" cy="14" r="1.2" fill="currentColor" stroke="none"/><path d="M13 26h14M13 31h9"/></svg>',
+    tag: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 6h13a2 2 0 0 1 2 2v13L20 43 4 27 27 6Z"/><circle cx="34" cy="13" r="2.3" fill="currentColor" stroke="none"/></svg>',
+    star: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6l5.5 11.5L42 19l-9 8.8L35 40 24 33.5 13 40l2-12.2L6 19l12.5-1.5L24 6Z"/></svg>',
+    bag: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h24l-2 24H14L12 16Z"/><path d="M17 16v-2a7 7 0 0 1 14 0v2"/></svg>',
+    chat: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="36" height="24" rx="6"/><path d="M14 32v7l8-7"/><circle cx="17" cy="20" r="1.3" fill="currentColor" stroke="none"/><circle cx="24" cy="20" r="1.3" fill="currentColor" stroke="none"/><circle cx="31" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg>',
+    grid: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="14" height="14" rx="2"/><rect x="27" y="7" width="14" height="14" rx="2"/><rect x="7" y="27" width="14" height="14" rx="2"/><rect x="27" y="27" width="14" height="14" rx="2"/></svg>'
+  };
+
+  const HEADER_ART = [
+    { kategori: "browser", top: "6%",  left: "6%",  size: "56px", r: "-8deg",  dir: "left",  delay: ".05s", color: "var(--ink)" },
+    { kategori: "tag",     top: "2%",  left: "46%", size: "40px", r: "10deg",  dir: "left",  delay: ".18s", color: "var(--accent)" },
+    { kategori: "star",    top: "58%", left: "12%", size: "42px", r: "-6deg",  dir: "left",  delay: ".30s", color: "var(--secondary)" },
+    { kategori: "bag",     top: "12%", left: "72%", size: "54px", r: "8deg",   dir: "right", delay: ".12s", color: "var(--accent)" },
+    { kategori: "chat",    top: "60%", left: "66%", size: "46px", r: "-10deg", dir: "right", delay: ".26s", color: "var(--ink)" },
+    { kategori: "grid",    top: "34%", left: "90%", size: "36px", r: "6deg",   dir: "right", delay: ".38s", color: "var(--secondary)" }
+  ];
+
+  function renderHeaderArt() {
+    const wrap = document.getElementById("header-art");
+    if (!wrap) return;
+    wrap.innerHTML = HEADER_ART.map(art => {
+      const style = "--top:" + art.top + ";--left:" + art.left + ";--size:" + art.size +
+        ";--r:" + art.r + ";--delay:" + art.delay + ";--icolor:" + art.color + ";";
+      return '<span class="art-icon" data-dir="' + art.dir + '" style="' + style + '">' + HEADER_ICONS[art.kategori] + '</span>';
+    }).join("");
+  }
+  renderHeaderArt();
+
   const chips = document.querySelectorAll("#chip-kategori .chip");
   const cards = document.querySelectorAll("#template-grid .card");
   const grid = document.getElementById("template-grid");
