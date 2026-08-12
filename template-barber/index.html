@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PANGKAS — Reservasi Potong Rambut per Kapster (Demo Template)</title>
+<meta name="description" content="Demo template reservasi barbershop untuk UMKM. Pilih layanan, kapster, dan jadwal yang benar-benar tersedia, lalu dapatkan kartu janji temu.">
+<meta property="og:title" content="PANGKAS — Demo Template Reservasi Barbershop">
+<meta property="og:description" content="Contoh alur booking barbershop untuk UMKM: pilih layanan, kapster, tanggal, dan jam yang tersedia. Bagian dari katalog template UMKM.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%82%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#E8E3DA;
+    --surface:#F5F2EC;
+    --surface-raised:#FBFAF7;
+    --ink:#241C1A;
+    --ink-muted:#6E655E;
+    --hairline:#D2CABE;
+    --oxblood:#7A2E2E;
+    --oxblood-hover:#5E2020;
+    --brass:#A8834A;
+    --tersedia:#4C7A5B;
+    --tidak-tersedia:#A34A3F;
+    --disabled:#B5AEA5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;overflow-x:hidden;width:100%;}
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  body.locked{overflow:hidden;}
+  h1,h2,h3{margin:0;}
+  button{font-family:inherit;cursor:pointer;}
+  input,textarea{font-family:inherit;}
+  a{color:inherit;}
+  img,svg{display:block;}
+
+  /* ---------- Motif tiang pangkas ---------- */
+  .barber-stripe{
+    height:6px;
+    background:repeating-linear-gradient(45deg,
+      var(--oxblood) 0 14px,
+      var(--surface) 14px 28px,
+      var(--brass) 28px 42px);
+    background-size:200% 100%;
+    animation:barberScroll 6s linear infinite;
+  }
+  @keyframes barberScroll{ from{background-position:0 0;} to{background-position:-84px 0;} }
+  @keyframes barberScrollY{ from{background-position:0 0;} to{background-position:0 48px;} }
+  @media (prefers-reduced-motion:reduce){
+    .barber-stripe{animation:none;}
+  }
+
+  /* ---------- Demo bar ---------- */
+  .demo-bar{
+    background:var(--ink);
+    color:var(--surface);
+    font-size:.78rem;
+    text-align:center;
+    padding:.55rem 1rem;
+  }
+  .demo-bar a{color:var(--brass);font-weight:700;text-decoration:underline;margin-left:.4rem;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(232,227,218,.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--hairline);
+  }
+  .header-inner{
+    max-width:1200px;margin:0 auto;padding:.85rem 1.25rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  }
+  .brand-mark{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.35rem;text-transform:uppercase;letter-spacing:.03em;color:var(--oxblood);}
+  .jam-ops-header{display:none;font-size:.8rem;color:var(--ink-muted);}
+  @media(min-width:640px){ .jam-ops-header{display:block;} }
+  .btn-booking{background:var(--oxblood);color:#fff;border:none;border-radius:999px;padding:.6rem 1.2rem;font-weight:700;font-size:.82rem;white-space:nowrap;}
+  .btn-booking:hover{background:var(--oxblood-hover);}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--surface);padding:3rem 1.25rem 2.5rem;border-bottom:1px solid var(--hairline);}
+  .hero-inner{max-width:1100px;margin:0 auto;text-align:center;}
+  .hero-eyebrow{font-family:'Manrope',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--brass);font-weight:700;margin:0;}
+  .hero h1{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:clamp(2rem,6vw,3.4rem);line-height:1.05;margin-top:.6rem;color:var(--ink);}
+  .hero-tagline{color:var(--ink-muted);margin-top:.85rem;font-size:1.02rem;max-width:34rem;margin-left:auto;margin-right:auto;}
+  .hero-cta-row{margin-top:1.6rem;display:flex;flex-direction:column;align-items:center;gap:.75rem;}
+  .btn-booking-besar{background:var(--oxblood);color:#fff;border:none;border-radius:999px;padding:.9rem 2rem;font-weight:700;font-size:.95rem;}
+  .btn-booking-besar:hover{background:var(--oxblood-hover);}
+  .status-buka{font-size:.82rem;font-weight:600;padding:.4rem .9rem;border-radius:999px;}
+  .status-buka.buka{background:rgba(76,122,91,.15);color:var(--tersedia);}
+  .status-buka.tutup{background:rgba(163,74,63,.15);color:var(--tidak-tersedia);}
+
+  /* ---------- Section umum ---------- */
+  .section{max-width:1200px;margin:0 auto;padding:3rem 1.25rem;}
+  .section-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.5rem;margin-bottom:.4rem;}
+  .section-sub{color:var(--ink-muted);font-size:.9rem;margin-bottom:1.5rem;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;}
+  .chip{font-family:'Manrope',sans-serif;font-size:.8rem;border:1px solid var(--hairline);background:var(--surface);color:var(--ink-muted);border-radius:999px;padding:.4rem 1rem;font-weight:600;}
+  .chip.active{background:var(--oxblood);border-color:var(--oxblood);color:#fff;}
+
+  /* ---------- Layanan grid ---------- */
+  .layanan-grid{display:grid;grid-template-columns:1fr;gap:1rem;}
+  @media(min-width:640px){ .layanan-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(min-width:960px){ .layanan-grid{grid-template-columns:repeat(3,1fr);} }
+  .layanan-card{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:1.1rem;}
+  .layanan-card-kategori{font-family:'Manrope',sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--brass);font-weight:700;}
+  .layanan-card-nama{font-family:'Oswald',sans-serif;font-size:1.05rem;margin-top:.3rem;text-transform:uppercase;}
+  .layanan-card-meta{display:flex;justify-content:space-between;margin-top:.5rem;font-size:.85rem;color:var(--ink-muted);}
+  .layanan-card-harga{color:var(--oxblood);font-weight:700;}
+  .layanan-card-ket{margin-top:.5rem;font-size:.8rem;color:var(--ink-muted);}
+
+  /* ---------- Kapster grid (halaman utama) ---------- */
+  .kapster-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+  @media(min-width:640px){ .kapster-grid{grid-template-columns:repeat(4,1fr);} }
+  .kapster-main-card{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:1.2rem 1rem;text-align:center;cursor:pointer;transition:border-color .15s ease;}
+  .kapster-main-card:hover{border-color:var(--oxblood);}
+  .kapster-main-card .kapster-avatar{width:72px;height:72px;margin:0 auto .75rem;}
+  .kapster-main-nama{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;}
+  .kapster-main-spesialisasi{font-size:.8rem;color:var(--ink-muted);margin-top:.2rem;}
+  .kapster-main-meta{font-size:.72rem;color:var(--ink-muted);margin-top:.5rem;}
+  .kapster-main-tarif{font-size:.72rem;color:var(--brass);margin-top:.3rem;font-weight:600;}
+
+  .kapster-avatar{position:relative;flex-shrink:0;border-radius:999px;background:var(--surface-raised);border:2px solid var(--brass);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .kapster-avatar svg{width:70%;height:70%;color:var(--ink);}
+  .kapster-avatar-any{color:var(--ink-muted);}
+  .kapster-avatar-any svg{width:55%;height:55%;}
+  .kapster-initial{position:absolute;bottom:-2px;right:-2px;background:var(--oxblood);color:#fff;font-size:.62rem;font-weight:700;width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface);}
+
+  /* ---------- Cara kerja ---------- */
+  .cara-kerja-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media(min-width:760px){ .cara-kerja-grid{grid-template-columns:repeat(3,1fr);} }
+  .cara-kerja-item{text-align:center;}
+  .cara-kerja-icon{width:56px;height:56px;border-radius:999px;background:var(--surface);border:2px solid var(--brass);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:var(--oxblood);}
+  .cara-kerja-icon svg{width:26px;height:26px;}
+  .cara-kerja-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.95rem;margin-bottom:.4rem;}
+  .cara-kerja-desc{font-size:.85rem;color:var(--ink-muted);}
+
+  /* ---------- Info section ---------- */
+  .info-section{background:var(--surface);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:3rem 1.25rem;}
+  .info-inner{max-width:1200px;margin:0 auto;}
+  .info-inner > h2{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.5rem;margin-bottom:1.5rem;}
+  .info-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media(min-width:760px){ .info-grid{grid-template-columns:repeat(3,1fr);} }
+  .info-card{background:var(--surface-raised);border:1px solid var(--hairline);border-radius:10px;padding:1.1rem;}
+  .info-card h3{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.9rem;color:var(--oxblood);margin-bottom:.6rem;}
+  .info-card p, .info-card ul{margin:0;font-size:.85rem;color:var(--ink-muted);line-height:1.7;}
+  .info-card ul{padding-left:1.1rem;}
+  .jam-row{display:flex;justify-content:space-between;font-size:.83rem;padding:.2rem 0;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:2rem 1.25rem;text-align:center;font-size:.8rem;color:var(--ink-muted);}
+  footer a{color:var(--oxblood);font-weight:700;text-decoration:underline;}
+
+  /* ---------- Overlay dasar (kartu janji temu) ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(36,28,26,.55);z-index:250;display:none;align-items:center;justify-content:center;padding:1rem;}
+  .overlay.open{display:flex;}
+
+  /* ---------- Wizard booking (overlay layar penuh) ---------- */
+  .overlay-wizard{position:fixed;inset:0;background:var(--surface-raised);z-index:300;display:none;flex-direction:column;}
+  .overlay-wizard.open{display:flex;}
+  .wizard-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--hairline);flex-shrink:0;}
+  .wizard-progress{display:flex;align-items:center;flex:1;overflow-x:auto;}
+  .progress-step{display:flex;flex-direction:column;align-items:center;gap:.25rem;min-width:58px;flex-shrink:0;}
+  .progress-dot{width:26px;height:26px;border-radius:999px;border:2px solid var(--hairline);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:var(--ink-muted);background:var(--surface);}
+  .progress-step.active .progress-dot{border-color:var(--oxblood);color:var(--oxblood);}
+  .progress-step.done .progress-dot{background:var(--oxblood);border-color:var(--oxblood);color:#fff;}
+  .progress-label{font-size:.64rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;}
+  .progress-step.active .progress-label{color:var(--ink);font-weight:700;}
+  .progress-line{flex:0 0 18px;height:2px;background:var(--hairline);align-self:center;margin-top:-16px;}
+  .wizard-close{background:var(--surface);border:1px solid var(--hairline);border-radius:999px;width:34px;height:34px;font-size:1.1rem;color:var(--ink);flex-shrink:0;margin-left:.75rem;line-height:1;}
+
+  .wizard-body{flex:1;overflow-y:auto;padding:1.25rem 1.25rem 2rem;max-width:640px;margin:0 auto;width:100%;}
+  .wizard-step-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.15rem;letter-spacing:.02em;margin-bottom:1rem;}
+  .wizard-footer{display:flex;gap:.75rem;padding:1rem 1.25rem;border-top:1px solid var(--hairline);flex-shrink:0;background:var(--surface-raised);max-width:640px;margin:0 auto;width:100%;}
+  .wizard-footer button{flex:1;padding:.85rem;border-radius:8px;font-weight:700;font-size:.9rem;border:1px solid var(--hairline);}
+  #btn-wizard-back{background:var(--surface);color:var(--ink);}
+  #btn-wizard-next,#btn-wizard-submit{background:var(--oxblood);border-color:var(--oxblood);color:#fff;}
+  #btn-wizard-next:hover,#btn-wizard-submit:hover{background:var(--oxblood-hover);}
+  #btn-wizard-next:disabled{background:var(--disabled);border-color:var(--disabled);color:#fff;cursor:not-allowed;}
+
+  .wizard-notice{background:rgba(163,74,63,.12);color:var(--tidak-tersedia);border-radius:8px;padding:.65rem .85rem;font-size:.82rem;margin-bottom:1rem;}
+
+  /* ---------- Step 1: layanan ---------- */
+  .layanan-group{margin-bottom:1.25rem;}
+  .layanan-group-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;letter-spacing:.05em;color:var(--brass);margin-bottom:.5rem;}
+  .layanan-group-note{font-family:'Manrope',sans-serif;text-transform:none;letter-spacing:0;font-size:.72rem;color:var(--ink-muted);font-weight:600;}
+  .layanan-row{display:flex;align-items:flex-start;gap:.75rem;padding:.7rem .8rem;background:var(--surface);border:1px solid var(--hairline);border-radius:8px;margin-bottom:.5rem;cursor:pointer;}
+  .layanan-row input{width:18px;height:18px;accent-color:var(--oxblood);flex-shrink:0;margin-top:.15rem;}
+  .layanan-row-info{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .layanan-row-nama{font-weight:600;font-size:.9rem;}
+  .layanan-row-durasi{font-size:.76rem;color:var(--ink-muted);}
+  .layanan-row-ket{font-size:.74rem;color:var(--ink-muted);margin-top:.2rem;line-height:1.4;}
+  .layanan-row-harga{font-weight:700;font-size:.85rem;color:var(--oxblood);white-space:nowrap;}
+  .wizard-summary{background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:.8rem 1rem;margin-top:.5rem;}
+  .wizard-summary-row{display:flex;justify-content:space-between;font-size:.85rem;padding:.15rem 0;}
+  .wizard-summary-empty{color:var(--ink-muted);font-size:.85rem;}
+
+  /* ---------- Step 2: kapster ---------- */
+  .kapster-wizard-grid{display:grid;grid-template-columns:1fr;gap:.75rem;}
+  @media(min-width:560px){ .kapster-wizard-grid{grid-template-columns:1fr 1fr;} }
+  .kapster-wizard-card{display:flex;gap:.85rem;align-items:center;background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:.85rem;cursor:pointer;position:relative;overflow:hidden;}
+  .kapster-wizard-card.active{border-color:var(--oxblood);background:var(--surface-raised);}
+  .kapster-wizard-card.active::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:repeating-linear-gradient(45deg,var(--oxblood) 0 8px,var(--surface) 8px 16px,var(--brass) 16px 24px);
+    background-size:100% 48px;animation:barberScrollY 3s linear infinite;
+  }
+  @media(prefers-reduced-motion:reduce){ .kapster-wizard-card.active::before{animation:none;} }
+  .kapster-wizard-card.disabled{opacity:.5;cursor:not-allowed;}
+  .kapster-wizard-card .kapster-avatar{width:54px;height:54px;}
+  .kapster-card-body{flex:1;min-width:0;}
+  .kapster-card-nama{font-weight:700;font-size:.92rem;}
+  .kapster-card-sub{font-size:.78rem;color:var(--ink-muted);}
+  .kapster-card-tarif{font-size:.74rem;color:var(--brass);margin-top:.2rem;font-weight:600;}
+  .kapster-card-disabled-note{font-size:.72rem;color:var(--tidak-tersedia);margin-top:.25rem;}
+
+  /* ---------- Step 3: tanggal & jam ---------- */
+  .tanggal-row{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:1.25rem;-webkit-overflow-scrolling:touch;}
+  .tanggal-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:.1rem;background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:.55rem .7rem;min-width:56px;color:var(--ink);}
+  .tanggal-chip.active{background:var(--oxblood);border-color:var(--oxblood);color:#fff;}
+  .tanggal-chip.tutup{opacity:.4;cursor:not-allowed;}
+  .tanggal-chip-hari{font-size:.68rem;text-transform:uppercase;}
+  .tanggal-chip-tgl{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600;}
+  .tanggal-chip-bulan{font-size:.68rem;}
+  .tanggal-chip-tutup{font-size:.6rem;color:var(--tidak-tersedia);}
+  .tanggal-chip.active .tanggal-chip-tutup{color:#fff;}
+
+  .jadwal-bar-wrap{margin-bottom:1.25rem;}
+  .jadwal-track{position:relative;height:36px;border-radius:6px;background:rgba(76,122,91,.16);overflow:hidden;border:1px solid var(--hairline);}
+  .jadwal-seg{position:absolute;top:0;bottom:0;}
+  .jadwal-seg.istirahat{background:repeating-linear-gradient(45deg,var(--disabled) 0 4px,transparent 4px 8px);}
+  .jadwal-seg.terisi{background:rgba(163,74,63,.45);}
+  .jadwal-seg.dipilih{background:var(--brass);display:flex;align-items:center;justify-content:center;}
+  .jadwal-dipilih-label{font-size:.65rem;font-weight:700;color:#2A1E10;white-space:nowrap;}
+  .jadwal-now{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);}
+  .jadwal-now::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:999px;background:var(--ink);}
+  .jadwal-bar-caption{font-size:.72rem;color:var(--ink-muted);margin-top:.35rem;text-align:center;}
+  .jadwal-bar-note{font-size:.82rem;color:var(--ink-muted);padding:.75rem;text-align:center;background:var(--surface);border:1px solid var(--hairline);border-radius:8px;}
+  @media(max-width:480px){ .jadwal-track{height:26px;} .jadwal-dipilih-label{font-size:.56rem;} }
+
+  .estimasi-selesai{background:rgba(168,131,74,.15);border:1px solid var(--brass);color:var(--ink);border-radius:8px;padding:.6rem .85rem;font-size:.85rem;margin-bottom:1rem;text-align:center;}
+  .estimasi-selesai strong{color:var(--oxblood);}
+  .jam-group{margin-bottom:1rem;}
+  .jam-group-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;letter-spacing:.05em;color:var(--brass);margin-bottom:.5rem;}
+  .jam-group-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:.5rem;}
+  .jam-slot{background:var(--surface);border:1px solid var(--tersedia);color:var(--tersedia);border-radius:6px;padding:.55rem .3rem;font-weight:600;font-size:.82rem;}
+  .jam-slot.active{background:var(--oxblood);border-color:var(--oxblood);color:#fff;}
+  .jam-slot.nonaktif{background:var(--surface);border-color:var(--hairline);color:var(--disabled);cursor:not-allowed;text-decoration:line-through;}
+  .jam-empty-state{text-align:center;padding:2rem 1rem;color:var(--ink-muted);background:var(--surface);border:1px solid var(--hairline);border-radius:8px;}
+  .btn-saran-tanggal{margin-top:.75rem;background:var(--oxblood);color:#fff;border:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:700;font-size:.82rem;}
+  .jam-empty-note{font-size:.78rem;margin-top:.5rem;}
+
+  /* ---------- Step 4: form & ringkasan ---------- */
+  .form-group{margin-bottom:1rem;}
+  .form-group label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.35rem;}
+  .req{color:var(--tidak-tersedia);margin-left:.15rem;}
+  .form-group input,.form-group textarea{width:100%;background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:.65rem .8rem;font-size:.88rem;color:var(--ink);}
+  .form-group input.error,.form-group textarea.error{border-color:var(--tidak-tersedia);}
+  .field-error{display:none;color:var(--tidak-tersedia);font-size:.72rem;margin-top:.3rem;}
+  .field-error.show{display:block;}
+
+  .ringkasan-block{background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:.85rem 1rem;margin-bottom:.75rem;}
+  .ringkasan-title{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.78rem;color:var(--brass);margin-bottom:.4rem;letter-spacing:.05em;}
+  .ringkasan-row{display:flex;justify-content:space-between;font-size:.85rem;padding:.2rem 0;gap:.5rem;}
+  .ringkasan-row.total{font-weight:700;border-top:1px solid var(--hairline);margin-top:.3rem;padding-top:.5rem;}
+  .ringkasan-note{font-size:.72rem;color:var(--ink-muted);margin-top:.3rem;}
+
+  /* ---------- Kartu janji temu (tiket) ---------- */
+  .kartu-tiket-outer{width:100%;max-width:380px;max-height:90vh;display:flex;flex-direction:column;}
+  .kartu-tiket-scroll{background:var(--surface-raised);border-radius:14px 14px 0 0;padding:1.75rem 1.5rem 1.25rem;overflow-y:auto;position:relative;}
+  .kartu-tiket-bawah{
+    flex-shrink:0;height:22px;
+    background-image:radial-gradient(circle at 10px 0, rgba(0,0,0,0) 10px, var(--surface-raised) 11px);
+    background-size:20px 20px;background-repeat:repeat-x;
+  }
+  .kartu-close{position:absolute;top:1rem;right:1rem;background:var(--surface);border:1px solid var(--hairline);border-radius:999px;width:30px;height:30px;font-size:1rem;line-height:1;color:var(--ink);}
+  .kartu-icon{width:52px;height:52px;border-radius:999px;background:rgba(76,122,91,.15);color:var(--tersedia);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+  .kartu-title{text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.05rem;}
+  .kartu-kode{text-align:center;font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;letter-spacing:.08em;color:var(--oxblood);margin:.75rem 0 1.25rem;}
+  .kartu-detail{background:var(--surface);border:1px dashed var(--hairline);border-radius:10px;padding:.9rem 1rem;margin-bottom:1rem;}
+  .kartu-detail-row{display:flex;justify-content:space-between;font-size:.82rem;padding:.2rem 0;gap:.5rem;}
+  .kartu-total-row{font-weight:700;border-top:1px solid var(--hairline);margin-top:.3rem;padding-top:.45rem;}
+  .btn-gcal{display:block;text-align:center;text-decoration:none;background:var(--oxblood);color:#fff;border-radius:8px;padding:.8rem;font-weight:700;font-size:.85rem;margin-bottom:.6rem;}
+  .btn-gcal:hover{background:var(--oxblood-hover);}
+  .kartu-demo-note{font-size:.72rem;color:var(--ink-muted);text-align:center;margin-bottom:.25rem;}
+</style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    Ini adalah demo template — bukan barbershop sungguhan.
+    <a href="#" id="link-katalog-top" target="_blank" rel="noopener">Lihat template lain</a>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-mark" id="brand-mark"></div>
+      <div class="jam-ops-header" id="jam-ops-header"></div>
+      <button class="btn-booking" id="btn-booking-header">Booking sekarang</button>
+    </div>
+  </header>
+  <div class="barber-stripe"></div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow" id="hero-eyebrow"></p>
+      <h1 id="hero-heading">Potong Rapi<br>Tanpa Antre</h1>
+      <p class="hero-tagline" id="hero-tagline"></p>
+      <div class="hero-cta-row">
+        <button class="btn-booking-besar" id="btn-booking-hero">Booking Sekarang</button>
+        <span class="status-buka" id="status-buka"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="barber-stripe"></div>
+
+  <section class="section" id="section-layanan">
+    <h2 class="section-title">Layanan</h2>
+    <p class="section-sub">Pilih layanan yang kamu butuhkan, dari potong reguler sampai paket lengkap.</p>
+    <div class="chip-row" id="layanan-chip-row"></div>
+    <div class="layanan-grid" id="layanan-grid"></div>
+  </section>
+
+  <section class="section" id="section-kapster">
+    <h2 class="section-title">Kapster</h2>
+    <p class="section-sub">Klik kapster pilihanmu untuk langsung mulai booking.</p>
+    <div class="kapster-grid" id="kapster-grid"></div>
+  </section>
+
+  <div class="barber-stripe"></div>
+
+  <section class="section" id="section-cara-kerja">
+    <h2 class="section-title">Cara Kerja</h2>
+    <div class="cara-kerja-grid">
+      <div class="cara-kerja-item">
+        <div class="cara-kerja-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="cara-kerja-title">1. Pilih layanan & kapster</div>
+        <div class="cara-kerja-desc">Tentukan potongan yang kamu mau dan kapster favoritmu, atau biarkan sistem yang menetapkan.</div>
+      </div>
+      <div class="cara-kerja-item">
+        <div class="cara-kerja-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="cara-kerja-title">2. Pilih tanggal & jam</div>
+        <div class="cara-kerja-desc">Lihat jadwal yang benar-benar kosong secara langsung, tanpa perlu tanya dulu.</div>
+      </div>
+      <div class="cara-kerja-item">
+        <div class="cara-kerja-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div class="cara-kerja-title">3. Datang sesuai jadwal</div>
+        <div class="cara-kerja-desc">Tunjukkan kode janji temumu dan langsung dilayani tanpa antre.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-section" id="section-info">
+    <div class="info-inner">
+      <h2>Informasi</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Lokasi & Jam Operasional</h3>
+          <p id="info-alamat"></p>
+          <div id="info-jam-list" style="margin-top:.6rem;"></div>
+        </div>
+        <div class="info-card">
+          <h3>Keterlambatan & Pembatalan</h3>
+          <ul>
+            <li id="info-telat"></li>
+            <li>Pembatalan diharapkan dilakukan minimal 2 jam sebelum jadwal</li>
+            <li>Konfirmasi ulang dikirim lewat WhatsApp sebelum jadwal</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Pembayaran</h3>
+          <ul>
+            <li>Pembayaran dilakukan di tempat setelah layanan selesai</li>
+            <li>Menerima tunai dan pembayaran digital umum</li>
+            <li>Tidak ada biaya reservasi di muka</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Dibuat oleh <strong id="footer-brand"></strong> · Template demo dari
+    <a href="#" id="link-katalog-bottom" target="_blank" rel="noopener">katalog template UMKM</a>
+  </footer>
+
+  <!-- ================= Wizard Booking (overlay layar penuh) ================= -->
+  <div class="overlay-wizard" id="overlay-wizard">
+    <div class="wizard-header">
+      <div class="wizard-progress" id="wizard-progress"></div>
+      <button class="wizard-close" id="close-wizard" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="wizard-body" id="wizard-body"></div>
+    <div class="wizard-footer">
+      <button id="btn-wizard-back">Kembali</button>
+      <button id="btn-wizard-next">Lanjut</button>
+      <button id="btn-wizard-submit" style="display:none;">Konfirmasi Booking</button>
+    </div>
+  </div>
+
+  <!-- ================= Kartu Janji Temu ================= -->
+  <div class="overlay" id="overlay-kartu">
+    <div class="kartu-tiket-outer">
+      <div class="kartu-tiket-scroll">
+        <button class="kartu-close" id="btn-tutup-kartu" aria-label="Tutup">&times;</button>
+        <div class="kartu-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="kartu-title">Janji Temu Terkonfirmasi</div>
+        <div class="kartu-kode" id="kartu-kode"></div>
+        <div class="kartu-detail">
+          <div class="kartu-detail-row"><span>Nama</span><span id="kartu-nama"></span></div>
+          <div class="kartu-detail-row"><span>Kapster</span><span id="kartu-kapster"></span></div>
+          <div class="kartu-detail-row"><span>Tanggal</span><span id="kartu-tanggal"></span></div>
+          <div class="kartu-detail-row"><span>Jam</span><span id="kartu-jam"></span></div>
+          <div id="kartu-layanan" style="margin-top:.5rem;font-size:.8rem;color:var(--ink-muted);"></div>
+          <div class="kartu-detail-row kartu-total-row"><span>Total</span><span id="kartu-total"></span></div>
+        </div>
+        <a class="btn-gcal" id="btn-tambah-kalender" target="_blank" rel="noopener">+ Tambah ke Google Calendar</a>
+        <div class="kartu-demo-note">Ini demo template — tidak ada data yang benar-benar terkirim ke mana pun.</div>
+      </div>
+      <div class="kartu-tiket-bawah"></div>
+    </div>
+  </div>
+
+<script>
+// ============================================================
+// KONFIGURASI USAHA — ubah bagian ini saja saat memakai template
+// untuk client baru. Sisa kode di bawah tidak perlu disentuh.
+// ============================================================
+const HARI_LIBUR_USAHA = [2]; // 0=Minggu ... 2=Selasa tutup
+
+const CONFIG = {
+  namaUsaha: "PANGKAS",
+  tagline: "Potong rapi, servis tenang — booking tanpa antre di depan.",
+  nomorWhatsApp: "628000000000",
+  alamat: "Jl. Kaliurang KM 5, Sinduharjo, Ngaglik, Sleman, Yogyakarta",
+  urlKatalog: "https://templates-web-nu.vercel.app/",
+
+  jamBuka: "10:00",
+  jamTutup: "21:00",
+  hariLibur: HARI_LIBUR_USAHA,
+  langkahSlotMenit: 15,
+  cutoffMenit: 60,
+  hariKeDepan: 14,
+
+  toleransiTelatMenit: 10,
+  layanan: buildLayanan(),
+  kapster: buildKapster()
+};
+
+const LAYANAN_KATEGORI_LABEL = { rambut: "Rambut", jenggot: "Jenggot", perawatan: "Perawatan", paket: "Paket" };
+const KATEGORI_URUTAN = ["rambut", "jenggot", "perawatan", "paket"];
+// Rambut & Paket sama-sama berisi satu potongan rambut utuh, jadi hanya boleh
+// pilih salah satu di antara keduanya — bukan ditambah-tambah seperti Jenggot/Perawatan.
+const KATEGORI_TUNGGAL = ["rambut", "paket"];
+
+function buildLayanan() {
+  return [
+    { id: "rmb-01", nama: "Potong Rambut Reguler", kategori: "rambut", durasiMenit: 40, harga: 35000, keterangan: "Potong, keramas, dan penataan ringan" },
+    { id: "rmb-02", nama: "Potong + Styling Rambut", kategori: "rambut", durasiMenit: 50, harga: 45000, keterangan: "Potong sesuai referensi model, dirapikan dengan produk styling di akhir" },
+    { id: "rmb-03", nama: "Potong Anak", kategori: "rambut", durasiMenit: 30, harga: 30000, keterangan: "Untuk usia di bawah 12 tahun" },
+    { id: "rmb-04", nama: "Creambath + Potong", kategori: "rambut", durasiMenit: 60, harga: 65000, keterangan: "Perawatan creambath dilanjutkan potong rapi" },
+    { id: "jng-01", nama: "Rapikan Jenggot", kategori: "jenggot", durasiMenit: 20, harga: 20000, keterangan: "Merapikan garis dan panjang jenggot" },
+    { id: "jng-02", nama: "Cukur Jenggot Bersih", kategori: "jenggot", durasiMenit: 30, harga: 30000, keterangan: "Cukur bersih dengan pisau cukur hangat" },
+    { id: "jng-03", nama: "Jenggot & Kumis Detail", kategori: "jenggot", durasiMenit: 40, harga: 45000, keterangan: "Pembentukan detail jenggot dan kumis" },
+    { id: "prw-01", nama: "Hair Spa", kategori: "perawatan", durasiMenit: 60, harga: 75000, keterangan: "Perawatan kulit kepala dan rambut dengan pijat" },
+    { id: "prw-02", nama: "Pijat Kepala & Bahu", kategori: "perawatan", durasiMenit: 45, harga: 55000, keterangan: "Relaksasi kepala, leher, dan bahu" },
+    { id: "prw-03", nama: "Coloring Rambut", kategori: "perawatan", durasiMenit: 90, harga: 130000, keterangan: "Pewarnaan rambut sesuai pilihan warna" },
+    { id: "pkt-01", nama: "Paket Rapi Total", kategori: "paket", durasiMenit: 75, harga: 95000, keterangan: "Potong, rapikan jenggot, dan styling akhir" },
+    { id: "pkt-02", nama: "Paket Groom Lengkap", kategori: "paket", durasiMenit: 120, harga: 180000, keterangan: "Potong, cukur jenggot, dan hair spa dalam satu sesi" }
+  ];
+}
+
+function terbookingList(list) {
+  return list.map(b => ({ tanggal: daysFromNowISO(b[0]), mulai: b[1], durasiMenit: b[2] }));
+}
+
+function buildKapster() {
+  const todayDow = new Date().getDay();
+  const ekoLiburDow = HARI_LIBUR_USAHA.includes(todayDow) ? (todayDow + 1) % 7 : todayDow;
+
+  return [
+    {
+      id: "kap-01", nama: "Bagas", siluet: "pompadour", beard: false,
+      spesialisasi: "Fade & tekstur", tingkat: "senior", tarifTambahan: 15000,
+      jamKerja: { mulai: "10:00", selesai: "19:00" },
+      istirahat: { mulai: "13:00", selesai: "14:00" },
+      hariLibur: [2],
+      terbooking: terbookingList([
+        [0, "10:00", 60], [0, "11:00", 45], [0, "11:45", 60],
+        [0, "14:00", 90], [0, "15:30", 60], [0, "16:30", 45], [0, "17:15", 60],
+        [1, "11:00", 50], [3, "16:00", 40]
+      ])
+    },
+    {
+      id: "kap-02", nama: "Rian", siluet: "undercut", beard: false,
+      spesialisasi: "Klasik & rapi", tingkat: "reguler", tarifTambahan: 0,
+      jamKerja: { mulai: "10:00", selesai: "21:00" },
+      istirahat: { mulai: "14:00", selesai: "14:30" },
+      hariLibur: [2],
+      terbooking: terbookingList([
+        [0, "13:00", 60], [0, "18:00", 40], [2, "12:00", 50]
+      ])
+    },
+    {
+      id: "kap-03", nama: "Eko", siluet: "buzzcut", beard: true,
+      spesialisasi: "Cukur bersih & jenggot", tingkat: "reguler", tarifTambahan: 0,
+      jamKerja: { mulai: "10:00", selesai: "21:00" },
+      istirahat: { mulai: "13:30", selesai: "14:00" },
+      hariLibur: [2, ekoLiburDow].filter((v, i, a) => a.indexOf(v) === i),
+      terbooking: terbookingList([
+        [1, "10:30", 40], [1, "15:00", 30], [4, "11:00", 60]
+      ])
+    },
+    {
+      id: "kap-04", nama: "Yoga", siluet: "crop", beard: false,
+      spesialisasi: "Trim rapi & styling ringan", tingkat: "reguler", tarifTambahan: 5000,
+      jamKerja: { mulai: "12:00", selesai: "18:00" },
+      istirahat: { mulai: "15:00", selesai: "15:30" },
+      hariLibur: [2, 6],
+      terbooking: terbookingList([
+        [0, "12:00", 60], [0, "16:00", 90], [2, "13:00", 40]
+      ])
+    }
+  ];
+}
+
+// ============================================================
+// UTIL TANGGAL & WAKTU
+// ============================================================
+const NAMA_HARI_PENDEK = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+const NAMA_HARI_PANJANG = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+
+function toISO(date) {
+  const y = date.getFullYear(), m = String(date.getMonth() + 1).padStart(2, "0"), d = String(date.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + d;
+}
+function daysFromNowISO(n) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + n);
+  return toISO(d);
+}
+function parseDateOnly(iso) { return new Date(iso + "T00:00:00"); }
+function dowOf(iso) { return parseDateOnly(iso).getDay(); }
+function indexHariDariHariIni(iso) {
+  return Math.round((parseDateOnly(iso) - parseDateOnly(toISO(new Date()))) / 86400000);
+}
+function timeToMinutes(hhmm) { const p = hhmm.split(":").map(Number); return p[0] * 60 + p[1]; }
+function minutesToTime(mins) {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+}
+function overlaps(aStart, aEnd, bStart, bEnd) { return aStart < bEnd && aEnd > bStart; }
+function formatTanggalPendek(iso) {
+  const d = parseDateOnly(iso);
+  return d.getDate() + " " + NAMA_BULAN[d.getMonth()];
+}
+function formatTanggalPanjang(iso) {
+  const d = parseDateOnly(iso);
+  return NAMA_HARI_PANJANG[d.getDay()] + ", " + d.getDate() + " " + NAMA_BULAN[d.getMonth()] + " " + d.getFullYear();
+}
+function formatRupiah(n) { return "Rp " + n.toLocaleString("id-ID"); }
+function formatMenitJam(menit) {
+  const j = Math.floor(menit / 60), m = menit % 60;
+  if (j === 0) return m + " menit";
+  if (m === 0) return j + " jam";
+  return j + " jam " + m + " menit";
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function getLayanan(id) { return CONFIG.layanan.find(l => l.id === id); }
+function getKapster(id) { return CONFIG.kapster.find(k => k.id === id); }
+function totalDurasi(layananIds) { return layananIds.reduce((s, id) => s + getLayanan(id).durasiMenit, 0); }
+function totalHargaLayanan(layananIds) { return layananIds.reduce((s, id) => s + getLayanan(id).harga, 0); }
+
+// ============================================================
+// LOGIKA JADWAL — bagian inti template ini
+// ============================================================
+function usahaLiburPadaTanggal(iso) { return CONFIG.hariLibur.includes(dowOf(iso)); }
+function kapsterLiburPadaTanggal(k, iso) { return k.hariLibur.includes(dowOf(iso)); }
+
+function efektifJamKerja(kapster) {
+  const bukaMin = timeToMinutes(CONFIG.jamBuka), tutupMin = timeToMinutes(CONFIG.jamTutup);
+  const kMulai = timeToMinutes(kapster.jamKerja.mulai), kSelesai = timeToMinutes(kapster.jamKerja.selesai);
+  return { mulai: Math.max(bukaMin, kMulai), selesai: Math.min(tutupMin, kSelesai) };
+}
+
+function terbookingPadaTanggal(kapster, tanggalISO) {
+  return kapster.terbooking
+    .filter(b => b.tanggal === tanggalISO)
+    .map(b => ({ mulai: timeToMinutes(b.mulai), selesai: timeToMinutes(b.mulai) + b.durasiMenit }));
+}
+function totalMenitTerbooking(kapster, tanggalISO) {
+  return terbookingPadaTanggal(kapster, tanggalISO).reduce((s, b) => s + (b.selesai - b.mulai), 0);
+}
+
+// Bagian 9.4: bangkitkan seluruh slot kandidat (tersedia maupun nonaktif) untuk satu kapster
+function generateSlots(kapster, tanggalISO, durasiTotal) {
+  const slots = [];
+  if (usahaLiburPadaTanggal(tanggalISO)) return slots;
+  if (kapsterLiburPadaTanggal(kapster, tanggalISO)) return slots;
+
+  const { mulai, selesai } = efektifJamKerja(kapster);
+  if (durasiTotal > (selesai - mulai)) return slots;
+
+  const istirahat = kapster.istirahat ? { mulai: timeToMinutes(kapster.istirahat.mulai), selesai: timeToMinutes(kapster.istirahat.selesai) } : null;
+  const bookedRanges = terbookingPadaTanggal(kapster, tanggalISO);
+  const isToday = tanggalISO === toISO(new Date());
+  const now = new Date();
+  const nowMin = isToday ? (now.getHours() * 60 + now.getMinutes()) : null;
+
+  for (let start = mulai; start + durasiTotal <= selesai; start += CONFIG.langkahSlotMenit) {
+    const end = start + durasiTotal;
+    let status = "tersedia", alasan = "";
+    if (istirahat && overlaps(start, end, istirahat.mulai, istirahat.selesai)) {
+      status = "nonaktif"; alasan = "Bertabrakan dengan jam istirahat";
+    } else if (bookedRanges.some(b => overlaps(start, end, b.mulai, b.selesai))) {
+      status = "nonaktif"; alasan = "Sudah terisi";
+    } else if (isToday && start < nowMin + CONFIG.cutoffMenit) {
+      status = "nonaktif"; alasan = "Terlalu dekat dengan waktu sekarang";
+    }
+    slots.push({ menitMulai: start, menitSelesai: end, waktuMulai: minutesToTime(start), waktuSelesai: minutesToTime(end), status, alasan });
+  }
+  return slots;
+}
+
+function kapsterTersediaPadaTanggal(tanggalISO) {
+  return CONFIG.kapster.filter(k => !kapsterLiburPadaTanggal(k, tanggalISO));
+}
+
+// Bagian 9.5: gabungan slot "siapa saja yang tersedia"
+function generateSlotsGabungan(tanggalISO, durasiTotal) {
+  if (usahaLiburPadaTanggal(tanggalISO)) return [];
+  const kapsterList = kapsterTersediaPadaTanggal(tanggalISO);
+  const map = new Map();
+  kapsterList.forEach(k => {
+    generateSlots(k, tanggalISO, durasiTotal).forEach(s => {
+      if (s.status === "tersedia") {
+        if (!map.has(s.menitMulai)) {
+          map.set(s.menitMulai, { menitMulai: s.menitMulai, menitSelesai: s.menitSelesai, waktuMulai: s.waktuMulai, waktuSelesai: s.waktuSelesai, status: "tersedia", alasan: "" });
+        }
+      }
+    });
+  });
+  const mulai = timeToMinutes(CONFIG.jamBuka), selesai = timeToMinutes(CONFIG.jamTutup);
+  const hasil = [];
+  for (let start = mulai; start + durasiTotal <= selesai; start += CONFIG.langkahSlotMenit) {
+    if (map.has(start)) hasil.push(map.get(start));
+    else hasil.push({ menitMulai: start, menitSelesai: start + durasiTotal, waktuMulai: minutesToTime(start), waktuSelesai: minutesToTime(start + durasiTotal), status: "nonaktif", alasan: "Tidak ada kapster tersedia" });
+  }
+  return hasil;
+}
+
+function tentukanKapsterOtomatis(tanggalISO, menitMulai, durasiTotal) {
+  const kandidat = kapsterTersediaPadaTanggal(tanggalISO).filter(k =>
+    generateSlots(k, tanggalISO, durasiTotal).some(s => s.menitMulai === menitMulai && s.status === "tersedia")
+  );
+  if (kandidat.length === 0) return null;
+  kandidat.sort((a, b) => {
+    const ta = totalMenitTerbooking(a, tanggalISO), tb = totalMenitTerbooking(b, tanggalISO);
+    if (ta !== tb) return ta - tb;
+    return a.tarifTambahan - b.tarifTambahan;
+  });
+  return kandidat[0];
+}
+
+function semuaTanggalLiburUntukKapster(k) {
+  for (let i = 0; i < CONFIG.hariKeDepan; i++) {
+    const iso = daysFromNowISO(i);
+    if (!usahaLiburPadaTanggal(iso) && !kapsterLiburPadaTanggal(k, iso)) return false;
+  }
+  return true;
+}
+
+function cariTanggalBerikutnyaDenganSlot(kapsterIdOrSiapaSaja, dariTanggalISO, durasiTotal) {
+  const startIndex = indexHariDariHariIni(dariTanggalISO);
+  for (let i = startIndex + 1; i < CONFIG.hariKeDepan; i++) {
+    const cursor = daysFromNowISO(i);
+    if (usahaLiburPadaTanggal(cursor)) continue;
+    let ada;
+    if (kapsterIdOrSiapaSaja === "siapa-saja") {
+      ada = generateSlotsGabungan(cursor, durasiTotal).some(s => s.status === "tersedia");
+    } else {
+      const k = getKapster(kapsterIdOrSiapaSaja);
+      ada = k ? generateSlots(k, cursor, durasiTotal).some(s => s.status === "tersedia") : false;
+    }
+    if (ada) return cursor;
+  }
+  return null;
+}
+
+// ============================================================
+// SILUET SVG KAPSTER (garis, tanpa foto)
+// ============================================================
+function kapsterSiluetPaths(type, beard) {
+  const c = 'fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+  const shoulders = `<path ${c} d="M14 98C24 90 76 90 86 98"/>`;
+  const face = `<ellipse ${c} cx="50" cy="58" rx="21" ry="29"/>`;
+  const ear = `<path ${c} d="M29 55c-4 0-6 3-6 6s2 6 6 6"/><path ${c} d="M71 55c4 0 6 3 6 6s-2 6-6 6"/>`;
+  const beardPath = beard ? `<path ${c} d="M35 68c2 10 8 18 15 18s13-8 15-18"/>` : "";
+  let hair = "";
+  switch (type) {
+    case "pompadour":
+      hair = `<path ${c} d="M31 34c4-10 12-16 19-16c5 0 8 3 13 2c6-1 9-6 9 2c0 9-6 13-13 16"/><path ${c} d="M38 30c6-4 14-5 20-2"/>`;
+      break;
+    case "undercut":
+      hair = `<path ${c} d="M30 40c3-10 10-16 20-16s17 6 20 16"/><line ${c} x1="30" y1="44" x2="70" y2="44"/>`;
+      break;
+    case "buzzcut":
+      hair = `<path ${c} d="M30 38c4-9 11-14 20-14s16 5 20 14"/>`;
+      break;
+    case "crop":
+      hair = `<path ${c} d="M30 39c3-11 11-17 20-17s17 6 20 17"/><line ${c} x1="38" y1="27" x2="41" y2="33"/><line ${c} x1="46" y1="24" x2="48" y2="31"/><line ${c} x1="54" y1="24" x2="53" y2="31"/><line ${c} x1="62" y1="27" x2="59" y2="33"/>`;
+      break;
+  }
+  return shoulders + face + ear + hair + beardPath;
+}
+
+// ============================================================
+// STATUS BUKA / TUTUP (hero)
+// ============================================================
+function statusBukaSekarang() {
+  const now = new Date();
+  const dow = now.getDay();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const buka = timeToMinutes(CONFIG.jamBuka), tutup = timeToMinutes(CONFIG.jamTutup);
+  const liburHariIni = CONFIG.hariLibur.includes(dow);
+  const bukaSekarang = !liburHariIni && nowMin >= buka && nowMin < tutup;
+  let keterangan;
+  if (bukaSekarang) {
+    keterangan = "Buka sekarang · tutup pukul " + CONFIG.jamTutup;
+  } else {
+    keterangan = "Tutup · buka berikutnya " + cariBukaBerikutnya();
+  }
+  return { bukaSekarang, keterangan };
+}
+function cariBukaBerikutnya() {
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  for (let i = 0; i < 8; i++) {
+    const iso = daysFromNowISO(i);
+    const dow = dowOf(iso);
+    if (CONFIG.hariLibur.includes(dow)) continue;
+    if (i === 0) {
+      if (nowMin < timeToMinutes(CONFIG.jamBuka)) return "hari ini pukul " + CONFIG.jamBuka;
+      continue;
+    }
+    return (i === 1 ? "besok" : NAMA_HARI_PANJANG[dow]) + " pukul " + CONFIG.jamBuka;
+  }
+  return CONFIG.jamBuka;
+}
+
+// ============================================================
+// RENDER: STATIS & HALAMAN UTAMA
+// ============================================================
+function renderStatic() {
+  document.title = CONFIG.namaUsaha + " — Reservasi Potong Rambut per Kapster (Demo Template)";
+  document.getElementById("brand-mark").textContent = CONFIG.namaUsaha;
+  document.getElementById("jam-ops-header").textContent = "Buka " + CONFIG.jamBuka + " – " + CONFIG.jamTutup;
+  document.getElementById("hero-eyebrow").textContent = "reservasi potong rambut — " + CONFIG.namaUsaha;
+  document.getElementById("hero-tagline").textContent = CONFIG.tagline;
+  document.getElementById("footer-brand").textContent = CONFIG.namaUsaha;
+  document.getElementById("info-telat").textContent = "Keterlambatan lebih dari " + CONFIG.toleransiTelatMenit + " menit bisa membuat jadwal digeser atau dibatalkan";
+  [document.getElementById("link-katalog-top"), document.getElementById("link-katalog-bottom")].forEach(a => a.href = CONFIG.urlKatalog);
+}
+
+function updateHeroStatus() {
+  const { bukaSekarang, keterangan } = statusBukaSekarang();
+  const el = document.getElementById("status-buka");
+  el.textContent = keterangan;
+  el.className = "status-buka " + (bukaSekarang ? "buka" : "tutup");
+}
+
+let filterKategoriLayanan = "semua";
+function renderLayananSection() {
+  const KAT = Object.assign({ semua: "Semua" }, LAYANAN_KATEGORI_LABEL);
+  const chipWrap = document.getElementById("layanan-chip-row");
+  chipWrap.innerHTML = Object.keys(KAT).map(k => `<button class="chip ${filterKategoriLayanan === k ? "active" : ""}" data-k="${k}">${KAT[k]}</button>`).join("");
+  chipWrap.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { filterKategoriLayanan = b.dataset.k; renderLayananSection(); }));
+
+  const grid = document.getElementById("layanan-grid");
+  const list = filterKategoriLayanan === "semua" ? CONFIG.layanan : CONFIG.layanan.filter(l => l.kategori === filterKategoriLayanan);
+  grid.innerHTML = list.map(l => `
+    <div class="layanan-card">
+      <div class="layanan-card-kategori">${LAYANAN_KATEGORI_LABEL[l.kategori]}</div>
+      <div class="layanan-card-nama">${l.nama}</div>
+      <div class="layanan-card-meta"><span>${l.durasiMenit} menit</span><span class="layanan-card-harga">${formatRupiah(l.harga)}</span></div>
+      <div class="layanan-card-ket">${l.keterangan}</div>
+    </div>
+  `).join("");
+}
+
+function renderKapsterSection() {
+  const grid = document.getElementById("kapster-grid");
+  grid.innerHTML = CONFIG.kapster.map(k => {
+    const liburLabel = k.hariLibur.map(d => NAMA_HARI_PENDEK[d]).join(", ");
+    return `<div class="kapster-main-card" data-id="${k.id}">
+      <div class="kapster-avatar"><svg viewBox="0 0 100 100">${kapsterSiluetPaths(k.siluet, k.beard)}</svg><span class="kapster-initial">${k.nama[0]}</span></div>
+      <div class="kapster-main-nama">${k.nama}</div>
+      <div class="kapster-main-spesialisasi">${k.spesialisasi}</div>
+      <div class="kapster-main-meta">${k.jamKerja.mulai} – ${k.jamKerja.selesai} · Libur ${liburLabel}</div>
+      ${k.tarifTambahan > 0 ? `<div class="kapster-main-tarif">+ ${formatRupiah(k.tarifTambahan)} tarif ${k.tingkat}</div>` : ""}
+    </div>`;
+  }).join("");
+  grid.querySelectorAll(".kapster-main-card").forEach(card => {
+    card.addEventListener("click", () => openWizard(card.dataset.id));
+  });
+}
+
+function renderInfoSection() {
+  document.getElementById("info-alamat").textContent = CONFIG.alamat;
+  const jamList = document.getElementById("info-jam-list");
+  jamList.innerHTML = NAMA_HARI_PANJANG.map((nama, i) => {
+    const tutup = CONFIG.hariLibur.includes(i);
+    return `<div class="jam-row"><span>${nama}</span><span>${tutup ? "Tutup" : CONFIG.jamBuka + " – " + CONFIG.jamTutup}</span></div>`;
+  }).join("");
+}
+
+// ============================================================
+// WIZARD BOOKING — STATE
+// ============================================================
+const wizardState = {
+  step: 1,
+  layananIds: [],
+  kapsterId: null,
+  tanggal: null,
+  jamMulai: null,
+  assignedKapsterId: null,
+  nama: "",
+  wa: "",
+  catatan: "",
+  notice: null
+};
+
+function resetWizard(preselectKapsterId) {
+  wizardState.step = 1;
+  wizardState.layananIds = [];
+  wizardState.kapsterId = preselectKapsterId || null;
+  wizardState.tanggal = null;
+  wizardState.jamMulai = null;
+  wizardState.assignedKapsterId = null;
+  wizardState.nama = "";
+  wizardState.wa = "";
+  wizardState.catatan = "";
+  wizardState.notice = null;
+}
+
+function openWizard(preselectKapsterId) {
+  resetWizard(preselectKapsterId);
+  document.getElementById("overlay-wizard").classList.add("open");
+  document.body.classList.add("locked");
+  renderWizard();
+}
+function closeWizard() {
+  document.getElementById("overlay-wizard").classList.remove("open");
+  document.body.classList.remove("locked");
+}
+
+function renderWizard() {
+  renderProgress();
+  if (wizardState.step === 1) renderStep1();
+  else if (wizardState.step === 2) renderStep2();
+  else if (wizardState.step === 3) renderStep3();
+  else if (wizardState.step === 4) renderStep4();
+  updateNavButtons();
+  document.getElementById("wizard-body").scrollTop = 0;
+}
+
+function renderProgress() {
+  const steps = ["Layanan", "Kapster", "Jadwal", "Konfirmasi"];
+  const wrap = document.getElementById("wizard-progress");
+  wrap.innerHTML = steps.map((label, i) => {
+    const n = i + 1;
+    const st = n < wizardState.step ? "done" : n === wizardState.step ? "active" : "";
+    const dot = n < wizardState.step ? "&#10003;" : n;
+    return `<div class="progress-step ${st}"><span class="progress-dot">${dot}</span><span class="progress-label">${label}</span></div>`;
+  }).join(`<span class="progress-line"></span>`);
+}
+
+function isStepValid(step) {
+  if (step === 1) return wizardState.layananIds.length > 0;
+  if (step === 2) return wizardState.kapsterId !== null;
+  if (step === 3) return wizardState.tanggal !== null && wizardState.jamMulai !== null;
+  if (step === 4) return wizardState.nama.trim() !== "" && wizardState.wa.trim() !== "";
+  return false;
+}
+
+function updateNavButtons() {
+  const back = document.getElementById("btn-wizard-back");
+  const next = document.getElementById("btn-wizard-next");
+  const submit = document.getElementById("btn-wizard-submit");
+  back.style.display = wizardState.step === 1 ? "none" : "inline-flex";
+  if (wizardState.step < 4) {
+    next.style.display = "inline-flex";
+    submit.style.display = "none";
+    next.disabled = !isStepValid(wizardState.step);
+  } else {
+    next.style.display = "none";
+    submit.style.display = "inline-flex";
+  }
+}
+
+// ---------------- Step 1: Layanan ----------------
+function renderStep1() {
+  const body = document.getElementById("wizard-body");
+  body.innerHTML = `
+    <h3 class="wizard-step-title">Pilih Layanan</h3>
+    <div class="layanan-groups">
+      ${KATEGORI_URUTAN.map(kat => {
+        const items = CONFIG.layanan.filter(l => l.kategori === kat);
+        if (!items.length) return "";
+        const tunggal = KATEGORI_TUNGGAL.includes(kat);
+        return `<div class="layanan-group">
+          <div class="layanan-group-title">${LAYANAN_KATEGORI_LABEL[kat]}${tunggal ? ` <span class="layanan-group-note">— pilih salah satu</span>` : ""}</div>
+          ${items.map(l => `
+            <label class="layanan-row">
+              <input type="checkbox" data-id="${l.id}" ${wizardState.layananIds.includes(l.id) ? "checked" : ""}>
+              <span class="layanan-row-info">
+                <span class="layanan-row-nama">${l.nama}</span>
+                <span class="layanan-row-durasi">${l.durasiMenit} menit</span>
+                <span class="layanan-row-ket">${l.keterangan}</span>
+              </span>
+              <span class="layanan-row-harga">${formatRupiah(l.harga)}</span>
+            </label>
+          `).join("")}
+        </div>`;
+      }).join("")}
+    </div>
+    <div class="wizard-summary" id="step1-summary"></div>
+  `;
+  body.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener("change", () => {
+      const id = cb.dataset.id;
+      const layanan = getLayanan(id);
+      if (cb.checked) {
+        // Rambut & Paket saling eksklusif: pilih satu otomatis melepas pilihan lain di grup itu
+        if (KATEGORI_TUNGGAL.includes(layanan.kategori)) {
+          wizardState.layananIds = wizardState.layananIds.filter(existingId => {
+            const existing = getLayanan(existingId);
+            if (KATEGORI_TUNGGAL.includes(existing.kategori) && existingId !== id) {
+              const otherCb = body.querySelector('input[data-id="' + existingId + '"]');
+              if (otherCb) otherCb.checked = false;
+              return false;
+            }
+            return true;
+          });
+        }
+        if (!wizardState.layananIds.includes(id)) wizardState.layananIds.push(id);
+      } else {
+        wizardState.layananIds = wizardState.layananIds.filter(x => x !== id);
+      }
+      onLayananBerubah();
+      updateStep1Summary();
+      updateNavButtons();
+    });
+  });
+  updateStep1Summary();
+}
+function updateStep1Summary() {
+  const el = document.getElementById("step1-summary");
+  if (!el) return;
+  if (wizardState.layananIds.length === 0) {
+    el.innerHTML = `<span class="wizard-summary-empty">Belum ada layanan dipilih.</span>`;
+    return;
+  }
+  const durasi = totalDurasi(wizardState.layananIds), harga = totalHargaLayanan(wizardState.layananIds);
+  el.innerHTML = `<div class="wizard-summary-row"><span>Total durasi</span><span>${formatMenitJam(durasi)}</span></div><div class="wizard-summary-row"><span>Total harga layanan</span><span>${formatRupiah(harga)}</span></div>`;
+}
+
+function jamMasihValid(durasiTotal) {
+  if (wizardState.tanggal === null || wizardState.jamMulai === null) return false;
+  if (wizardState.kapsterId === "siapa-saja") {
+    return generateSlotsGabungan(wizardState.tanggal, durasiTotal).some(s => s.menitMulai === wizardState.jamMulai && s.status === "tersedia");
+  }
+  const k = getKapster(wizardState.kapsterId);
+  if (!k) return false;
+  return generateSlots(k, wizardState.tanggal, durasiTotal).some(s => s.menitMulai === wizardState.jamMulai && s.status === "tersedia");
+}
+
+// Edge case: layanan berubah setelah jam sudah dipilih
+function onLayananBerubah() {
+  if (wizardState.jamMulai === null) return;
+  const durasi = totalDurasi(wizardState.layananIds);
+  if (!jamMasihValid(durasi)) {
+    wizardState.jamMulai = null;
+    wizardState.notice = "Jam yang sebelumnya kamu pilih sudah tidak muat karena perubahan layanan. Silakan pilih ulang jam.";
+  }
+}
+
+// ---------------- Step 2: Kapster ----------------
+function renderStep2() {
+  const body = document.getElementById("wizard-body");
+  const durasi = totalDurasi(wizardState.layananIds);
+  const cards = [kapsterCardHTML(null, "siapa-saja", durasi)];
+  CONFIG.kapster.forEach(k => cards.push(kapsterCardHTML(k, k.id, durasi)));
+  body.innerHTML = `<h3 class="wizard-step-title">Pilih Kapster</h3><div class="kapster-wizard-grid">${cards.join("")}</div>`;
+  body.querySelectorAll(".kapster-wizard-card:not(.disabled)").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.dataset.id;
+      if (wizardState.kapsterId === id) return;
+      wizardState.kapsterId = id;
+      onKapsterBerubah();
+      renderStep2();
+      updateNavButtons();
+    });
+  });
+}
+function kapsterCardHTML(k, id, durasi) {
+  const isSiapaSaja = id === "siapa-saja";
+  const active = wizardState.kapsterId === id;
+  let disabled = false, disabledNote = "";
+  if (!isSiapaSaja) {
+    const w = efektifJamKerja(k);
+    if (durasi > (w.selesai - w.mulai)) { disabled = true; disabledNote = "Durasi layanan terlalu panjang untuk jam kerja kapster ini"; }
+    else if (semuaTanggalLiburUntukKapster(k)) { disabled = true; disabledNote = "Tidak tersedia dalam rentang tanggal pemesanan"; }
+  }
+  const nama = isSiapaSaja ? "Siapa saja yang tersedia" : k.nama;
+  const sub = isSiapaSaja ? "Sistem menetapkan kapster dengan jadwal paling longgar" : k.spesialisasi;
+  const tarifNote = (!isSiapaSaja && k.tarifTambahan > 0) ? `<div class="kapster-card-tarif">+ ${formatRupiah(k.tarifTambahan)} tarif kapster ${k.tingkat}</div>` : "";
+  const avatar = isSiapaSaja
+    ? `<div class="kapster-avatar kapster-avatar-any"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="10" cy="8" r="4"/><path d="M22 20v-1a4 4 0 0 0-3-3.87"/><path d="M16 4.13a4 4 0 0 1 0 7.75"/></svg></div>`
+    : `<div class="kapster-avatar"><svg viewBox="0 0 100 100">${kapsterSiluetPaths(k.siluet, k.beard)}</svg><span class="kapster-initial">${k.nama[0]}</span></div>`;
+  return `
+    <div class="kapster-wizard-card ${active ? "active" : ""} ${disabled ? "disabled" : ""}" data-id="${id}">
+      ${avatar}
+      <div class="kapster-card-body">
+        <div class="kapster-card-nama">${nama}</div>
+        <div class="kapster-card-sub">${sub}</div>
+        ${tarifNote}
+        ${disabled ? `<div class="kapster-card-disabled-note">${disabledNote}</div>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+// Edge case: kapster berubah setelah tanggal & jam sudah dipilih
+function onKapsterBerubah() {
+  if (wizardState.tanggal === null || wizardState.jamMulai === null) return;
+  const durasi = totalDurasi(wizardState.layananIds);
+  if (!jamMasihValid(durasi)) {
+    wizardState.jamMulai = null;
+    wizardState.notice = "Kapster baru punya jadwal berbeda, jam yang sebelumnya kamu pilih sudah tidak tersedia. Silakan pilih ulang jam.";
+  }
+}
+
+// ---------------- Step 3: Tanggal & Jam ----------------
+function cariTanggalDenganSlotAtauDefault(durasi) {
+  for (let i = 0; i < CONFIG.hariKeDepan; i++) {
+    const iso = daysFromNowISO(i);
+    if (usahaLiburPadaTanggal(iso)) continue;
+    if (wizardState.kapsterId === "siapa-saja") {
+      if (generateSlotsGabungan(iso, durasi).some(s => s.status === "tersedia")) return iso;
+    } else {
+      const k = getKapster(wizardState.kapsterId);
+      if (k && generateSlots(k, iso, durasi).some(s => s.status === "tersedia")) return iso;
+    }
+  }
+  return daysFromNowISO(0);
+}
+
+function renderStep3() {
+  const body = document.getElementById("wizard-body");
+  const durasi = totalDurasi(wizardState.layananIds);
+
+  if (wizardState.tanggal === null) {
+    wizardState.tanggal = cariTanggalDenganSlotAtauDefault(durasi);
+  }
+
+  const notice = wizardState.notice;
+  wizardState.notice = null;
+
+  body.innerHTML = `
+    <h3 class="wizard-step-title">Pilih Tanggal & Jam</h3>
+    ${notice ? `<div class="wizard-notice">${notice}</div>` : ""}
+    <div class="tanggal-row" id="tanggal-row"></div>
+    <div class="jadwal-bar-wrap" id="jadwal-bar-wrap"></div>
+    <div class="jam-grid-wrap" id="jam-grid-wrap"></div>
+  `;
+  renderTanggalRow(durasi);
+  renderJadwalBarDanJamGrid(durasi);
+}
+
+function renderTanggalRow(durasi) {
+  const wrap = document.getElementById("tanggal-row");
+  const chips = [];
+  for (let i = 0; i < CONFIG.hariKeDepan; i++) {
+    const iso = daysFromNowISO(i);
+    const dow = dowOf(iso);
+    let tutup = usahaLiburPadaTanggal(iso);
+    if (!tutup) {
+      if (wizardState.kapsterId === "siapa-saja") tutup = kapsterTersediaPadaTanggal(iso).length === 0;
+      else {
+        const k = getKapster(wizardState.kapsterId);
+        tutup = k ? kapsterLiburPadaTanggal(k, iso) : false;
+      }
+    }
+    const active = wizardState.tanggal === iso;
+    const d = parseDateOnly(iso);
+    chips.push(`<button class="tanggal-chip ${active ? "active" : ""} ${tutup ? "tutup" : ""}" data-iso="${iso}" ${tutup ? "disabled" : ""}>
+      <span class="tanggal-chip-hari">${NAMA_HARI_PENDEK[dow]}</span>
+      <span class="tanggal-chip-tgl">${d.getDate()}</span>
+      <span class="tanggal-chip-bulan">${NAMA_BULAN[d.getMonth()]}</span>
+      ${tutup ? `<span class="tanggal-chip-tutup">Tutup</span>` : ""}
+    </button>`);
+  }
+  wrap.innerHTML = chips.join("");
+  wrap.querySelectorAll(".tanggal-chip:not(.tutup)").forEach(chip => {
+    chip.addEventListener("click", () => {
+      wizardState.tanggal = chip.dataset.iso;
+      wizardState.jamMulai = null;
+      renderTanggalRow(durasi);
+      renderJadwalBarDanJamGrid(durasi);
+      updateNavButtons();
+    });
+  });
+  const activeChip = wrap.querySelector(".tanggal-chip.active");
+  if (activeChip) activeChip.scrollIntoView({ inline: "center", block: "nearest" });
+}
+
+function renderJadwalBarDanJamGrid(durasi) {
+  const barWrap = document.getElementById("jadwal-bar-wrap");
+  const gridWrap = document.getElementById("jam-grid-wrap");
+  const tanggal = wizardState.tanggal;
+  const kapsterTunggal = wizardState.kapsterId !== "siapa-saja" ? getKapster(wizardState.kapsterId) : null;
+
+  barWrap.innerHTML = renderJadwalBarHTML(kapsterTunggal, tanggal, durasi);
+
+  let slots;
+  if (wizardState.kapsterId === "siapa-saja") slots = generateSlotsGabungan(tanggal, durasi);
+  else slots = kapsterTunggal ? generateSlots(kapsterTunggal, tanggal, durasi) : [];
+
+  const adaTersedia = slots.some(s => s.status === "tersedia");
+
+  if (usahaLiburPadaTanggal(tanggal)) {
+    gridWrap.innerHTML = emptyStateHTML("Usaha tutup pada tanggal ini.", durasi);
+    attachSaranTanggalListener(durasi);
+    return;
+  }
+  if (!adaTersedia) {
+    let pesan = "Tidak ada jam tersedia pada tanggal ini.";
+    if (kapsterTunggal && kapsterLiburPadaTanggal(kapsterTunggal, tanggal)) {
+      pesan = kapsterTunggal.nama + " libur pada tanggal ini.";
+    } else if (kapsterTunggal && durasi > (efektifJamKerja(kapsterTunggal).selesai - efektifJamKerja(kapsterTunggal).mulai)) {
+      pesan = "Total durasi layanan lebih panjang dari jam kerja kapster ini.";
+    } else if (!kapsterTunggal && kapsterTersediaPadaTanggal(tanggal).length === 0) {
+      pesan = "Seluruh kapster libur pada tanggal ini.";
+    }
+    gridWrap.innerHTML = emptyStateHTML(pesan, durasi);
+    attachSaranTanggalListener(durasi);
+    return;
+  }
+
+  gridWrap.innerHTML = jamGridHTML(slots, durasi);
+  gridWrap.querySelectorAll(".jam-slot:not(.nonaktif)").forEach(btn => {
+    btn.addEventListener("click", () => {
+      wizardState.jamMulai = parseInt(btn.dataset.menit, 10);
+      if (wizardState.kapsterId === "siapa-saja") {
+        const otomatis = tentukanKapsterOtomatis(tanggal, wizardState.jamMulai, durasi);
+        wizardState.assignedKapsterId = otomatis ? otomatis.id : null;
+      } else {
+        wizardState.assignedKapsterId = wizardState.kapsterId;
+      }
+      renderJadwalBarDanJamGrid(durasi);
+      updateNavButtons();
+    });
+  });
+}
+
+function emptyStateHTML(pesan, durasi) {
+  const saran = cariTanggalBerikutnyaDenganSlot(wizardState.kapsterId, wizardState.tanggal, durasi);
+  return `<div class="jam-empty-state">
+    <p>${pesan}</p>
+    ${saran ? `<button class="btn-saran-tanggal" data-iso="${saran}">Lompat ke ${formatTanggalPendek(saran)}</button>` : `<p class="jam-empty-note">Tidak ditemukan tanggal kosong dalam ${CONFIG.hariKeDepan} hari ke depan. Coba kapster lain.</p>`}
+  </div>`;
+}
+function attachSaranTanggalListener(durasi) {
+  const btn = document.querySelector(".btn-saran-tanggal");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    wizardState.tanggal = btn.dataset.iso;
+    wizardState.jamMulai = null;
+    renderTanggalRow(durasi);
+    renderJadwalBarDanJamGrid(durasi);
+    updateNavButtons();
+  });
+}
+
+function jamGridHTML(slots, durasi) {
+  const grup = { pagi: [], siang: [], sore: [] };
+  slots.forEach(s => {
+    if (s.menitMulai < 720) grup.pagi.push(s);
+    else if (s.menitMulai < 900) grup.siang.push(s);
+    else grup.sore.push(s);
+  });
+  const label = { pagi: "Pagi", siang: "Siang", sore: "Sore" };
+  let estimasiHTML = "";
+  if (wizardState.jamMulai !== null) {
+    estimasiHTML = `<div class="estimasi-selesai">Estimasi selesai <strong>${minutesToTime(wizardState.jamMulai + durasi)}</strong></div>`;
+  }
+  return estimasiHTML + Object.keys(grup).map(g => {
+    if (!grup[g].length) return "";
+    return `<div class="jam-group">
+      <div class="jam-group-title">${label[g]}</div>
+      <div class="jam-group-grid">
+        ${grup[g].map(s => `
+          <button class="jam-slot ${s.status === "nonaktif" ? "nonaktif" : ""} ${wizardState.jamMulai === s.menitMulai ? "active" : ""}" data-menit="${s.menitMulai}" ${s.status === "nonaktif" ? "disabled" : ""} title="${s.alasan || ""}">
+            ${s.waktuMulai}
+          </button>
+        `).join("")}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderJadwalBarHTML(kapster, tanggal, durasi) {
+  if (usahaLiburPadaTanggal(tanggal)) return `<div class="jadwal-bar-note">Usaha tutup pada tanggal ini.</div>`;
+  const businessMulai = timeToMinutes(CONFIG.jamBuka), businessSelesai = timeToMinutes(CONFIG.jamTutup);
+  let rangeMulai = businessMulai, rangeSelesai = businessSelesai;
+  let segments = "";
+  let caption = "";
+
+  if (kapster) {
+    if (kapsterLiburPadaTanggal(kapster, tanggal)) return `<div class="jadwal-bar-note">${kapster.nama} libur pada tanggal ini.</div>`;
+    const w = efektifJamKerja(kapster);
+    rangeMulai = w.mulai; rangeSelesai = w.selesai;
+    const totalRange = rangeSelesai - rangeMulai;
+    const pct = m => ((m - rangeMulai) / totalRange * 100);
+
+    if (kapster.istirahat) {
+      const iMulai = timeToMinutes(kapster.istirahat.mulai), iSelesai = timeToMinutes(kapster.istirahat.selesai);
+      segments += `<div class="jadwal-seg istirahat" style="left:${pct(iMulai)}%;width:${pct(iSelesai) - pct(iMulai)}%" title="Istirahat"></div>`;
+    }
+    terbookingPadaTanggal(kapster, tanggal).forEach(b => {
+      segments += `<div class="jadwal-seg terisi" style="left:${pct(b.mulai)}%;width:${pct(b.selesai) - pct(b.mulai)}%" title="Terisi"></div>`;
+    });
+    if (tanggal === toISO(new Date())) {
+      const now = new Date();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      if (nowMin >= rangeMulai && nowMin <= rangeSelesai) {
+        segments += `<div class="jadwal-now" style="left:${pct(nowMin)}%"></div>`;
+      }
+    }
+    if (wizardState.jamMulai !== null) {
+      const start = wizardState.jamMulai, end = start + durasi;
+      segments += `<div class="jadwal-seg dipilih" style="left:${pct(start)}%;width:${pct(end) - pct(start)}%"><span class="jadwal-dipilih-label">${minutesToTime(start)}–${minutesToTime(end)}</span></div>`;
+    }
+    caption = minutesToTime(rangeMulai) + " – " + minutesToTime(rangeSelesai);
+  } else {
+    const totalRange = rangeSelesai - rangeMulai;
+    if (wizardState.jamMulai !== null) {
+      const pct = m => ((m - rangeMulai) / totalRange * 100);
+      const start = wizardState.jamMulai, end = start + durasi;
+      segments += `<div class="jadwal-seg dipilih" style="left:${pct(start)}%;width:${pct(end) - pct(start)}%"><span class="jadwal-dipilih-label">${minutesToTime(start)}–${minutesToTime(end)}</span></div>`;
+    }
+    caption = minutesToTime(rangeMulai) + " – " + minutesToTime(rangeSelesai) + " · jam operasional";
+  }
+
+  return `<div class="jadwal-bar"><div class="jadwal-track">${segments}</div></div><div class="jadwal-bar-caption">${caption}</div>`;
+}
+
+// ---------------- Step 4: Data diri & konfirmasi ----------------
+function renderStep4() {
+  const body = document.getElementById("wizard-body");
+  body.innerHTML = `
+    <h3 class="wizard-step-title">Data Diri & Konfirmasi</h3>
+    <div class="form-group">
+      <label for="w-nama">Nama<span class="req">*</span></label>
+      <input type="text" id="w-nama" value="${escapeHTML(wizardState.nama)}" placeholder="Nama lengkap">
+      <div class="field-error" id="err-w-nama">Nama wajib diisi.</div>
+    </div>
+    <div class="form-group">
+      <label for="w-wa">Nomor WhatsApp<span class="req">*</span></label>
+      <input type="text" id="w-wa" value="${escapeHTML(wizardState.wa)}" placeholder="08xxxxxxxxxx">
+      <div class="field-error" id="err-w-wa">Nomor WhatsApp wajib diisi.</div>
+    </div>
+    <div class="form-group">
+      <label for="w-catatan">Catatan (opsional)</label>
+      <textarea id="w-catatan" rows="2" placeholder="Catatan tambahan">${escapeHTML(wizardState.catatan)}</textarea>
+    </div>
+    <div class="wizard-ringkasan" id="wizard-ringkasan"></div>
+  `;
+  document.getElementById("w-nama").addEventListener("input", e => { wizardState.nama = e.target.value; updateNavButtons(); });
+  document.getElementById("w-wa").addEventListener("input", e => { wizardState.wa = e.target.value; updateNavButtons(); });
+  document.getElementById("w-catatan").addEventListener("input", e => { wizardState.catatan = e.target.value; });
+  renderRingkasanLengkap();
+}
+
+function renderRingkasanLengkap() {
+  const el = document.getElementById("wizard-ringkasan");
+  const layananList = wizardState.layananIds.map(getLayanan);
+  const durasi = totalDurasi(wizardState.layananIds);
+  const hargaLayanan = totalHargaLayanan(wizardState.layananIds);
+  const kapster = getKapster(wizardState.assignedKapsterId);
+  const tarifTambahan = kapster ? kapster.tarifTambahan : 0;
+  const total = hargaLayanan + tarifTambahan;
+  const selesai = wizardState.jamMulai + durasi;
+  el.innerHTML = `
+    <div class="ringkasan-block">
+      <div class="ringkasan-title">Layanan</div>
+      ${layananList.map(l => `<div class="ringkasan-row"><span>${l.nama}</span><span>${formatRupiah(l.harga)}</span></div>`).join("")}
+    </div>
+    <div class="ringkasan-block">
+      <div class="ringkasan-row"><span>Kapster</span><span>${kapster ? kapster.nama : "-"}</span></div>
+      ${wizardState.kapsterId === "siapa-saja" ? `<div class="ringkasan-note">Ditetapkan otomatis, akan dikonfirmasi ulang lewat WhatsApp.</div>` : ""}
+      <div class="ringkasan-row"><span>Tanggal</span><span>${formatTanggalPanjang(wizardState.tanggal)}</span></div>
+      <div class="ringkasan-row"><span>Jam</span><span>${minutesToTime(wizardState.jamMulai)} – ${minutesToTime(selesai)}</span></div>
+      <div class="ringkasan-row"><span>Total durasi</span><span>${formatMenitJam(durasi)}</span></div>
+    </div>
+    <div class="ringkasan-block">
+      <div class="ringkasan-row"><span>Subtotal layanan</span><span>${formatRupiah(hargaLayanan)}</span></div>
+      ${tarifTambahan > 0 ? `<div class="ringkasan-row"><span>Tarif tambahan kapster</span><span>${formatRupiah(tarifTambahan)}</span></div>` : ""}
+      <div class="ringkasan-row total"><span>Total</span><span>${formatRupiah(total)}</span></div>
+    </div>
+  `;
+}
+
+function showFieldError(errId, inputId) {
+  document.getElementById(errId).classList.add("show");
+  document.getElementById(inputId).classList.add("error");
+}
+function hideFieldError(errId, inputId) {
+  document.getElementById(errId).classList.remove("show");
+  document.getElementById(inputId).classList.remove("error");
+}
+
+function generateKodeJanji() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return "PGK-" + s;
+}
+
+function buildGoogleCalendarUrl(kode, layananList, tanggalISO, menitMulai, menitSelesai) {
+  const d = parseDateOnly(tanggalISO);
+  const fmt = mins => {
+    const dt = new Date(d);
+    dt.setHours(Math.floor(mins / 60), mins % 60, 0, 0);
+    const y = dt.getFullYear(), mo = String(dt.getMonth() + 1).padStart(2, "0"), da = String(dt.getDate()).padStart(2, "0");
+    const h = String(dt.getHours()).padStart(2, "0"), mi = String(dt.getMinutes()).padStart(2, "0");
+    return `${y}${mo}${da}T${h}${mi}00`;
+  };
+  const text = encodeURIComponent(CONFIG.namaUsaha + " — " + layananList.map(l => l.nama).join(", "));
+  const details = encodeURIComponent("Kode janji temu: " + kode + ". Ini demo template, tidak ada janji temu sungguhan.");
+  const location = encodeURIComponent(CONFIG.alamat);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${fmt(menitMulai)}/${fmt(menitSelesai)}&details=${details}&location=${location}&ctz=Asia/Jakarta`;
+}
+
+function submitBooking() {
+  let valid = true;
+  if (wizardState.nama.trim() === "") { showFieldError("err-w-nama", "w-nama"); valid = false; } else hideFieldError("err-w-nama", "w-nama");
+  if (wizardState.wa.trim() === "") { showFieldError("err-w-wa", "w-wa"); valid = false; } else hideFieldError("err-w-wa", "w-wa");
+  if (!valid) return;
+
+  const kode = generateKodeJanji();
+  tampilkanKartuJanjiTemu(kode);
+  closeWizard();
+}
+
+function tampilkanKartuJanjiTemu(kode) {
+  const layananList = wizardState.layananIds.map(getLayanan);
+  const durasi = totalDurasi(wizardState.layananIds);
+  const hargaLayanan = totalHargaLayanan(wizardState.layananIds);
+  const kapster = getKapster(wizardState.assignedKapsterId);
+  const tarifTambahan = kapster ? kapster.tarifTambahan : 0;
+  const total = hargaLayanan + tarifTambahan;
+  const selesai = wizardState.jamMulai + durasi;
+
+  document.getElementById("kartu-kode").textContent = kode;
+  document.getElementById("kartu-nama").textContent = wizardState.nama;
+  document.getElementById("kartu-kapster").textContent = kapster ? kapster.nama : "-";
+  document.getElementById("kartu-tanggal").textContent = formatTanggalPanjang(wizardState.tanggal);
+  document.getElementById("kartu-jam").textContent = minutesToTime(wizardState.jamMulai) + " – " + minutesToTime(selesai);
+  document.getElementById("kartu-layanan").innerHTML = layananList.map(l => `<div>${l.nama}</div>`).join("");
+  document.getElementById("kartu-total").textContent = formatRupiah(total);
+
+  document.getElementById("btn-tambah-kalender").href = buildGoogleCalendarUrl(kode, layananList, wizardState.tanggal, wizardState.jamMulai, selesai);
+
+  document.getElementById("overlay-kartu").classList.add("open");
+  document.body.classList.add("locked");
+}
+function closeKartu() {
+  document.getElementById("overlay-kartu").classList.remove("open");
+  document.body.classList.remove("locked");
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  renderStatic();
+  updateHeroStatus();
+  renderLayananSection();
+  renderKapsterSection();
+  renderInfoSection();
+
+  document.getElementById("btn-booking-header").addEventListener("click", () => openWizard(null));
+  document.getElementById("btn-booking-hero").addEventListener("click", () => openWizard(null));
+  document.getElementById("close-wizard").addEventListener("click", closeWizard);
+  document.getElementById("btn-tutup-kartu").addEventListener("click", closeKartu);
+  document.getElementById("overlay-kartu").addEventListener("click", e => { if (e.target.id === "overlay-kartu") closeKartu(); });
+
+  document.getElementById("btn-wizard-back").addEventListener("click", () => {
+    if (wizardState.step > 1) { wizardState.step--; renderWizard(); }
+  });
+  document.getElementById("btn-wizard-next").addEventListener("click", () => {
+    if (!isStepValid(wizardState.step)) return;
+    if (wizardState.step < 4) { wizardState.step++; renderWizard(); }
+  });
+  document.getElementById("btn-wizard-submit").addEventListener("click", submitBooking);
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
