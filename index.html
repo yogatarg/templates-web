@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog Template UMKM</title>
-<meta name="description" content="Kumpulan desain website UMKM — katalog produk, keranjang, checkout tanpa akun — yang bisa dilihat langsung demonya.">
+<title>Katalog Website UMKM &amp; Aplikasi Custom</title>
+<meta name="description" content="Kumpulan contoh website UMKM siap pakai dan aplikasi custom — semuanya bisa dibuka dan dicoba demonya langsung.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%90%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -239,6 +239,75 @@
     color:rgba(29,27,24,.5);
   }
 
+  /* ---------- Tingkatan layanan ---------- */
+  .tingkat{ margin-top:3.5rem; }
+  .tingkat:first-of-type{ margin-top:0; }
+  .tingkat + .tingkat{
+    border-top:1px solid rgba(22,50,79,.12);
+    padding-top:3rem;
+  }
+  .tingkat-head{ margin-bottom:1.5rem; }
+  .tingkat-label{
+    display:inline-block;
+    font-family:'Space Mono',monospace;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    color:#fff;
+    background:var(--ink);
+    padding:.2rem .7rem;
+    border-radius:999px;
+  }
+  .tingkat-head h2{
+    margin-top:.6rem;
+    font-size:1.35rem;
+    color:var(--ink);
+  }
+  .tingkat-head p{
+    margin-top:.35rem;
+    max-width:34rem;
+    font-size:.9rem;
+    color:rgba(29,27,24,.7);
+  }
+
+  /* Kartu penanda tingkatan yang contohnya belum tersedia. */
+  .card-segera{
+    border-style:dashed;
+    box-shadow:none;
+    cursor:default;
+  }
+  .card-segera:hover{
+    transform:none;
+    border-color:rgba(22,50,79,.15);
+    box-shadow:none;
+  }
+  .card-segera .card-preview{ background:var(--bg); color:rgba(22,50,79,.3); }
+  .card-tag-segera{
+    position:absolute;
+    top:.5rem;right:.5rem;
+    background:rgba(22,50,79,.35);
+    color:#fff;
+    font-family:'Space Mono',monospace;
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    padding:.15rem .4rem;
+    border-radius:4px;
+  }
+
+  /* Baris akun demo pada kartu yang butuh login. */
+  .card-demo{
+    margin-top:.6rem;
+    font-family:'Space Mono',monospace;
+    font-size:.72rem;
+    line-height:1.5;
+    color:rgba(29,27,24,.6);
+    background:var(--bg);
+    border:1px solid rgba(22,50,79,.1);
+    border-radius:6px;
+    padding:.45rem .6rem;
+  }
+
   /* ---------- CTA ---------- */
   .cta{
     margin-top:3.5rem;
@@ -281,95 +350,144 @@
   <header>
     <div class="header-inner">
       <div class="header-text">
-        <p class="eyebrow">Katalog &mdash; Contoh Website UMKM</p>
+        <p class="eyebrow">Katalog &mdash; Contoh Website &amp; Aplikasi</p>
         <h1>Kumpulan <em>desain website</em><br>untuk usaha Anda</h1>
-        <p class="sub">Kumpulan desain website UMKM untuk katalog produk, keranjang, dan checkout tanpa akun yang bisa Anda lihat langsung demonya sebelum memesan.</p>
+        <p class="sub">Dari website katalog siap pakai sampai aplikasi yang dirancang dari nol. Semua contoh di bawah bisa Anda buka dan coba langsung demonya sebelum memesan.</p>
       </div>
       <div class="header-art" aria-hidden="true" id="header-art"></div>
     </div>
   </header>
 
   <main>
-    <div class="chip-row" id="chip-kategori">
-      <button class="chip active" data-kategori="semua">Semua</button>
-      <button class="chip" data-kategori="kuliner">Kuliner</button>
-      <button class="chip" data-kategori="fashion">Fashion</button>
-      <button class="chip" data-kategori="rental">Rental</button>
-      <button class="chip" data-kategori="acara">Acara</button>
-      <button class="chip" data-kategori="servis">Servis</button>
-    </div>
 
-    <div class="grid" id="template-grid">
-      <a class="card" data-kategori="kuliner" href="/template-roti/">
-        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:#6B3F2E;color:#F3E7DC;">
-          <span class="card-tag-contoh">contoh</span>
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26c0-9 7-16 16-16s16 7 16 16c0 6-4 10-16 10S8 32 8 26Z"/><path d="M16 22c2-2 5-3 8-3s6 1 8 3"/><circle cx="16" cy="30" r="1.4" fill="currentColor" stroke="none"/><circle cx="24" cy="32" r="1.4" fill="currentColor" stroke="none"/><circle cx="32" cy="30" r="1.4" fill="currentColor" stroke="none"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="card-kategori">Kuliner</span>
-          <h2>Roti Hangat</h2>
-          <p>Demo template pemesanan roti online untuk UMKM, lengkap dengan alur checkout sederhana.</p>
-        </div>
-      </a>
+    <section class="tingkat" id="starter">
+      <div class="tingkat-head">
+        <span class="tingkat-label">Starter</span>
+        <h2>Website statis siap pakai</h2>
+        <p>Katalog produk, keranjang, dan checkout tanpa perlu akun. Cocok untuk usaha yang butuh etalase online cepat tanpa banyak pengaturan.</p>
+      </div>
 
-      <a class="card" data-kategori="fashion" href="/template-fashion/">
-        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:#14161A;color:#F5F5F2;">
-          <span class="card-tag-contoh">contoh</span>
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6a3 3 0 1 1 3 3"/><path d="M24 9v5"/><path d="M24 14 8 27a4 4 0 0 0 2 7h28a4 4 0 0 0 2-7L24 14Z"/><path d="M14 34h20"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="card-kategori">Fashion</span>
-          <h2>Yogata</h2>
-          <p>Demo template toko fashion dengan varian warna dan ukuran, checkout langsung ke WhatsApp.</p>
-        </div>
-      </a>
+      <!-- Chip "Acara" disembunyikan sementara: kartunya belum ditayangkan,
+           jadi filternya akan menghasilkan halaman kosong. Kembalikan bersamaan
+           saat kartu template acara sudah siap. -->
+      <div class="chip-row" id="chip-kategori">
+        <button class="chip active" data-kategori="semua">Semua</button>
+        <button class="chip" data-kategori="kuliner">Kuliner</button>
+        <button class="chip" data-kategori="fashion">Fashion</button>
+        <button class="chip" data-kategori="rental">Rental</button>
+        <button class="chip" data-kategori="servis">Servis</button>
+      </div>
 
-      <a class="card" data-kategori="rental" href="/template-rental/">
-        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:#131512;color:#F2B01E;">
-          <span class="card-tag-contoh">contoh</span>
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="17" width="34" height="22" rx="3"/><rect x="17" y="10" width="12" height="9" rx="2"/><circle cx="24" cy="28" r="8"/><circle cx="24" cy="28" r="4"/><rect x="34" y="21" width="4" height="3" rx="1"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="card-kategori">Rental</span>
-          <h2>RAMA</h2>
-          <p>Demo template rental kamera dan peralatan video dengan cek ketersediaan berbasis rentang tanggal.</p>
-        </div>
-      </a>
+      <div class="grid" id="template-grid">
+        <a class="card" data-kategori="kuliner" href="/template-roti/">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview" style="background:#6B3F2E;color:#F3E7DC;">
+            <span class="card-tag-contoh">contoh</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26c0-9 7-16 16-16s16 7 16 16c0 6-4 10-16 10S8 32 8 26Z"/><path d="M16 22c2-2 5-3 8-3s6 1 8 3"/><circle cx="16" cy="30" r="1.4" fill="currentColor" stroke="none"/><circle cx="24" cy="32" r="1.4" fill="currentColor" stroke="none"/><circle cx="32" cy="30" r="1.4" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Kuliner</span>
+            <h2>Roti Hangat</h2>
+            <p>Demo template pemesanan roti online untuk UMKM, lengkap dengan alur checkout sederhana.</p>
+          </div>
+        </a>
 
-      <a class="card" data-kategori="acara" href="/template-undangan/">
-        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:#0E1B2B;color:#C9A24B;">
-          <span class="card-tag-contoh">contoh</span>
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6c4 5 7 10 7 14a7 7 0 1 1-14 0c0-4 3-9 7-14Z"/><circle cx="24" cy="34" r="1.4" fill="currentColor" stroke="none"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="card-kategori">Acara</span>
-          <h2>Anisa &amp; Bagus</h2>
-          <p>Demo template undangan pernikahan digital mewah dengan hitung mundur, galeri, dan RSVP tanpa perlu backend.</p>
-        </div>
-      </a>
+        <a class="card" data-kategori="fashion" href="/template-fashion/">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview" style="background:#14161A;color:#F5F5F2;">
+            <span class="card-tag-contoh">contoh</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6a3 3 0 1 1 3 3"/><path d="M24 9v5"/><path d="M24 14 8 27a4 4 0 0 0 2 7h28a4 4 0 0 0 2-7L24 14Z"/><path d="M14 34h20"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Fashion</span>
+            <h2>Yogata</h2>
+            <p>Demo template toko fashion dengan varian warna dan ukuran, checkout langsung ke WhatsApp.</p>
+          </div>
+        </a>
 
-      <a class="card" data-kategori="servis" href="/template-barber/">
-        <div class="card-mockup-bar"><span></span><span></span><span></span></div>
-        <div class="card-preview" style="background:#7A2E2E;color:#A8834A;">
-          <span class="card-tag-contoh">contoh</span>
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="6.5"/><circle cx="13" cy="35" r="6.5"/><line x1="18" y1="17.5" x2="41" y2="41"/><line x1="18" y1="30.5" x2="41" y2="7"/></svg>
+        <a class="card" data-kategori="rental" href="/template-rental/">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview" style="background:#131512;color:#F2B01E;">
+            <span class="card-tag-contoh">contoh</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="17" width="34" height="22" rx="3"/><rect x="17" y="10" width="12" height="9" rx="2"/><circle cx="24" cy="28" r="8"/><circle cx="24" cy="28" r="4"/><rect x="34" y="21" width="4" height="3" rx="1"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Rental</span>
+            <h2>RAMA</h2>
+            <p>Demo template rental kamera dan peralatan video dengan cek ketersediaan berbasis rentang tanggal.</p>
+          </div>
+        </a>
+
+        <a class="card" data-kategori="servis" href="/template-barber/">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview" style="background:#7A2E2E;color:#A8834A;">
+            <span class="card-tag-contoh">contoh</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="6.5"/><circle cx="13" cy="35" r="6.5"/><line x1="18" y1="17.5" x2="41" y2="41"/><line x1="18" y1="30.5" x2="41" y2="7"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Servis</span>
+            <h2>PANGKAS</h2>
+            <p>Demo template reservasi barbershop dengan pilihan kapster, jadwal per hari yang benar-benar tersedia, dan kartu janji temu.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="tingkat" id="standard">
+      <div class="tingkat-head">
+        <span class="tingkat-label">Standard</span>
+        <h2>Ditambah panel admin</h2>
+        <p>Semua yang ada di Starter, ditambah halaman admin agar Anda bisa mengelola produk, harga, dan pesanan sendiri tanpa menghubungi pembuatnya.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card card-segera">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview">
+            <span class="card-tag-segera">segera</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="36" height="30" rx="3"/><path d="M6 17h36M17 17v22"/><path d="M23 24h13M23 30h9"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Segera Hadir</span>
+            <h2>Contoh sedang disiapkan</h2>
+            <p>Demo untuk tingkatan ini belum tersedia. Hubungi kami lewat tombol di bawah kalau Anda ingin melihat contohnya lebih dulu.</p>
+          </div>
         </div>
-        <div class="card-body">
-          <span class="card-kategori">Servis</span>
-          <h2>PANGKAS</h2>
-          <p>Demo template reservasi barbershop dengan pilihan kapster, jadwal per hari yang benar-benar tersedia, dan kartu janji temu.</p>
-        </div>
-      </a>
-    </div>
+      </div>
+    </section>
+
+    <section class="tingkat" id="custom">
+      <div class="tingkat-head">
+        <span class="tingkat-label">Custom</span>
+        <h2>Aplikasi dirancang dari nol</h2>
+        <p>Untuk kebutuhan yang tidak bisa diselesaikan template: alur persetujuan, banyak peran pengguna, riwayat yang harus bisa ditelusuri. Dibangun mengikuti cara kerja usaha Anda, bukan sebaliknya.</p>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="https://taskflow-xuf6.onrender.com" target="_blank" rel="noopener">
+          <div class="card-mockup-bar"><span></span><span></span><span></span></div>
+          <div class="card-preview" style="background:#1E1B4B;color:#A5B4FC;">
+            <span class="card-tag-contoh">contoh</span>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="6" width="30" height="36" rx="3"/><path d="M16 16l3 3 6-6"/><path d="M29 17h6"/><path d="M16 28l3 3 6-6"/><path d="M29 29h6"/></svg>
+          </div>
+          <div class="card-body">
+            <span class="card-kategori">Manajemen Kerja</span>
+            <h2>TaskFlow</h2>
+            <p>Demo aplikasi pengajuan dan persetujuan tugas antar-atasan: pengajuan, permintaan revisi, persetujuan, dan riwayat yang tercatat permanen.</p>
+            <p class="card-demo">
+              Coba masuk sebagai:<br>
+              admin@taskflow.test &middot; approver@taskflow.test &middot; sari@taskflow.test<br>
+              kata sandi: password
+            </p>
+          </div>
+        </a>
+      </div>
+    </section>
 
     <div class="cta">
       <p class="eyebrow">Tertarik memesan?</p>
-      <h2>Mari diskusikan <em>website UMKM</em> Anda</h2>
-      <p>Konsultasikan kebutuhan usaha Anda, kami bantu buatkan website serupa contoh di atas.</p>
+      <h2>Mari diskusikan <em>kebutuhan</em> Anda</h2>
+      <p>Dari website katalog siap pakai sampai aplikasi yang dirancang khusus. Ceritakan kebutuhan usaha Anda, kami bantu carikan tingkatan yang paling pas.</p>
       <a class="btn" href="https://wa.me/628895021024?text=Halo%2C%20saya%20tertarik%20konsultasi%20pembuatan%20website%20UMKM" target="_blank" rel="noopener">Konsultasi Sekarang</a>
     </div>
   </main>
