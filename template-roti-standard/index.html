@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roti Hangat — Versi Standard dengan Halaman Admin (Demo Template)</title>
+<meta name="description" content="Demo template website UMKM versi Standard: halaman pembeli dan halaman admin untuk mengelola produk dan kategori sendiri.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%90%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Palet dan tipografi sengaja disamakan dengan template-roti (versi Starter),
+     supaya calon klien langsung menangkap bahwa ini toko yang sama --
+     yang berbeda hanya ada tidaknya halaman admin. */
+  :root{
+    --bg:#FAF3EC;
+    --ink:#3A241C;
+    --primary:#6B3F2E;
+    --primary-hover:#54301F;
+    --caramel:#C98A3B;
+    --caramel-hover:#A8701F;
+    --blush:#E7A9A0;
+    --sage:#7C9473;
+    --sage-hover:#5E7455;
+    --info-bg:#FBF0D9;
+    --info-border:#E6C77E;
+    --danger:#B5452F;
+    --danger-hover:#93341F;
+    --card-bg:#FFFFFF;
+    --border:#E7DACB;
+    --muted:rgba(58,36,28,.62);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Nunito Sans',ui-sans-serif,system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Playfair Display',ui-serif,Georgia,serif;margin:0;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;font-size:.92rem;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 1.1rem;}
+
+  /* ---------- Pita demo ---------- */
+  .pita-demo{
+    background:var(--info-bg);
+    border-bottom:1px solid var(--info-border);
+    font-size:.82rem;
+    color:#6A5220;
+    padding:.6rem 0;
+  }
+  .pita-demo strong{color:#4E3C14;}
+
+  /* ---------- Navbar ---------- */
+  .navbar{
+    background:var(--card-bg);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:50;
+  }
+  .navbar-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;padding:.85rem 0;flex-wrap:wrap;
+  }
+  .merek{display:flex;align-items:center;gap:.6rem;}
+  .merek-ikon{
+    width:36px;height:36px;border-radius:9px;
+    background:var(--primary);color:#FDF6EE;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .merek-ikon svg{width:22px;height:22px;}
+  .merek h1{font-size:1.1rem;line-height:1.1;}
+  .merek span{font-size:.74rem;color:var(--muted);}
+
+  /* Dua pilihan yang diminta: sisi pembeli dan sisi admin. */
+  .tab-peran{
+    display:flex;gap:.3rem;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:999px;padding:.25rem;
+  }
+  .tab-peran a{
+    text-decoration:none;
+    font-size:.82rem;font-weight:700;
+    color:var(--muted);
+    padding:.4rem 1rem;border-radius:999px;
+    display:flex;align-items:center;gap:.4rem;
+    transition:.15s ease;
+  }
+  .tab-peran a:hover{color:var(--primary);}
+  .tab-peran a.aktif{background:var(--primary);color:#FDF6EE;}
+  .tab-peran svg{width:15px;height:15px;}
+
+  /* ---------- Umum ---------- */
+  .seksi{padding:2rem 0 3rem;}
+  .seksi-judul{font-size:1.5rem;}
+  .seksi-sub{margin-top:.3rem;color:var(--muted);font-size:.92rem;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+    border:none;border-radius:8px;
+    font-size:.88rem;font-weight:700;
+    padding:.6rem 1.1rem;
+    background:var(--primary);color:#FDF6EE;
+    transition:background .15s ease;
+  }
+  .btn:hover{background:var(--primary-hover);}
+  .btn-karamel{background:var(--caramel);}
+  .btn-karamel:hover{background:var(--caramel-hover);}
+  .btn-garis{
+    background:transparent;color:var(--primary);
+    border:1px solid var(--border);
+  }
+  .btn-garis:hover{background:var(--bg);}
+  .btn-bahaya{background:var(--danger);}
+  .btn-bahaya:hover{background:var(--danger-hover);}
+  .btn-kecil{font-size:.78rem;padding:.35rem .7rem;border-radius:6px;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  .chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.2rem 0 1.6rem;}
+  .chip{
+    font-size:.78rem;font-weight:700;
+    padding:.35rem .9rem;border-radius:999px;
+    border:1px solid var(--border);
+    background:transparent;color:var(--primary);
+    transition:.15s ease;
+  }
+  .chip:hover{background:#F3E7DA;}
+  .chip.aktif{background:var(--primary);color:#FDF6EE;border-color:var(--primary);}
+
+  /* ---------- Kartu produk (sisi pembeli) ---------- */
+  .grid-produk{
+    display:grid;gap:1.1rem;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  }
+  .kartu{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .kartu-gambar{
+    aspect-ratio:4/3;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .kartu-gambar svg{width:38%;height:38%;}
+  .lencana-habis{
+    position:absolute;inset:0;
+    background:rgba(58,36,28,.55);
+    color:#FDF6EE;font-size:.8rem;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kartu-isi{padding:.85rem 1rem 1rem;display:flex;flex-direction:column;flex:1;}
+  .kartu-kategori{
+    font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--sage);
+  }
+  .kartu-isi h3{font-size:1rem;margin-top:.25rem;}
+  .kartu-desk{font-size:.82rem;color:var(--muted);margin-top:.3rem;flex:1;}
+  .kartu-kaki{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.8rem;}
+  .harga{font-weight:800;color:var(--primary);}
+
+  .kosong{
+    grid-column:1/-1;text-align:center;
+    padding:3rem 1rem;color:var(--muted);
+    border:1px dashed var(--border);border-radius:12px;
+  }
+
+  /* ---------- Keranjang ---------- */
+  .keranjang-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:var(--primary);color:#FDF6EE;
+    box-shadow:0 -4px 20px rgba(58,36,28,.2);
+    transform:translateY(110%);transition:transform .2s ease;
+  }
+  .keranjang-bar.tampil{transform:translateY(0);}
+  .keranjang-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;padding:.8rem 0;
+  }
+  .keranjang-info{font-size:.86rem;}
+  .keranjang-info strong{display:block;font-size:1.05rem;}
+
+  /* ---------- Admin ---------- */
+  .gerbang{
+    max-width:26rem;margin:3rem auto;
+    background:var(--card-bg);border:1px solid var(--border);
+    border-radius:12px;padding:1.8rem;
+  }
+  .gerbang h2{font-size:1.3rem;}
+  .gerbang p{color:var(--muted);font-size:.88rem;margin-top:.4rem;}
+  .petunjuk-sandi{
+    margin-top:1rem;font-size:.8rem;
+    background:var(--info-bg);border:1px solid var(--info-border);
+    border-radius:8px;padding:.6rem .8rem;color:#6A5220;
+  }
+  .petunjuk-sandi code{font-weight:800;}
+
+  .label{display:block;font-size:.8rem;font-weight:700;margin-bottom:.25rem;}
+  .isian{
+    width:100%;padding:.55rem .7rem;
+    border:1px solid var(--border);border-radius:8px;
+    background:var(--card-bg);color:var(--ink);
+  }
+  .isian:focus{outline:2px solid var(--caramel);outline-offset:1px;}
+  .galat{color:var(--danger);font-size:.8rem;margin-top:.4rem;min-height:1.1rem;}
+
+  .tab-admin{display:flex;gap:.4rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;}
+  .tab-admin button{
+    background:none;border:none;border-bottom:2px solid transparent;
+    font-size:.9rem;font-weight:700;color:var(--muted);
+    padding:.6rem .9rem;margin-bottom:-1px;
+  }
+  .tab-admin button.aktif{color:var(--primary);border-bottom-color:var(--primary);}
+
+  .panel-kepala{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;flex-wrap:wrap;margin-bottom:1rem;
+  }
+
+  .tabel-bungkus{
+    background:var(--card-bg);border:1px solid var(--border);
+    border-radius:12px;overflow:auto;
+  }
+  table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:640px;}
+  thead{background:#F6EDE2;}
+  th{
+    text-align:left;font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--muted);
+    padding:.7rem .9rem;white-space:nowrap;
+  }
+  td{padding:.7rem .9rem;border-top:1px solid var(--border);vertical-align:middle;}
+  .sel-aksi{text-align:right;white-space:nowrap;}
+  .sel-aksi button{margin-left:.35rem;}
+
+  .mini-ikon{
+    width:34px;height:34px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .mini-ikon svg{width:60%;height:60%;}
+  .sel-produk{display:flex;align-items:center;gap:.6rem;}
+
+  .pil{
+    display:inline-block;font-size:.7rem;font-weight:800;
+    padding:.15rem .55rem;border-radius:999px;
+  }
+  .pil-ada{background:#E6EFE3;color:var(--sage-hover);}
+  .pil-habis{background:#F6E2DE;color:var(--danger);}
+
+  /* ---------- Modal ---------- */
+  .tirai{
+    position:fixed;inset:0;z-index:80;
+    background:rgba(58,36,28,.45);
+    display:none;align-items:center;justify-content:center;
+    padding:1rem;
+  }
+  .tirai.tampil{display:flex;}
+  .modal{
+    background:var(--card-bg);border-radius:14px;
+    width:100%;max-width:34rem;
+    max-height:90vh;overflow:auto;
+    padding:1.5rem;
+  }
+  .modal h2{font-size:1.25rem;}
+  .modal-kaki{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.3rem;}
+  .baris-2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  @media(max-width:520px){ .baris-2{grid-template-columns:1fr;} }
+  .kolom{margin-top:.9rem;}
+
+  .pilih-ikon,.pilih-warna{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.35rem;}
+  .opsi-ikon{
+    width:44px;height:44px;border-radius:9px;
+    border:2px solid var(--border);background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--primary);
+  }
+  .opsi-ikon svg{width:24px;height:24px;}
+  .opsi-ikon.aktif{border-color:var(--primary);}
+  .opsi-warna{
+    width:34px;height:34px;border-radius:999px;
+    border:2px solid transparent;
+  }
+  .opsi-warna.aktif{border-color:var(--ink);}
+
+  .sukses-ikon{
+    width:56px;height:56px;border-radius:999px;margin:0 auto;
+    background:#E6EFE3;color:var(--sage-hover);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sukses-ikon svg{width:30px;height:30px;}
+
+  footer{
+    border-top:1px solid var(--border);
+    padding:1.5rem 0 4.5rem;
+    font-size:.8rem;color:var(--muted);
+  }
+  footer a{color:var(--primary);}
+</style>
+</head>
+<body>
+
+<div class="pita-demo">
+  <div class="wrap">
+    <strong>Demo template versi Standard.</strong>
+    Data yang Anda tambah atau ubah tersimpan sementara di peramban ini saja, jadi
+    perubahan Anda tidak terlihat oleh pengunjung lain. Pada versi asli, data tersimpan
+    permanen di database dan sama di semua perangkat.
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="wrap navbar-inner">
+    <div class="merek">
+      <span class="merek-ikon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26c0-9 7-16 16-16s16 7 16 16c0 6-4 10-16 10S8 32 8 26Z"/><path d="M16 22c2-2 5-3 8-3s6 1 8 3"/></svg>
+      </span>
+      <div>
+        <h1>Roti Hangat</h1>
+        <span>Versi Standard &mdash; dengan halaman admin</span>
+      </div>
+    </div>
+
+    <div class="tab-peran" id="tab-peran">
+      <a href="#/" id="tab-toko">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 7v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7l-3-5H6Z"/><path d="M3 7h18"/><path d="M16 11a4 4 0 0 1-8 0"/></svg>
+        Pembeli
+      </a>
+      <a href="#/admin" id="tab-admin-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>
+        Admin
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================ SISI PEMBELI ============================ -->
+<main id="tampilan-toko" class="seksi">
+  <div class="wrap">
+    <h2 class="seksi-judul">Menu Hari Ini</h2>
+    <p class="seksi-sub" id="sub-toko">Dipanggang segar tiap pagi.</p>
+
+    <div class="chip-row" id="chip-kategori"></div>
+    <div class="grid-produk" id="grid-produk"></div>
+  </div>
+</main>
+
+<!-- ============================= SISI ADMIN ============================= -->
+<main id="tampilan-admin" class="seksi" hidden>
+  <div class="wrap">
+
+    <!-- Gerbang masuk. Sandinya sengaja ditampilkan: ini demo, bukan sistem
+         keamanan. Tujuannya menunjukkan bahwa halaman admin memang terpisah
+         dari halaman pembeli. -->
+    <div class="gerbang" id="gerbang">
+      <h2>Masuk sebagai Admin</h2>
+      <p>Halaman ini terpisah dari halaman pembeli. Pada versi asli, hanya pemilik usaha yang punya aksesnya.</p>
+      <form id="form-masuk" style="margin-top:1.2rem;">
+        <label class="label" for="sandi">Kata sandi</label>
+        <input class="isian" type="password" id="sandi" autocomplete="off" placeholder="masukkan kata sandi">
+        <p class="galat" id="galat-sandi"></p>
+        <button class="btn" type="submit" style="width:100%;">Masuk</button>
+      </form>
+      <p class="petunjuk-sandi">
+        Kata sandi demo: <code>admin123</code>
+      </p>
+    </div>
+
+    <!-- Panel admin -->
+    <div id="panel-admin" hidden>
+      <div class="panel-kepala">
+        <div>
+          <h2 class="seksi-judul">Panel Admin</h2>
+          <p class="seksi-sub">Ubah apa pun di sini, lalu buka tab <strong>Pembeli</strong> untuk melihat hasilnya.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="btn btn-garis btn-kecil" id="btn-reset">Kembalikan data contoh</button>
+          <button class="btn btn-garis btn-kecil" id="btn-keluar">Keluar</button>
+        </div>
+      </div>
+
+      <div class="tab-admin">
+        <button data-panel="produk" class="aktif">Produk</button>
+        <button data-panel="kategori">Kategori</button>
+      </div>
+
+      <!-- Panel produk -->
+      <section id="panel-produk">
+        <div class="panel-kepala">
+          <p class="seksi-sub" id="ringkas-produk"></p>
+          <button class="btn btn-karamel btn-kecil" id="btn-tambah-produk">+ Tambah Produk</button>
+        </div>
+        <div class="tabel-bungkus">
+          <table>
+            <thead>
+              <tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Status</th><th class="sel-aksi">Aksi</th></tr>
+            </thead>
+            <tbody id="tbody-produk"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Panel kategori -->
+      <section id="panel-kategori" hidden>
+        <div class="panel-kepala">
+          <p class="seksi-sub" id="ringkas-kategori"></p>
+          <button class="btn btn-karamel btn-kecil" id="btn-tambah-kategori">+ Tambah Kategori</button>
+        </div>
+        <div class="tabel-bungkus">
+          <table>
+            <thead>
+              <tr><th>Kategori</th><th>Jumlah produk</th><th class="sel-aksi">Aksi</th></tr>
+            </thead>
+            <tbody id="tbody-kategori"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<!-- Bilah keranjang -->
+<div class="keranjang-bar" id="keranjang-bar">
+  <div class="wrap keranjang-inner">
+    <div class="keranjang-info">
+      <span id="keranjang-jumlah">0 item</span>
+      <strong id="keranjang-total">Rp0</strong>
+    </div>
+    <button class="btn btn-karamel" id="btn-checkout">Pesan Sekarang</button>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    Demo template UMKM &mdash; versi Standard.
+    <a href="/">Kembali ke katalog</a>
+  </div>
+</footer>
+
+<!-- Modal serbaguna -->
+<div class="tirai" id="tirai">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+"use strict";
+
+// ============================================================
+// Kunci penyimpanan. Diberi akhiran versi supaya kalau bentuk datanya
+// berubah di kemudian hari, data lama tidak menabrak yang baru.
+// ============================================================
+const KUNCI = "roti-standard-v1";
+const SANDI_DEMO = "admin123";
+
+// ============================================================
+// Ikon dan warna yang bisa dipilih admin.
+//
+// Dipakai sebagai pengganti unggah gambar: tanpa backend tidak ada tempat
+// menyimpan berkas, dan menempelkan URL gambar dari internet rawan tautan mati.
+// Selain itu, ikon garis + blok warna memang bahasa visual template lain.
+// ============================================================
+const IKON = {
+  roti: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26c0-9 7-16 16-16s16 7 16 16c0 6-4 10-16 10S8 32 8 26Z"/><path d="M16 22c2-2 5-3 8-3s6 1 8 3"/></svg>',
+  tawar: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18c0-4 6-7 14-7s14 3 14 7v18a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V18Z"/><path d="M10 20h28"/></svg>',
+  croissant: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 30c6 6 14 8 20 6"/><path d="M8 24c2-8 10-14 18-14 6 0 10 4 10 9 0 8-8 15-18 17"/><path d="M18 16l4 6M24 14l3 7M30 15l1 6"/></svg>',
+  kue: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 38V26c0-3 3-5 8-5h16c5 0 8 2 8 5v12"/><path d="M8 30c3 2 5 2 8 0s5-2 8 0 5 2 8 0 5-2 8 0"/><path d="M24 21V13"/><circle cx="24" cy="10" r="2.4"/></svg>',
+  donat: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16"/><circle cx="24" cy="24" r="5.5"/><path d="M15 15l2 2M32 16l-2 2M16 32l2-2M33 31l-2-2"/></svg>',
+  kopi: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18h22v12a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8V18Z"/><path d="M32 21h4a4 4 0 0 1 0 8h-4"/><path d="M16 8v4M22 7v5M28 9v3"/></svg>',
+  kotak: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16l16-8 16 8-16 8-16-8Z"/><path d="M8 16v16l16 8 16-8V16"/><path d="M24 24v16"/></svg>',
+  bintang: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7l5.2 10.9L41 19.4l-8.5 8.3 2 11.8L24 33.9l-10.5 5.6 2-11.8L7 19.4l11.8-1.5L24 7Z"/></svg>'
+};
+const DAFTAR_IKON = Object.keys(IKON);
+
+const WARNA = ["#F0C15C","#E7A9A0","#C98A3B","#7C9473","#B98A6B","#F4EEE2"];
+
+// ============================================================
+// Data contoh. Dipakai saat pertama kali dibuka, dan saat admin menekan
+// "Kembalikan data contoh".
+// ============================================================
+function dataContoh() {
+  return {
+    kategori: [
+      { slug:"roti-manis", label:"Roti Manis" },
+      { slug:"roti-tawar", label:"Roti Tawar" },
+      { slug:"pastry",     label:"Pastry" },
+      { slug:"kue",        label:"Kue" }
+    ],
+    produk: [
+      { id:1, nama:"Roti Coklat Keju",   kategori:"roti-manis", harga:10000, deskripsi:"Roti empuk isi coklat leleh dan keju gurih.", ikon:"roti",      warna:"#C98A3B", tersedia:true },
+      { id:2, nama:"Roti Pisang Coklat", kategori:"roti-manis", harga:9000,  deskripsi:"Potongan pisang manis berpadu coklat lumer.", ikon:"roti",      warna:"#F0C15C", tersedia:true },
+      { id:3, nama:"Roti Abon Sapi",     kategori:"roti-manis", harga:12500, deskripsi:"Roti gurih bertabur abon sapi melimpah.",     ikon:"roti",      warna:"#B98A6B", tersedia:false },
+      { id:4, nama:"Roti Tawar Gandum",  kategori:"roti-tawar", harga:22000, deskripsi:"Gandum utuh, lembut dan mengenyangkan.",      ikon:"tawar",     warna:"#B98A6B", tersedia:true },
+      { id:5, nama:"Roti Tawar Pandan",  kategori:"roti-tawar", harga:25000, deskripsi:"Aroma pandan harum dengan tekstur lembut.",   ikon:"tawar",     warna:"#7C9473", tersedia:true },
+      { id:6, nama:"Croissant Butter",   kategori:"pastry",     harga:15000, deskripsi:"Berlapis, renyah di luar lembut di dalam.",   ikon:"croissant", warna:"#F0C15C", tersedia:true },
+      { id:7, nama:"Puff Sosis",         kategori:"pastry",     harga:12000, deskripsi:"Puff pastry gurih dengan isian sosis sapi.",  ikon:"croissant", warna:"#E7A9A0", tersedia:true },
+      { id:8, nama:"Brownies Kukus",     kategori:"kue",        harga:45000, deskripsi:"Brownies lembut, padat, dan coklat pekat.",   ikon:"kue",       warna:"#B98A6B", tersedia:true },
+      { id:9, nama:"Kue Cubit (isi 10)", kategori:"kue",        harga:35000, deskripsi:"Kue cubit lembut kekinian, isi 10 pcs.",      ikon:"donat",     warna:"#E7A9A0", tersedia:true }
+    ]
+  };
+}
+
+// ============================================================
+// Penyimpanan
+// ============================================================
+function muat() {
+  try {
+    const mentah = localStorage.getItem(KUNCI);
+    if (!mentah) return dataContoh();
+    const data = JSON.parse(mentah);
+    if (!Array.isArray(data.produk) || !Array.isArray(data.kategori)) return dataContoh();
+    return data;
+  } catch (e) {
+    // localStorage bisa tidak tersedia (mode privat di sebagian peramban).
+    // Demonya tetap harus jalan, cukup tanpa penyimpanan.
+    return dataContoh();
+  }
+}
+
+function simpan() {
+  try {
+    localStorage.setItem(KUNCI, JSON.stringify({ produk: db.produk, kategori: db.kategori }));
+  } catch (e) { /* diabaikan: demo tetap jalan tanpa penyimpanan */ }
+}
+
+let db = muat();
+
+const state = {
+  kategoriAktif: "semua",
+  panelAdmin: "produk",
+  masuk: false,
+  keranjang: {}   // { idProduk: qty } -- sengaja di memori saja, direset tiap muat ulang
+};
+
+// ============================================================
+// Bantuan
+// ============================================================
+const $ = (sel) => document.querySelector(sel);
+const rupiah = (n) => "Rp" + Number(n).toLocaleString("id-ID");
+const aman = (t) => String(t).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const labelKategori = (slug) => (db.kategori.find(k => k.slug === slug) || {}).label || "Tanpa kategori";
+const idBaru = () => db.produk.reduce((m, p) => Math.max(m, p.id), 0) + 1;
+
+function slugkan(teks) {
+  return teks.toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || ("kategori-" + Date.now());
+}
+
+// ============================================================
+// Rute: #/ untuk pembeli, #/admin untuk admin
+// ============================================================
+function rute() {
+  const diAdmin = location.hash === "#/admin";
+
+  $("#tampilan-toko").hidden = diAdmin;
+  $("#tampilan-admin").hidden = !diAdmin;
+  $("#tab-toko").classList.toggle("aktif", !diAdmin);
+  $("#tab-admin-link").classList.toggle("aktif", diAdmin);
+
+  // Bilah keranjang hanya relevan di sisi pembeli.
+  $("#keranjang-bar").classList.toggle("tampil", !diAdmin && jumlahItem() > 0);
+
+  if (diAdmin) {
+    $("#gerbang").hidden = state.masuk;
+    $("#panel-admin").hidden = !state.masuk;
+    if (state.masuk) gambarAdmin();
+  } else {
+    gambarToko();
+  }
+  window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", rute);
+
+// ============================================================
+// Sisi pembeli
+// ============================================================
+function gambarToko() {
+  const chipRow = $("#chip-kategori");
+  const dipakai = db.kategori.filter(k => db.produk.some(p => p.kategori === k.slug));
+
+  chipRow.innerHTML = [{ slug:"semua", label:"Semua" }].concat(dipakai).map(k =>
+    '<button class="chip' + (state.kategoriAktif === k.slug ? " aktif" : "") +
+    '" data-kategori="' + aman(k.slug) + '">' + aman(k.label) + "</button>"
+  ).join("");
+
+  const daftar = db.produk.filter(p =>
+    state.kategoriAktif === "semua" || p.kategori === state.kategoriAktif
+  );
+
+  $("#sub-toko").textContent = db.produk.length + " produk tersedia hari ini. Dipanggang segar tiap pagi.";
+
+  const grid = $("#grid-produk");
+  if (daftar.length === 0) {
+    grid.innerHTML = '<div class="kosong">Belum ada produk di kategori ini.<br>' +
+      'Coba tambahkan lewat tab <strong>Admin</strong>.</div>';
+    return;
+  }
+
+  grid.innerHTML = daftar.map(p =>
+    '<article class="kartu">' +
+      '<div class="kartu-gambar" style="background:' + aman(p.warna) + ';color:rgba(58,36,28,.75);">' +
+        IKON[p.ikon] +
+        (p.tersedia ? "" : '<span class="lencana-habis">Habis</span>') +
+      "</div>" +
+      '<div class="kartu-isi">' +
+        '<span class="kartu-kategori">' + aman(labelKategori(p.kategori)) + "</span>" +
+        "<h3>" + aman(p.nama) + "</h3>" +
+        '<p class="kartu-desk">' + aman(p.deskripsi) + "</p>" +
+        '<div class="kartu-kaki">' +
+          '<span class="harga">' + rupiah(p.harga) + "</span>" +
+          (p.tersedia
+            ? '<button class="btn btn-kecil" data-tambah="' + p.id + '">Tambah</button>'
+            : '<button class="btn btn-kecil" disabled>Habis</button>') +
+        "</div>" +
+      "</div>" +
+    "</article>"
+  ).join("");
+}
+
+function jumlahItem() {
+  return Object.values(state.keranjang).reduce((a, b) => a + b, 0);
+}
+
+function totalHarga() {
+  return Object.entries(state.keranjang).reduce((total, [id, qty]) => {
+    const p = db.produk.find(x => x.id === Number(id));
+    return total + (p ? p.harga * qty : 0);
+  }, 0);
+}
+
+function gambarKeranjang() {
+  const n = jumlahItem();
+  $("#keranjang-jumlah").textContent = n + " item";
+  $("#keranjang-total").textContent = rupiah(totalHarga());
+  $("#keranjang-bar").classList.toggle("tampil", n > 0 && location.hash !== "#/admin");
+}
+
+document.addEventListener("click", (e) => {
+  const chip = e.target.closest("[data-kategori]");
+  if (chip) {
+    state.kategoriAktif = chip.dataset.kategori;
+    gambarToko();
+    return;
+  }
+  const tambah = e.target.closest("[data-tambah]");
+  if (tambah) {
+    const id = tambah.dataset.tambah;
+    state.keranjang[id] = (state.keranjang[id] || 0) + 1;
+    gambarKeranjang();
+  }
+});
+
+$("#btn-checkout").addEventListener("click", () => {
+  bukaModal(
+    '<div style="text-align:center;">' +
+      '<div class="sukses-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+      '<h2 style="margin-top:.9rem;">Pesanan diterima</h2>' +
+      '<p style="color:var(--muted);margin-top:.5rem;">' +
+        jumlahItem() + " item senilai " + rupiah(totalHarga()) + "." +
+      "</p>" +
+      '<p style="color:var(--muted);font-size:.84rem;margin-top:.6rem;">' +
+        "Ini demo, jadi pesanan tidak benar-benar dikirim ke mana pun." +
+      "</p>" +
+      '<div class="modal-kaki" style="justify-content:center;">' +
+        '<button class="btn" data-tutup>Selesai</button>' +
+      "</div>" +
+    "</div>"
+  );
+  state.keranjang = {};
+  gambarKeranjang();
+});
+
+// ============================================================
+// Gerbang admin
+// ============================================================
+$("#form-masuk").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const isi = $("#sandi").value;
+  if (isi === SANDI_DEMO) {
+    state.masuk = true;
+    $("#sandi").value = "";
+    $("#galat-sandi").textContent = "";
+    rute();
+  } else {
+    $("#galat-sandi").textContent = "Kata sandi salah. Coba " + SANDI_DEMO + ".";
+  }
+});
+
+$("#btn-keluar").addEventListener("click", () => {
+  state.masuk = false;
+  rute();
+});
+
+$("#btn-reset").addEventListener("click", () => {
+  bukaModal(
+    "<h2>Kembalikan data contoh?</h2>" +
+    '<p style="color:var(--muted);margin-top:.5rem;">' +
+      "Semua produk dan kategori yang Anda tambah atau ubah akan diganti dengan data contoh semula." +
+    "</p>" +
+    '<div class="modal-kaki">' +
+      '<button class="btn btn-garis" data-tutup>Batal</button>' +
+      '<button class="btn btn-bahaya" id="ya-reset">Ya, kembalikan</button>' +
+    "</div>"
+  );
+  $("#ya-reset").addEventListener("click", () => {
+    db = dataContoh();
+    simpan();
+    state.keranjang = {};
+    tutupModal();
+    gambarKeranjang();
+    rute();
+  });
+});
+
+// ============================================================
+// Panel admin
+// ============================================================
+document.querySelectorAll(".tab-admin button").forEach(b => {
+  b.addEventListener("click", () => {
+    state.panelAdmin = b.dataset.panel;
+    document.querySelectorAll(".tab-admin button").forEach(x => x.classList.toggle("aktif", x === b));
+    gambarAdmin();
+  });
+});
+
+function gambarAdmin() {
+  $("#panel-produk").hidden = state.panelAdmin !== "produk";
+  $("#panel-kategori").hidden = state.panelAdmin !== "kategori";
+
+  // --- Produk ---
+  const habis = db.produk.filter(p => !p.tersedia).length;
+  $("#ringkas-produk").textContent =
+    db.produk.length + " produk" + (habis ? ", " + habis + " ditandai habis" : "");
+
+  $("#tbody-produk").innerHTML = db.produk.length === 0
+    ? '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Belum ada produk.</td></tr>'
+    : db.produk.map(p =>
+        "<tr>" +
+          '<td><div class="sel-produk">' +
+            '<span class="mini-ikon" style="background:' + aman(p.warna) + ';color:rgba(58,36,28,.75);">' + IKON[p.ikon] + "</span>" +
+            "<span><strong>" + aman(p.nama) + "</strong><br>" +
+            '<span style="color:var(--muted);font-size:.78rem;">' + aman(p.deskripsi) + "</span></span>" +
+          "</div></td>" +
+          "<td>" + aman(labelKategori(p.kategori)) + "</td>" +
+          "<td>" + rupiah(p.harga) + "</td>" +
+          '<td><span class="pil ' + (p.tersedia ? "pil-ada" : "pil-habis") + '">' +
+            (p.tersedia ? "Tersedia" : "Habis") + "</span></td>" +
+          '<td class="sel-aksi">' +
+            '<button class="btn btn-garis btn-kecil" data-ubah-produk="' + p.id + '">Ubah</button>' +
+            '<button class="btn btn-bahaya btn-kecil" data-hapus-produk="' + p.id + '">Hapus</button>' +
+          "</td>" +
+        "</tr>"
+      ).join("");
+
+  // --- Kategori ---
+  $("#ringkas-kategori").textContent = db.kategori.length + " kategori";
+
+  $("#tbody-kategori").innerHTML = db.kategori.length === 0
+    ? '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:2rem;">Belum ada kategori.</td></tr>'
+    : db.kategori.map(k => {
+        const dipakai = db.produk.filter(p => p.kategori === k.slug).length;
+        return "<tr>" +
+          "<td><strong>" + aman(k.label) + "</strong><br>" +
+          '<span style="color:var(--muted);font-size:.78rem;">' + aman(k.slug) + "</span></td>" +
+          "<td>" + dipakai + " produk</td>" +
+          '<td class="sel-aksi">' +
+            '<button class="btn btn-garis btn-kecil" data-ubah-kategori="' + aman(k.slug) + '">Ubah</button>' +
+            '<button class="btn btn-bahaya btn-kecil" data-hapus-kategori="' + aman(k.slug) + '">Hapus</button>' +
+          "</td>" +
+        "</tr>";
+      }).join("");
+}
+
+// ============================================================
+// Modal
+// ============================================================
+function bukaModal(html) {
+  $("#modal").innerHTML = html;
+  $("#tirai").classList.add("tampil");
+}
+function tutupModal() {
+  $("#tirai").classList.remove("tampil");
+  $("#modal").innerHTML = "";
+}
+$("#tirai").addEventListener("click", (e) => {
+  if (e.target.id === "tirai" || e.target.closest("[data-tutup]")) tutupModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") tutupModal();
+});
+
+// ============================================================
+// Form produk
+// ============================================================
+function formProduk(produk) {
+  const p = produk || { nama:"", kategori:(db.kategori[0]||{}).slug || "", harga:"", deskripsi:"", ikon:DAFTAR_IKON[0], warna:WARNA[0], tersedia:true };
+
+  if (db.kategori.length === 0) {
+    bukaModal("<h2>Belum ada kategori</h2>" +
+      '<p style="color:var(--muted);margin-top:.5rem;">Tambahkan minimal satu kategori dulu sebelum membuat produk.</p>' +
+      '<div class="modal-kaki"><button class="btn" data-tutup>Mengerti</button></div>');
+    return;
+  }
+
+  bukaModal(
+    "<h2>" + (produk ? "Ubah Produk" : "Tambah Produk") + "</h2>" +
+    '<form id="form-produk">' +
+      '<div class="kolom"><label class="label" for="f-nama">Nama produk</label>' +
+        '<input class="isian" id="f-nama" value="' + aman(p.nama) + '" required maxlength="60"></div>' +
+
+      '<div class="baris-2 kolom">' +
+        '<div><label class="label" for="f-kategori">Kategori</label>' +
+          '<select class="isian" id="f-kategori">' +
+            db.kategori.map(k => '<option value="' + aman(k.slug) + '"' +
+              (k.slug === p.kategori ? " selected" : "") + ">" + aman(k.label) + "</option>").join("") +
+          "</select></div>" +
+        '<div><label class="label" for="f-harga">Harga (Rp)</label>' +
+          '<input class="isian" id="f-harga" type="number" min="0" step="500" value="' + p.harga + '" required></div>' +
+      "</div>" +
+
+      '<div class="kolom"><label class="label" for="f-deskripsi">Deskripsi singkat</label>' +
+        '<textarea class="isian" id="f-deskripsi" rows="2" maxlength="120">' + aman(p.deskripsi) + "</textarea></div>" +
+
+      '<div class="kolom"><label class="label">Ikon</label><div class="pilih-ikon" id="pilih-ikon">' +
+        DAFTAR_IKON.map(k => '<button type="button" class="opsi-ikon' + (k === p.ikon ? " aktif" : "") +
+          '" data-ikon="' + k + '">' + IKON[k] + "</button>").join("") +
+      "</div></div>" +
+
+      '<div class="kolom"><label class="label">Warna latar</label><div class="pilih-warna" id="pilih-warna">' +
+        WARNA.map(w => '<button type="button" class="opsi-warna' + (w === p.warna ? " aktif" : "") +
+          '" data-warna="' + w + '" style="background:' + w + ';"></button>').join("") +
+      "</div></div>" +
+
+      '<div class="kolom"><label class="label"><input type="checkbox" id="f-tersedia"' +
+        (p.tersedia ? " checked" : "") + '> Tersedia untuk dipesan</label></div>' +
+
+      '<div class="modal-kaki">' +
+        '<button type="button" class="btn btn-garis" data-tutup>Batal</button>' +
+        '<button type="submit" class="btn">Simpan</button>' +
+      "</div>" +
+    "</form>"
+  );
+
+  let ikonTerpilih = p.ikon;
+  let warnaTerpilih = p.warna;
+
+  $("#pilih-ikon").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ikon]");
+    if (!b) return;
+    ikonTerpilih = b.dataset.ikon;
+    $("#pilih-ikon").querySelectorAll(".opsi-ikon").forEach(x => x.classList.toggle("aktif", x === b));
+  });
+
+  $("#pilih-warna").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-warna]");
+    if (!b) return;
+    warnaTerpilih = b.dataset.warna;
+    $("#pilih-warna").querySelectorAll(".opsi-warna").forEach(x => x.classList.toggle("aktif", x === b));
+  });
+
+  $("#form-produk").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const isi = {
+      nama: $("#f-nama").value.trim(),
+      kategori: $("#f-kategori").value,
+      harga: Number($("#f-harga").value) || 0,
+      deskripsi: $("#f-deskripsi").value.trim() || "Belum ada deskripsi.",
+      ikon: ikonTerpilih,
+      warna: warnaTerpilih,
+      tersedia: $("#f-tersedia").checked
+    };
+    if (!isi.nama) return;
+
+    if (produk) {
+      Object.assign(produk, isi);
+    } else {
+      db.produk.push(Object.assign({ id: idBaru() }, isi));
+    }
+    simpan();
+    tutupModal();
+    gambarAdmin();
+  });
+}
+
+// ============================================================
+// Form kategori
+// ============================================================
+function formKategori(kategori) {
+  const k = kategori || { label:"" };
+  bukaModal(
+    "<h2>" + (kategori ? "Ubah Kategori" : "Tambah Kategori") + "</h2>" +
+    '<form id="form-kategori">' +
+      '<div class="kolom"><label class="label" for="f-label">Nama kategori</label>' +
+        '<input class="isian" id="f-label" value="' + aman(k.label) + '" required maxlength="30" placeholder="mis. Roti Kering"></div>' +
+      '<p class="galat" id="galat-kategori"></p>' +
+      '<div class="modal-kaki">' +
+        '<button type="button" class="btn btn-garis" data-tutup>Batal</button>' +
+        '<button type="submit" class="btn">Simpan</button>' +
+      "</div>" +
+    "</form>"
+  );
+
+  $("#form-kategori").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const label = $("#f-label").value.trim();
+    if (!label) return;
+
+    const slug = slugkan(label);
+    const bentrok = db.kategori.some(x => x.slug === slug && x !== kategori);
+    if (bentrok) {
+      $("#galat-kategori").textContent = "Sudah ada kategori dengan nama itu.";
+      return;
+    }
+
+    if (kategori) {
+      // Slug ikut berubah, jadi produk yang memakainya harus diarahkan ulang --
+      // kalau tidak, produk itu jadi yatim dan hilang dari semua kategori.
+      const slugLama = kategori.slug;
+      kategori.label = label;
+      kategori.slug = slug;
+      db.produk.forEach(p => { if (p.kategori === slugLama) p.kategori = slug; });
+      if (state.kategoriAktif === slugLama) state.kategoriAktif = slug;
+    } else {
+      db.kategori.push({ slug, label });
+    }
+    simpan();
+    tutupModal();
+    gambarAdmin();
+  });
+}
+
+// ============================================================
+// Aksi tabel admin
+// ============================================================
+document.addEventListener("click", (e) => {
+  const tambahP = e.target.closest("#btn-tambah-produk");
+  if (tambahP) return formProduk(null);
+
+  const tambahK = e.target.closest("#btn-tambah-kategori");
+  if (tambahK) return formKategori(null);
+
+  const ubahP = e.target.closest("[data-ubah-produk]");
+  if (ubahP) return formProduk(db.produk.find(p => p.id === Number(ubahP.dataset.ubahProduk)));
+
+  const ubahK = e.target.closest("[data-ubah-kategori]");
+  if (ubahK) return formKategori(db.kategori.find(k => k.slug === ubahK.dataset.ubahKategori));
+
+  const hapusP = e.target.closest("[data-hapus-produk]");
+  if (hapusP) {
+    const p = db.produk.find(x => x.id === Number(hapusP.dataset.hapusProduk));
+    if (!p) return;
+    bukaModal(
+      "<h2>Hapus produk?</h2>" +
+      '<p style="color:var(--muted);margin-top:.5rem;"><strong>' + aman(p.nama) +
+        "</strong> akan dihapus dari daftar dan langsung hilang dari halaman pembeli.</p>" +
+      '<div class="modal-kaki">' +
+        '<button class="btn btn-garis" data-tutup>Batal</button>' +
+        '<button class="btn btn-bahaya" id="ya-hapus">Ya, hapus</button>' +
+      "</div>"
+    );
+    $("#ya-hapus").addEventListener("click", () => {
+      db.produk = db.produk.filter(x => x.id !== p.id);
+      delete state.keranjang[p.id];
+      simpan();
+      tutupModal();
+      gambarKeranjang();
+      gambarAdmin();
+    });
+    return;
+  }
+
+  const hapusK = e.target.closest("[data-hapus-kategori]");
+  if (hapusK) {
+    const k = db.kategori.find(x => x.slug === hapusK.dataset.hapusKategori);
+    if (!k) return;
+    const dipakai = db.produk.filter(p => p.kategori === k.slug).length;
+
+    // Kategori yang masih dipakai tidak boleh hilang begitu saja: produknya akan
+    // jadi yatim dan lenyap dari semua penyaringan di halaman pembeli.
+    if (dipakai > 0) {
+      bukaModal(
+        "<h2>Kategori masih dipakai</h2>" +
+        '<p style="color:var(--muted);margin-top:.5rem;">' +
+          "<strong>" + aman(k.label) + "</strong> masih dipakai oleh " + dipakai + " produk. " +
+          "Pindahkan produk-produk itu ke kategori lain dulu sebelum menghapusnya.</p>" +
+        '<div class="modal-kaki"><button class="btn" data-tutup>Mengerti</button></div>'
+      );
+      return;
+    }
+
+    bukaModal(
+      "<h2>Hapus kategori?</h2>" +
+      '<p style="color:var(--muted);margin-top:.5rem;"><strong>' + aman(k.label) + "</strong> akan dihapus.</p>" +
+      '<div class="modal-kaki">' +
+        '<button class="btn btn-garis" data-tutup>Batal</button>' +
+        '<button class="btn btn-bahaya" id="ya-hapus-k">Ya, hapus</button>' +
+      "</div>"
+    );
+    $("#ya-hapus-k").addEventListener("click", () => {
+      db.kategori = db.kategori.filter(x => x.slug !== k.slug);
+      if (state.kategoriAktif === k.slug) state.kategoriAktif = "semua";
+      simpan();
+      tutupModal();
+      gambarAdmin();
+    });
+  }
+});
+
+// ============================================================
+// Mulai
+// ============================================================
+simpan();       // pastikan data contoh tersimpan pada kunjungan pertama
+gambarKeranjang();
+rute();
+</script>
+</body>
+</html>
