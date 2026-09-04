@@ -2,3 +2,8 @@ CLAUDE.MD
 
 .vercel
 .env*
+
+# Template undangan pernikahan punya repositori privatnya sendiri
+# (yogatarg/undangan-pernikahan). Diabaikan di sini supaya tidak pernah
+# ikut ter-commit dan tertayang oleh Vercel secara tidak sengaja.
+undangan-pernikahan/
