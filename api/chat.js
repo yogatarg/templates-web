@@ -15,7 +15,9 @@ const MAX_PANJANG = 2000; // batas panjang satu pesan
 
 export default async function handler(req, res) {
   const origin = req.headers.origin || '';
-  if (ALLOWED.includes(origin)) {
+  const diizinkan = ALLOWED.includes(origin);
+
+  if (diizinkan) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
   }
@@ -24,6 +26,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Tolak sebelum memanggil Gemini. Tanpa ini, situs lain yang menempelkan
+  // widget ini tetap menghabiskan kuota kita meski jawabannya diblokir browser.
+  // Peramban selalu menyertakan Origin pada POST, jadi yang tanpa Origin pun ditolak.
+  if (!diizinkan) {
+    console.warn('Origin ditolak:', origin || '(kosong)');
+    return res.status(403).json({ error: 'Akses ditolak.' });
+  }
 
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
