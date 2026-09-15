@@ -645,17 +645,59 @@
   }
   .cbt-foot button:disabled{opacity:.5; cursor:not-allowed;}
 
+  /* Gelembung ajakan di atas tombol chat */
+  .cbt-teaser{
+    position:fixed; right:20px; bottom:88px; z-index:9998;
+    max-width:250px; background:#fff; color:var(--text,#1D1B18);
+    border:1px solid rgba(22,50,79,.12); border-radius:10px;
+    padding:.7rem .85rem; padding-right:1.9rem;
+    font-family:'Work Sans',ui-sans-serif,system-ui,sans-serif;
+    font-size:.86rem; line-height:1.45; cursor:pointer;
+    box-shadow:0 6px 24px rgba(22,50,79,.18);
+    animation:cbtMuncul .35s ease both;
+  }
+  .cbt-teaser[hidden]{display:none;}
+  .cbt-teaser::after{
+    content:''; position:absolute; right:22px; bottom:-7px;
+    width:12px; height:12px; background:#fff;
+    border-right:1px solid rgba(22,50,79,.12);
+    border-bottom:1px solid rgba(22,50,79,.12);
+    transform:rotate(45deg);
+  }
+  .cbt-teaser-x{
+    position:absolute; top:2px; right:4px;
+    background:transparent; border:0; cursor:pointer;
+    font-size:1.1rem; line-height:1; color:rgba(22,50,79,.45); padding:.25rem;
+  }
+  .cbt-teaser-x:hover{color:var(--ink,#16324F);}
+  @keyframes cbtMuncul{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  /* Titik penanda di tombol chat */
+  .cbt-dot{
+    position:absolute; top:2px; right:2px;
+    width:13px; height:13px; border-radius:50%;
+    background:var(--secondary,#2F7A6D); border:2px solid #fff;
+  }
+  .cbt-dot[hidden]{display:none;}
+
   @media (max-width:480px){
     .cbt-panel{right:0; bottom:0; width:100vw; max-width:100vw; height:78vh; border-radius:10px 10px 0 0;}
     .cbt-fab{right:16px; bottom:16px;}
+    .cbt-teaser{right:16px; bottom:84px; max-width:calc(100vw - 80px);}
   }
   @media (prefers-reduced-motion:reduce){
-    .cbt-fab, .cbt-dots span{transition:none; animation:none;}
+    .cbt-fab, .cbt-dots span, .cbt-teaser{transition:none; animation:none;}
   }
 </style>
 
+<div class="cbt-teaser" id="cbtTeaser" hidden role="button" tabindex="0">
+  <button class="cbt-teaser-x" id="cbtTeaserX" aria-label="Tutup">&times;</button>
+  <span id="cbtTeaserText"></span>
+</div>
+
 <button class="cbt-fab" id="cbtFab" aria-label="Buka chat">
   <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+  <span class="cbt-dot" id="cbtDot" hidden></span>
 </button>
 
 <section class="cbt-panel" id="cbtPanel" hidden aria-live="polite">
@@ -748,6 +790,66 @@
   fab.addEventListener('click', buka);
   document.getElementById('cbtClose').addEventListener('click', tutup);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !panel.hidden) tutup(); });
+
+  // ---- Gelembung ajakan -------------------------------------------------
+  // Pengunjung cenderung langsung mengklik demo tanpa menyadari ada asisten.
+  // Gelembung ini menyapa sekali per sesi, di saat yang paling masuk akal.
+  var teaser  = document.getElementById('cbtTeaser');
+  var teaserX = document.getElementById('cbtTeaserX');
+  var teks    = document.getElementById('cbtTeaserText');
+  var dot     = document.getElementById('cbtDot');
+  var KUNCI_T = 'katalog-chat-teaser-v1';
+
+  function sudahPernah(){
+    try { return sessionStorage.getItem(KUNCI_T) === '1'; } catch(e){ return false; }
+  }
+  function tandai(){
+    try { sessionStorage.setItem(KUNCI_T, '1'); } catch(e){}
+  }
+
+  function tampilkanTeaser(pesan){
+    if (sudahPernah() || !panel.hidden || riwayat.length) return;
+    teks.textContent = pesan;
+    teaser.hidden = false;
+    dot.hidden = false;
+  }
+  function sembunyikanTeaser(){
+    teaser.hidden = true;
+    dot.hidden = true;
+    tandai();
+  }
+
+  teaser.addEventListener('click', function(e){
+    if (e.target === teaserX) return;
+    sembunyikanTeaser();
+    buka();
+  });
+  teaser.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sembunyikanTeaser(); buka(); }
+  });
+  teaserX.addEventListener('click', function(e){
+    e.stopPropagation();
+    sembunyikanTeaser();
+  });
+
+  // Pemicu 1 — pengunjung baru kembali dari halaman demo. Momen terbaik:
+  // contohnya baru saja dilihat, pertanyaannya masih segar.
+  var dariDemo = false;
+  try { dariDemo = /\/template-/.test(document.referrer || ''); } catch(e){}
+
+  if (dariDemo) {
+    setTimeout(function(){
+      tampilkanTeaser('Sudah lihat contohnya, Kak? Kalau ada yang mau ditanyakan, saya siap bantu 😊');
+    }, 1500);
+  } else {
+    // Pemicu 2 — diam di katalog cukup lama tanpa membuka chat.
+    setTimeout(function(){
+      tampilkanTeaser('Bingung pilih yang mana, Kak? Boleh tanya saya dulu 😊');
+    }, 12000);
+  }
+
+  // Membuka chat lewat jalur mana pun membatalkan gelembung.
+  fab.addEventListener('click', sembunyikanTeaser);
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
