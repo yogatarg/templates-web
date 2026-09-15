@@ -801,23 +801,45 @@
   var dot     = document.getElementById('cbtDot');
   var KUNCI_T = 'katalog-chat-teaser-v1';
 
-  function sudahPernah(){
+  var KUNCI_N = 'katalog-chat-teaser-n-v1';
+  var MAKS_TAMPIL = 2;   // maksimal dua kali per sesi
+  var UMUR = 9000;       // hilang sendiri setelah 9 detik
+  var jamPasir = null;
+
+  // Dua keadaan yang dibedakan:
+  //  - "ditutup"  : pengunjung menutup sendiri atau membuka chat -> jangan muncul lagi
+  //  - "lewat"    : hilang sendiri karena waktunya habis -> boleh menyapa sekali lagi
+  function sudahDitutup(){
     try { return sessionStorage.getItem(KUNCI_T) === '1'; } catch(e){ return false; }
   }
-  function tandai(){
-    try { sessionStorage.setItem(KUNCI_T, '1'); } catch(e){}
+  function jumlahTampil(){
+    try { return parseInt(sessionStorage.getItem(KUNCI_N) || '0', 10) || 0; } catch(e){ return 0; }
+  }
+  function catatTampil(){
+    try { sessionStorage.setItem(KUNCI_N, String(jumlahTampil() + 1)); } catch(e){}
   }
 
   function tampilkanTeaser(pesan){
-    if (sudahPernah() || !panel.hidden || riwayat.length) return;
+    if (sudahDitutup() || jumlahTampil() >= MAKS_TAMPIL) return;
+    if (!panel.hidden || riwayat.length) return;
+
     teks.textContent = pesan;
     teaser.hidden = false;
     dot.hidden = false;
+    catatTampil();
+
+    // Menyapa lalu undur diri. Titik di tombol chat sengaja dibiarkan menyala
+    // supaya petunjuknya tetap ada tanpa menghalangi kartu demo.
+    clearTimeout(jamPasir);
+    jamPasir = setTimeout(function(){ teaser.hidden = true; }, UMUR);
   }
+
+  // permanen = pengunjung memang menutupnya atau sudah membuka chat
   function sembunyikanTeaser(){
+    clearTimeout(jamPasir);
     teaser.hidden = true;
     dot.hidden = true;
-    tandai();
+    try { sessionStorage.setItem(KUNCI_T, '1'); } catch(e){}
   }
 
   teaser.addEventListener('click', function(e){
