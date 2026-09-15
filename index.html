@@ -48,41 +48,6 @@
     color:var(--secondary);
   }
 
-  /* ---------- Ajakan Asisten ---------- */
-  .ajakan-asisten{
-    border-bottom:1px solid rgba(22,50,79,.1);
-    background:linear-gradient(to right, rgba(47,122,109,.07), rgba(232,98,44,.06));
-  }
-  .ajakan-inner{
-    max-width:1080px; margin:0 auto;
-    padding:.85rem 1.25rem;
-    display:flex; align-items:center; gap:.85rem;
-  }
-  .ajakan-ikon{
-    flex:0 0 auto; width:34px; height:34px; border-radius:50%;
-    background:var(--secondary); color:#fff;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .ajakan-ikon svg{width:18px; height:18px; fill:currentColor;}
-  .ajakan-teks{
-    margin:0; flex:1; font-size:.9rem; line-height:1.45; color:var(--text);
-  }
-  .ajakan-teks strong{color:var(--ink);}
-  .ajakan-btn{
-    flex:0 0 auto; border:0; border-radius:6px; cursor:pointer;
-    background:var(--accent); color:#fff;
-    font-family:inherit; font-size:.85rem; font-weight:500;
-    padding:.55rem 1.1rem;
-    transition:background .15s ease;
-  }
-  .ajakan-btn:hover{background:var(--accent-hover);}
-  @media (max-width:640px){
-    .ajakan-inner{flex-wrap:wrap; gap:.6rem;}
-    .ajakan-teks{flex:1 1 100%; font-size:.86rem;}
-    .ajakan-ikon{width:28px; height:28px;}
-    .ajakan-btn{width:100%;}
-  }
-
   /* ---------- Header ---------- */
   header{
     border-bottom:1px solid rgba(22,50,79,.1);
@@ -392,23 +357,6 @@
       <div class="header-art" aria-hidden="true" id="header-art"></div>
     </div>
   </header>
-
-  <!-- Ajakan menetap ke Asisten Yogata. Bagian dari halaman, bukan lapisan
-       melayang: terlihat seketika tanpa menghalangi konten. Tombolnya memicu
-       widget chat di bawah. -->
-  <div class="ajakan-asisten">
-    <div class="ajakan-inner">
-      <span class="ajakan-ikon" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
-      </span>
-      <p class="ajakan-teks">
-        <strong>Bingung pilih yang mana?</strong>
-        Tanya Asisten Yogata &mdash; dijawab langsung, gratis, tanpa perlu simpan nomor.
-      </p>
-      <button type="button" class="ajakan-btn" id="ajakanBtn">Tanya sekarang</button>
-    </div>
-  </div>
-
 
   <main>
 
@@ -842,12 +790,6 @@
   fab.addEventListener('click', buka);
   document.getElementById('cbtClose').addEventListener('click', tutup);
 
-  // Tombol pada baris ajakan menetap di bawah hero
-  var tombolAjakan = document.getElementById('ajakanBtn');
-  if (tombolAjakan) tombolAjakan.addEventListener('click', function(){
-    sembunyikanTeaser();
-    buka();
-  });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !panel.hidden) tutup(); });
 
   // ---- Gelembung ajakan -------------------------------------------------
@@ -901,10 +843,11 @@
       tampilkanTeaser('Sudah lihat contohnya, Kak? Kalau ada yang mau ditanyakan, saya siap bantu 😊');
     }, 1500);
   } else {
-    // Pemicu 2 — diam di katalog cukup lama tanpa membuka chat.
+    // Pemicu 2 — sapa lebih awal. Pengunjung sering langsung mengklik demo,
+    // jadi jendela untuk menyapa sangat pendek.
     setTimeout(function(){
       tampilkanTeaser('Bingung pilih yang mana? Boleh tanya saya dulu 😊');
-    }, 12000);
+    }, 3500);
   }
 
   // Membuka chat lewat jalur mana pun membatalkan gelembung.
